@@ -1,0 +1,10 @@
+(
+  head
+    (title "Hello World!")
+)
+// This is a comment
+(
+  body
+    (p "Basic website made with MEML!")
+//    (p "1 + 2 = " (span 1 + 2))
+)

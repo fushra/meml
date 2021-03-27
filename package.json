@@ -1,0 +1,20 @@
+{
+  "name": "meml",
+  "version": "1.0.0",
+  "description": "A basic meml interpreter written and tested in typescript",
+  "main": "index.js",
+  "repository": "https://github.com/trickypr/meml.git",
+  "author": "TrickyPR <trickypr@icloud.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "testyts"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.36",
+    "cmd-ts": "^0.6.8",
+    "testyts": "^1.1.2",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
+  }
+}
