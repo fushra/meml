@@ -4,6 +4,8 @@
 // but at the moment I don't really care
 
 import { readFileSync, writeFileSync } from 'fs'
+import { Converter } from './converter/Converter'
+import { PageExpr } from './parser/Expr'
 import { Parser } from './parser/Parser'
 import { AstPrinter } from './parser/Printer'
 import { Scanner } from './scanner/Scanner'
@@ -25,13 +27,16 @@ export class MemlC {
     const tokens = scanner.scanTokens()
     const parser = new Parser(tokens)
     const expression = parser.parse()
-
-    writeFileSync('./debug.json', JSON.stringify(tokens))
+    const converter = new Converter()
 
     // Bail if there was a syntax error
     if (MemlC.hadError) return
 
-    console.log(new AstPrinter().print(expression))
+    writeFileSync('./out.html', converter.visitPageExpr(expression))
+  }
+
+  private sleep(time: number) {
+    return new Promise((res) => setTimeout(res, time))
   }
 
   static errorAtToken(token: Token, message: string): void {

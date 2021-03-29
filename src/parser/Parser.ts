@@ -20,7 +20,7 @@ export class Parser {
     this.tokens = tokens
   }
 
-  parse(): IExpr {
+  parse(): PageExpr {
     let expressions = []
 
     while (!this.isAtEnd()) {
