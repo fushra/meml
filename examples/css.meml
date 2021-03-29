@@ -1,0 +1,23 @@
+(head
+  (title "CSS example")
+)
+(body
+  (h1 "Roses are red")
+  (h2 "Violets are blue")
+  (span "Poems are hard")
+  (p "I am sorry")
+
+  (style "
+  h1 {
+    color: red;
+  }
+
+  h2 {
+    color: blue;
+  }
+
+  span {
+    font-size: 5px;
+  }
+  ")
+)
