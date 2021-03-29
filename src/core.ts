@@ -17,12 +17,16 @@ export class MemlC {
 
   runFile(path: string): boolean {
     const fileContents = readFileSync(path).toString()
-    this.run(fileContents)
+    this.translate(fileContents)
 
     return MemlC.hadError
   }
 
   run(source: string) {
+    return this.translate(source)
+  }
+
+  translate(source: string) {
     const scanner = new Scanner(source)
     const tokens = scanner.scanTokens()
     const parser = new Parser(tokens)
@@ -32,7 +36,7 @@ export class MemlC {
     // Bail if there was a syntax error
     if (MemlC.hadError) return
 
-    writeFileSync('./out.html', converter.visitPageExpr(expression))
+    return converter.visitPageExpr(expression)
   }
 
   private sleep(time: number) {

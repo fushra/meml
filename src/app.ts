@@ -1,4 +1,6 @@
 import { command, run, string, number, positional, option } from 'cmd-ts'
+import { readFileSync, writeFileSync } from 'fs'
+import { MemlC } from './core'
 
 const cmd = command({
   name: 'memlc',
@@ -12,7 +14,14 @@ const cmd = command({
     }),
   },
   handler: (args) => {
-    console.log(args)
+    const { file } = args
+    const out = file.replace('.meml', '.html')
+
+    const meml = readFileSync(file).toString()
+
+    const c = new MemlC()
+
+    writeFileSync(out, c.translate(meml))
   },
 })
 
