@@ -3,8 +3,12 @@
 // Maybe one day I will rewrite this in rust or maybe even c to make it work natively
 // but at the moment I don't really care
 
-import { readFileSync } from 'fs'
+import { readFileSync, writeFileSync } from 'fs'
+import { Parser } from './parser/Parser'
+import { AstPrinter } from './parser/Printer'
 import { Scanner } from './scanner/Scanner'
+import { Token } from './scanner/Token'
+import { TokenType } from './scanner/TokenTypes'
 
 export class MemlC {
   static hadError = false
@@ -19,10 +23,23 @@ export class MemlC {
   run(source: string) {
     const scanner = new Scanner(source)
     const tokens = scanner.scanTokens()
+    const parser = new Parser(tokens)
+    const expression = parser.parse()
 
-    // Print all of the tokens to the console
-    console.log(tokens)
-    // console.log(Tag)
+    writeFileSync('./debug.json', JSON.stringify(tokens))
+
+    // Bail if there was a syntax error
+    if (MemlC.hadError) return
+
+    console.log(new AstPrinter().print(expression))
+  }
+
+  static errorAtToken(token: Token, message: string): void {
+    if (token.type === TokenType.EOF) {
+      this.report(token.line, ' at end', message)
+    } else {
+      this.report(token.line, ` at '${token.lexeme}'`, message)
+    }
   }
 
   static error(line: number, message: string) {

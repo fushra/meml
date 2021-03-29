@@ -117,6 +117,23 @@ export class Scanner {
     let type =
       typeof Tags[text] === 'undefined' ? TokenType.IDENTIFIER : TokenType.TAG
 
+    switch (text) {
+      case 'false':
+        type = TokenType.FALSE
+        break
+
+      case 'true':
+        type = TokenType.TRUE
+        break
+
+      case 'null':
+        type = TokenType.NULL
+        break
+
+      default:
+        break
+    }
+
     this.addToken(type, text)
   }
 

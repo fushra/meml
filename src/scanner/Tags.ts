@@ -16,4 +16,5 @@ export const Tags = dupEntries({
   head: 'HEAD',
   title: 'TITLE',
   body: 'BODY',
+  h1: 'H1',
 })

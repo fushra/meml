@@ -22,6 +22,9 @@ export enum TokenType {
   STRING = 'string',
   NUMBER = 'number',
   TAG = 'tag',
+  FALSE = 'false',
+  TRUE = 'true',
+  NULL = 'null',
 
   EOF = 'eof',
 }
