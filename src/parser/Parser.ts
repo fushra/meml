@@ -5,11 +5,11 @@ import {
   GroupingExpr,
   IExpr,
   LiteralExpr,
-  PageExpr,
-  TagExpr,
+  MemlPropertiesExpr,
   UnaryExpr,
 } from './Expr'
 import { MemlC } from '../core'
+import { ExpressionStmt, IStmt, MemlStmt, PageStmt } from './Stmt'
 
 export class Parser {
   private tokens: Token[]
@@ -20,20 +20,107 @@ export class Parser {
     this.tokens = tokens
   }
 
-  parse(): PageExpr {
-    let expressions = []
+  /**
+   * page        → statement* EOF;
+   */
+  parse(): PageStmt {
+    let stmts = []
 
     while (!this.isAtEnd()) {
-      expressions.push(this.expression())
+      stmts.push(this.statement())
     }
 
-    return new PageExpr(expressions)
+    return new PageStmt(stmts)
   }
 
+  // ===========================================================================
+  // This is the parsers logic tree.
+
+  /**
+   * statement   → memlStmt;
+   */
+  private statement(): IStmt {
+    const expr = this.memlStmt()
+
+    return expr
+  }
+
+  // --------------------------
+  // MEML Statements
+
+  /**
+   * memlStmt    → '(' IDENTIFIER memlProp* exprOrMeml* ')';
+   */
+  private memlStmt(): IStmt {
+    this.consume(
+      TokenType.LEFT_PAREN,
+      'Expected opening brackets of a meml statement.'
+    )
+
+    const identifier = this.advance()
+    let props = []
+    let children = []
+
+    while (this.match(TokenType.IDENTIFIER)) {
+      props.push(this.memlProps())
+    }
+
+    while (!this.match(TokenType.RIGHT_PAREN)) {
+      children.push(this.exprOrMeml())
+    }
+
+    return new MemlStmt(identifier, props, children)
+  }
+
+  /**
+   * memlProp    → IDENTIFIER
+   *             | IDENTIFIER '=' expression;
+   */
+  private memlProps(): MemlPropertiesExpr {
+    const identifier = this.advance()
+    let expression: IExpr = new LiteralExpr('')
+
+    if (this.match(TokenType.EQUAL)) {
+      expression = this.expression()
+    }
+
+    return new MemlPropertiesExpr(identifier, expression)
+  }
+
+  // --------------------------
+  // Expression statements
+
+  /**
+   * exprOrMeml  → memlStmt
+   *             | expression;
+   */
+  private exprOrMeml(): IStmt {
+    if (this.peek().type === TokenType.LEFT_PAREN) {
+      return this.memlStmt()
+    }
+
+    return new ExpressionStmt(this.expression())
+  }
+
+  // --------------------------
+  // Expression logic
+
+  /**
+   * expression  → literal
+   *             | unary
+   *             | binary
+   *             | grouping;
+   */
   private expression(): IExpr {
     return this.equality()
   }
 
+  /**
+   * This is part of a custom implementation of the binary operation. This function
+   * is tasked with equality
+   *
+   * binary      → expression operator expression;
+   */
   private equality(): IExpr {
     let expr = this.comparison()
 
@@ -46,6 +133,12 @@ export class Parser {
     return expr
   }
 
+  /**
+   * This is part of a custom implementation of the binary operation. This function
+   * is tasked with comparison
+   *
+   * binary      → expression operator expression;
+   */
   private comparison(): IExpr {
     let expr = this.term()
 
@@ -65,6 +158,12 @@ export class Parser {
     return expr
   }
 
+  /**
+   * This is part of a custom implementation of the binary operation. This function
+   * is tasked with terms
+   *
+   * binary      → expression operator expression;
+   */
   private term(): IExpr {
     let expr = this.factor()
 
@@ -77,18 +176,28 @@ export class Parser {
     return expr
   }
 
+  /**
+   * This is part of a custom implementation of the binary operation. This function
+   * is tasked with factors
+   *
+   * binary      → expression operator expression;
+   */
   private factor(): IExpr {
-    let expr = this.unary()
+    const left = this.unary()
+    let expr
 
     while (this.match(TokenType.SLASH, TokenType.STAR)) {
       const operator = this.previous()
       const right = this.unary()
-      expr = new BinaryExpr(expr, operator, right)
+      expr = new BinaryExpr(left, operator, right)
     }
 
-    return expr
+    return expr as IExpr
   }
 
+  /**
+   * unary       → ('-' | '!') expression;
+   */
   private unary(): IExpr {
     if (this.match(TokenType.BANG, TokenType.MINUS)) {
       const operator = this.previous()
@@ -96,49 +205,50 @@ export class Parser {
       return new UnaryExpr(operator, right)
     }
 
-    return this.primary()
+    return this.literal()
   }
 
-  private primary(): IExpr {
+  /**
+   * literal     → NUMBER
+   *             | STRING
+   *             | 'true'
+   *             | 'false'
+   *             | 'null';
+   */
+  private literal(): IExpr {
     if (this.match(TokenType.FALSE)) return new LiteralExpr(false)
     if (this.match(TokenType.TRUE)) return new LiteralExpr(true)
     if (this.match(TokenType.NULL)) return new LiteralExpr(null)
-    if (this.match(TokenType.TAG)) return this.tag()
 
     if (this.match(TokenType.NUMBER, TokenType.STRING)) {
       return new LiteralExpr(this.previous().literal)
     }
 
+    return this.grouping()
+  }
+
+  private grouping(): IExpr {
     if (this.match(TokenType.LEFT_PAREN)) {
       const expr = this.expression()
       this.consume(TokenType.RIGHT_PAREN, `Expect ')' after expression.`)
       return new GroupingExpr(expr)
     }
 
-    if (this.lastOnError && this.lastOnError == this.current) {
-      MemlC.errorAtToken(
-        this.advance(),
-        'Recursion has occurred, skipping token.'
-      )
-    } else {
-      this.lastOnError = this.current
-    }
+    // if (this.lastOnError && this.lastOnError == this.current) {
+    //   MemlC.errorAtToken(
+    //     this.advance(),
+    //     'Recursion has occurred, skipping token.'
+    //   )
+    // } else {
+    //   this.lastOnError = this.current
+    // }
 
     this.error(this.peek(), 'Expected expression.')
+
+    return this.unary()
   }
 
-  private tag(): IExpr {
-    const tag = this.previous()
-    let right = []
-
-    while (this.peek().type !== TokenType.RIGHT_PAREN && !this.isAtEnd()) {
-      right.push(this.term())
-    }
-
-    return new TagExpr(tag, right)
-  }
-
-  // ----------------------------------------------------------------
+  // ===========================================================================
   // Utilities
   private match(...types: TokenType[]): boolean {
     for (let i = 0; i < types.length; i++) {

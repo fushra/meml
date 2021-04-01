@@ -1,4 +1,4 @@
-import { command, run, string, number, positional, option } from 'cmd-ts'
+import { command, run, string, positional } from 'cmd-ts'
 import { readFileSync, writeFileSync } from 'fs'
 import { MemlC } from './core'
 

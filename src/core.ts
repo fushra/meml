@@ -5,9 +5,7 @@
 
 import { readFileSync, writeFileSync } from 'fs'
 import { Converter } from './converter/Converter'
-import { PageExpr } from './parser/Expr'
 import { Parser } from './parser/Parser'
-import { AstPrinter } from './parser/Printer'
 import { Scanner } from './scanner/Scanner'
 import { Token } from './scanner/Token'
 import { TokenType } from './scanner/TokenTypes'
@@ -36,7 +34,7 @@ export class MemlC {
     // Bail if there was a syntax error
     if (MemlC.hadError) return
 
-    return converter.visitPageExpr(expression)
+    return converter.convert(expression)
   }
 
   private sleep(time: number) {

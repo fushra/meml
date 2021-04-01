@@ -1,16 +1,15 @@
 import { Token } from '../scanner/Token'
 
-export interface Visitor<R> {
+export interface ExprVisitor<R> {
   visitBinaryExpr: (expr: BinaryExpr) => R
   visitGroupingExpr: (expr: GroupingExpr) => R
   visitLiteralExpr: (expr: LiteralExpr) => R
   visitUnaryExpr: (expr: UnaryExpr) => R
-  visitTagExpr: (expr: TagExpr) => R
-  visitPageExpr: (expr: PageExpr) => R
+  visitMemlPropertiesExpr: (expr: MemlPropertiesExpr) => R
 }
 
 export interface IExpr {
-  accept: <R>(visitor: Visitor<R>) => R
+  accept: <R>(visitor: ExprVisitor<R>) => R
 }
 
 export class BinaryExpr implements IExpr {
@@ -25,7 +24,7 @@ export class BinaryExpr implements IExpr {
   }
 
   // Visitor pattern
-  accept<R>(visitor: Visitor<R>): R {
+  accept<R>(visitor: ExprVisitor<R>): R {
     return visitor.visitBinaryExpr(this)
   }
 }
@@ -38,7 +37,7 @@ export class GroupingExpr implements IExpr {
   }
 
   // Visitor pattern
-  accept<R>(visitor: Visitor<R>): R {
+  accept<R>(visitor: ExprVisitor<R>): R {
     return visitor.visitGroupingExpr(this)
   }
 }
@@ -51,7 +50,7 @@ export class LiteralExpr implements IExpr {
   }
 
   // Visitor pattern
-  accept<R>(visitor: Visitor<R>): R {
+  accept<R>(visitor: ExprVisitor<R>): R {
     return visitor.visitLiteralExpr(this)
   }
 }
@@ -66,35 +65,22 @@ export class UnaryExpr implements IExpr {
   }
 
   // Visitor pattern
-  accept<R>(visitor: Visitor<R>): R {
+  accept<R>(visitor: ExprVisitor<R>): R {
     return visitor.visitUnaryExpr(this)
   }
 }
 
-export class TagExpr implements IExpr {
+export class MemlPropertiesExpr implements IExpr {
   name: Token
-  right: IExpr[]
+  value: IExpr
 
-  constructor(name: Token, right: IExpr[]) {
+  constructor(name: Token, value: IExpr) {
     this.name = name
-    this.right = right
+    this.value = value
   }
 
   // Visitor pattern
-  accept<R>(visitor: Visitor<R>): R {
-    return visitor.visitTagExpr(this)
-  }
-}
-
-export class PageExpr implements IExpr {
-  children: IExpr[]
-
-  constructor(children: IExpr[]) {
-    this.children = children
-  }
-
-  // Visitor pattern
-  accept<R>(visitor: Visitor<R>): R {
-    return visitor.visitPageExpr(this)
+  accept<R>(visitor: ExprVisitor<R>): R {
+    return visitor.visitMemlPropertiesExpr(this)
   }
 }

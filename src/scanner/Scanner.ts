@@ -114,8 +114,7 @@ export class Scanner {
 
     while (this.isAlphaNumeric(this.peek())) text += this.advance()
 
-    let type =
-      typeof Tags[text] === 'undefined' ? TokenType.IDENTIFIER : TokenType.TAG
+    let type = TokenType.IDENTIFIER
 
     switch (text) {
       case 'false':

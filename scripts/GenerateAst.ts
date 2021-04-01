@@ -15,23 +15,25 @@ export class ${className}${baseName} implements I${baseName} {
   }
 
   // Visitor pattern
-  accept<R>(visitor: Visitor<R>): R {
+  accept<R>(visitor: ${baseName}Visitor<R>): R {
     return visitor.visit${className}${baseName}(this)
   }
 }`
 }
 
-const defineVisitor = (baseName: string, types: string[]) => `
-interface
-`
-
-function defineAst(outDir: string, baseName: string, types: any) {
+function defineAst(
+  outDir: string,
+  baseName: string,
+  types: any,
+  imports: string = ''
+) {
   const path = `${outDir}/${baseName}.ts`
 
   const contents = `
 import { Token } from '../scanner/Token'
+${imports}
 
-export interface Visitor<R> {
+export interface ${baseName}Visitor<R> {
   ${Object.keys(types)
     .map((key) => {
       const fields = types[key]
@@ -43,7 +45,7 @@ export interface Visitor<R> {
 }
 
 export interface I${baseName} {
-  accept: <R>(visitor: Visitor<R>) => R
+  accept: <R>(visitor: ${baseName}Visitor<R>) => R
 }
 
 ${Object.keys(types)
@@ -59,11 +61,30 @@ ${Object.keys(types)
   writeFileSync(path, contents)
 }
 
-defineAst('./src/parser', 'Expr', {
+// #############################################################################
+// Config for the ast creator
+
+const outDir = './src/parser'
+
+defineAst(outDir, 'Expr', {
   Binary: ['left: IExpr', 'operator: Token', 'right: IExpr'],
   Grouping: ['expression: IExpr'],
   Literal: ['value: any'],
   Unary: ['operator: Token', 'right: IExpr'],
-  Tag: ['name: Token', 'right: IExpr[]'],
-  Page: ['children: IExpr[]'],
+  MemlProperties: ['name: Token', 'value: IExpr'],
 })
+
+defineAst(
+  outDir,
+  'Stmt',
+  {
+    Meml: [
+      'tagName: Token',
+      'props: MemlPropertiesExpr[]',
+      'exprOrMeml: IStmt[]',
+    ],
+    Expression: ['expression: IExpr'],
+    Page: ['children: IStmt[]'],
+  },
+  'import {IExpr,MemlPropertiesExpr} from "./Expr"'
+)

@@ -1,18 +1,58 @@
 import { TokenType } from '../scanner/TokenTypes'
 import {
   BinaryExpr,
+  ExprVisitor,
   GroupingExpr,
   IExpr,
   LiteralExpr,
-  PageExpr,
-  TagExpr,
+  MemlPropertiesExpr,
   UnaryExpr,
-  Visitor,
 } from '../parser/Expr'
+import {
+  ExpressionStmt,
+  IStmt,
+  MemlStmt,
+  PageStmt,
+  StmtVisitor,
+} from '../parser/Stmt'
 
-export class Converter implements Visitor<string | number | boolean | null> {
-  // ----------------------------------------------------------------
-  // Visitor pattern implementations
+export class Converter
+  implements
+    ExprVisitor<string | number | boolean | null>,
+    StmtVisitor<string> {
+  convert(token: PageStmt): string {
+    return this.visitPageStmt(token)
+  }
+
+  // ===========================================================================
+  // Stmt visitor pattern implementations
+
+  visitMemlStmt(stmt: MemlStmt): string {
+    return `<${stmt.tagName.literal}${
+      stmt.props.length !== 0
+        ? `${stmt.props.map((prop) => this.evaluate(prop)).join(' ')} `
+        : ''
+    }>${stmt.exprOrMeml.map((el) => this.evaluate(el)).join('')}</${
+      stmt.tagName.literal
+    }`
+  }
+
+  visitExpressionStmt(stmt: ExpressionStmt): string {
+    return this.evaluate(stmt).toString()
+  }
+
+  visitPageStmt(stmt: PageStmt): string {
+    return `<!DOCTYPE html><html>${stmt.children
+      .map((el) => this.evaluate(el))
+      .join('')}</html>`
+  }
+
+  // ===========================================================================
+  // Expr visitor pattern implementations
+
+  visitMemlPropertiesExpr(expr: MemlPropertiesExpr): string {
+    return `${expr.name}=${this.evaluate(expr.value)}`
+  }
 
   visitLiteralExpr(expr: LiteralExpr): string | number | boolean | null {
     return expr.value
@@ -71,34 +111,10 @@ export class Converter implements Visitor<string | number | boolean | null> {
     }
   }
 
-  visitTagExpr(tag: TagExpr): string {
-    const children: string[] = []
-
-    tag.right.forEach((child) => {
-      const tag = this.evaluate(child).toString()
-      children.push(tag)
-    })
-
-    return `<${tag.name.literal}>${children.join('')}</${tag.name.literal}>`
-  }
-
-  visitPageExpr(expr: PageExpr): string {
-    const children: string[] = []
-
-    expr.children.forEach((child) =>
-      children.push(this.evaluate(child).toString())
-    )
-
-    return `
-<!DOCTYPE html>
-
-${children.join('')}`
-  }
-
-  // ----------------------------------------------------------------
+  // ===========================================================================
   // Utils
 
-  private evaluate(expr: IExpr): string | number | boolean {
+  private evaluate(expr: IExpr | IStmt): string | number | boolean {
     return expr.accept(this)
   }
 
