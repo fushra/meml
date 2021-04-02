@@ -183,16 +183,15 @@ export class Parser {
    * binary      → expression operator expression;
    */
   private factor(): IExpr {
-    const left = this.unary()
-    let expr
+    let expr = this.unary()
 
     while (this.match(TokenType.SLASH, TokenType.STAR)) {
       const operator = this.previous()
       const right = this.unary()
-      expr = new BinaryExpr(left, operator, right)
+      expr = new BinaryExpr(expr, operator, right)
     }
 
-    return expr as IExpr
+    return expr
   }
 
   /**
@@ -244,8 +243,6 @@ export class Parser {
     // }
 
     this.error(this.peek(), 'Expected expression.')
-
-    return this.unary()
   }
 
   // ===========================================================================

@@ -16,7 +16,7 @@ import {
   StmtVisitor,
 } from '../parser/Stmt'
 
-export class Converter
+export class Web
   implements
     ExprVisitor<string | number | boolean | null>,
     StmtVisitor<string> {
@@ -34,11 +34,11 @@ export class Converter
         : ''
     }>${stmt.exprOrMeml.map((el) => this.evaluate(el)).join('')}</${
       stmt.tagName.literal
-    }`
+    }>`
   }
 
   visitExpressionStmt(stmt: ExpressionStmt): string {
-    return this.evaluate(stmt).toString()
+    return this.evaluate(stmt.expression).toString()
   }
 
   visitPageStmt(stmt: PageStmt): string {

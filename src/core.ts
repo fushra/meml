@@ -4,7 +4,7 @@
 // but at the moment I don't really care
 
 import { readFileSync, writeFileSync } from 'fs'
-import { Converter } from './converter/Converter'
+import { Web } from './targets/Web'
 import { Parser } from './parser/Parser'
 import { Scanner } from './scanner/Scanner'
 import { Token } from './scanner/Token'
@@ -29,7 +29,7 @@ export class MemlC {
     const tokens = scanner.scanTokens()
     const parser = new Parser(tokens)
     const expression = parser.parse()
-    const converter = new Converter()
+    const converter = new Web()
 
     // Bail if there was a syntax error
     if (MemlC.hadError) return
