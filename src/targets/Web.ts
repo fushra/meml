@@ -1,6 +1,7 @@
 import { TokenType } from '../scanner/TokenTypes'
 import {
   BinaryExpr,
+  DestructureExpr,
   ExprVisitor,
   GroupingExpr,
   IExpr,
@@ -9,17 +10,25 @@ import {
   UnaryExpr,
 } from '../parser/Expr'
 import {
+  ComponentStmt,
   ExpressionStmt,
   IStmt,
   MemlStmt,
   PageStmt,
   StmtVisitor,
 } from '../parser/Stmt'
+import { Environment } from './shared/Environment'
+import { ComponentDefinition } from './shared/ComponentDefinition'
+import { Tags } from '../scanner/Tags'
 
 export class Web
   implements
     ExprVisitor<string | number | boolean | null>,
     StmtVisitor<string> {
+  private environment = new Environment()
+
+  // TODO: Implement these
+  visitDestructureExpr: (expr: DestructureExpr) => string | number | boolean
   convert(token: PageStmt): string {
     return this.visitPageStmt(token)
   }
@@ -28,13 +37,24 @@ export class Web
   // Stmt visitor pattern implementations
 
   visitMemlStmt(stmt: MemlStmt): string {
-    return `<${stmt.tagName.literal}${
-      stmt.props.length !== 0
-        ? `${stmt.props.map((prop) => this.evaluate(prop)).join(' ')} `
-        : ''
-    }>${stmt.exprOrMeml.map((el) => this.evaluate(el)).join('')}</${
-      stmt.tagName.literal
-    }>`
+    // Check if this is a default tag. If it is, then we should pass it through to
+    // html
+    if (typeof Tags[stmt.tagName.literal] !== 'undefined') {
+      return `<${stmt.tagName.literal}${
+        stmt.props.length !== 0
+          ? `${stmt.props.map((prop) => this.evaluate(prop)).join(' ')} `
+          : ''
+      }>${stmt.exprOrMeml.map((el) => this.evaluate(el)).join('')}</${
+        stmt.tagName.literal
+      }>`
+    } else {
+      // Otherwise, the tag may be a custom component and thus we should try and
+      // retrieve it from the environment
+      const tag = this.environment.get(stmt.tagName) as ComponentDefinition
+
+      // Return the constructed tag with all of the props
+      return tag.construct(stmt.props, this)
+    }
   }
 
   visitExpressionStmt(stmt: ExpressionStmt): string {
@@ -45,6 +65,18 @@ export class Web
     return `<!DOCTYPE html><html>${stmt.children
       .map((el) => this.evaluate(el))
       .join('')}</html>`
+  }
+
+  visitComponentStmt(stmt: ComponentStmt): string {
+    // Add the component tot the environment
+    this.environment.define(
+      stmt.tagName.literal,
+      new ComponentDefinition(stmt.props, stmt.meml, stmt.tagName.literal)
+    )
+
+    // When you visit a component, you visit the definition. Therefore
+    // we do not return anything to influence the meml file
+    return ''
   }
 
   // ===========================================================================

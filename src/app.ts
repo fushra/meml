@@ -14,6 +14,7 @@ const cmd = command({
     }),
   },
   handler: (args) => {
+    console.time('Compile time')
     const { file } = args
     const out = file.replace('.meml', '.html')
 
@@ -22,6 +23,7 @@ const cmd = command({
     const c = new MemlC()
 
     writeFileSync(out, c.translate(meml))
+    console.timeEnd('Compile time')
   },
 })
 

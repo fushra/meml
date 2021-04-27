@@ -36,10 +36,9 @@ ${imports}
 export interface ${baseName}Visitor<R> {
   ${Object.keys(types)
     .map((key) => {
-      const fields = types[key]
       const className = key + baseName
 
-      return `visit${className}: (${baseName.toLowerCase()}: ${className}) => R`
+      return `  visit${className}: (${baseName.toLowerCase()}: ${className}) => R`
     })
     .join('\n')}
 }
@@ -72,12 +71,14 @@ defineAst(outDir, 'Expr', {
   Literal: ['value: any'],
   Unary: ['operator: Token', 'right: IExpr'],
   MemlProperties: ['name: Token', 'value: IExpr'],
+  Destructure: ['items: Token[]'],
 })
 
 defineAst(
   outDir,
   'Stmt',
   {
+    Component: ['tagName: Token', 'props: DestructureExpr', 'meml: IStmt'],
     Meml: [
       'tagName: Token',
       'props: MemlPropertiesExpr[]',
@@ -86,5 +87,5 @@ defineAst(
     Expression: ['expression: IExpr'],
     Page: ['children: IStmt[]'],
   },
-  'import {IExpr,MemlPropertiesExpr} from "./Expr"'
+  'import { IExpr, MemlPropertiesExpr, DestructureExpr } from "./Expr"'
 )

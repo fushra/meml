@@ -2,6 +2,7 @@ import { TokenType } from '../scanner/TokenTypes'
 import { Token } from '../scanner/Token'
 import {
   BinaryExpr,
+  DestructureExpr,
   GroupingExpr,
   IExpr,
   LiteralExpr,
@@ -9,7 +10,13 @@ import {
   UnaryExpr,
 } from './Expr'
 import { MemlC } from '../core'
-import { ExpressionStmt, IStmt, MemlStmt, PageStmt } from './Stmt'
+import {
+  ComponentStmt,
+  ExpressionStmt,
+  IStmt,
+  MemlStmt,
+  PageStmt,
+} from './Stmt'
 
 export class Parser {
   private tokens: Token[]
@@ -21,13 +28,13 @@ export class Parser {
   }
 
   /**
-   * page        → statement* EOF;
+   * page        = ('(' declaration ')')* EOF;
    */
   parse(): PageStmt {
     let stmts = []
 
     while (!this.isAtEnd()) {
-      stmts.push(this.statement())
+      stmts.push(this.declaration())
     }
 
     return new PageStmt(stmts)
@@ -37,36 +44,89 @@ export class Parser {
   // This is the parsers logic tree.
 
   /**
-   * statement   → memlStmt;
+   * declaration = compDecl
+   *             | statement;
+   */
+  private declaration(): IStmt {
+    try {
+      if (this.doubleCheck(TokenType.COMPONENT)) return this.componentStmt()
+
+      return this.statement()
+    } catch (err) {
+      this.synchronize()
+      return null
+    }
+  }
+
+  /**
+   * statement   = memlStmt
+   *             | expression;
    */
   private statement(): IStmt {
-    const expr = this.memlStmt()
+    // Check if the next token is an identifier or a tag
+    if (this.doubleCheck(TokenType.IDENTIFIER)) {
+      // Then this is a meml tag and should be passed through
+      return this.memlStmt()
+    }
 
-    return expr
+    // Otherwise it is an expression
+    return new ExpressionStmt(this.expression())
   }
 
   // --------------------------
   // MEML Statements
 
+  private componentStmt(): IStmt {
+    this.consume(
+      TokenType.LEFT_PAREN,
+      'Expected opening bracket before component'
+    )
+    this.advance()
+
+    // This will be the name of the component
+    const identifier = this.advance()
+    let props = new DestructureExpr([])
+
+    // Consume the brackets before the props
+    this.consume(TokenType.LEFT_PAREN, 'Expected opening bracket before props')
+    if (this.check(TokenType.IDENTIFIER)) {
+      // Collect the props as a destructure
+      props = this.destructure()
+    }
+    // Consume the parenthesize after the destructure
+    this.consume(TokenType.RIGHT_PAREN, 'Expected closing bracket after props')
+
+    // Collect the meml statement
+    const memlStmt = this.memlStmt()
+
+    // Consume the ending parenthesis
+    this.consume(
+      TokenType.RIGHT_PAREN,
+      'Expected closing bracket after component'
+    )
+
+    return new ComponentStmt(identifier, props, memlStmt)
+  }
+
   /**
-   * memlStmt    → '(' IDENTIFIER memlProp* exprOrMeml* ')';
+   * memlStmt    = IDENTIFIER memlProp* statement*;
    */
   private memlStmt(): IStmt {
     this.consume(
       TokenType.LEFT_PAREN,
-      'Expected opening brackets of a meml statement.'
+      'Expected opening bracket meml statement'
     )
 
     const identifier = this.advance()
-    let props = []
-    let children = []
+    const props = []
+    const children = []
 
     while (this.match(TokenType.IDENTIFIER)) {
       props.push(this.memlProps())
     }
 
     while (!this.match(TokenType.RIGHT_PAREN)) {
-      children.push(this.exprOrMeml())
+      children.push(this.statement())
     }
 
     return new MemlStmt(identifier, props, children)
@@ -88,28 +148,10 @@ export class Parser {
   }
 
   // --------------------------
-  // Expression statements
-
-  /**
-   * exprOrMeml  → memlStmt
-   *             | expression;
-   */
-  private exprOrMeml(): IStmt {
-    if (this.peek().type === TokenType.LEFT_PAREN) {
-      return this.memlStmt()
-    }
-
-    return new ExpressionStmt(this.expression())
-  }
-
-  // --------------------------
   // Expression logic
 
   /**
-   * expression  → literal
-   *             | unary
-   *             | binary
-   *             | grouping;
+   * expression  = equality;
    */
   private expression(): IExpr {
     return this.equality()
@@ -119,7 +161,7 @@ export class Parser {
    * This is part of a custom implementation of the binary operation. This function
    * is tasked with equality
    *
-   * binary      → expression operator expression;
+   * equality    = comparison (('!=' | '==') comparison)*;
    */
   private equality(): IExpr {
     let expr = this.comparison()
@@ -137,7 +179,7 @@ export class Parser {
    * This is part of a custom implementation of the binary operation. This function
    * is tasked with comparison
    *
-   * binary      → expression operator expression;
+   * comparison  = term (('>' | '>=' | '<' | '<=') term)*;
    */
   private comparison(): IExpr {
     let expr = this.term()
@@ -162,7 +204,7 @@ export class Parser {
    * This is part of a custom implementation of the binary operation. This function
    * is tasked with terms
    *
-   * binary      → expression operator expression;
+   * term        = factor (('-' | '+') factor)*;
    */
   private term(): IExpr {
     let expr = this.factor()
@@ -180,7 +222,7 @@ export class Parser {
    * This is part of a custom implementation of the binary operation. This function
    * is tasked with factors
    *
-   * binary      → expression operator expression;
+   * factor      = unary (('/' | '*') unary)*;
    */
   private factor(): IExpr {
     let expr = this.unary()
@@ -195,7 +237,8 @@ export class Parser {
   }
 
   /**
-   * unary       → ('-' | '!') expression;
+   * unary       = ('!' | '-') unary
+   *             | primary;
    */
   private unary(): IExpr {
     if (this.match(TokenType.BANG, TokenType.MINUS)) {
@@ -204,17 +247,14 @@ export class Parser {
       return new UnaryExpr(operator, right)
     }
 
-    return this.literal()
+    return this.primary()
   }
 
   /**
-   * literal     → NUMBER
-   *             | STRING
-   *             | 'true'
-   *             | 'false'
-   *             | 'null';
+   * primary     = NUMBER | STRING | 'true' | 'false' | 'null'
+   *             | '(' expression ')';
    */
-  private literal(): IExpr {
+  private primary(): IExpr {
     if (this.match(TokenType.FALSE)) return new LiteralExpr(false)
     if (this.match(TokenType.TRUE)) return new LiteralExpr(true)
     if (this.match(TokenType.NULL)) return new LiteralExpr(null)
@@ -223,26 +263,34 @@ export class Parser {
       return new LiteralExpr(this.previous().literal)
     }
 
-    return this.grouping()
-  }
-
-  private grouping(): IExpr {
     if (this.match(TokenType.LEFT_PAREN)) {
       const expr = this.expression()
       this.consume(TokenType.RIGHT_PAREN, `Expect ')' after expression.`)
       return new GroupingExpr(expr)
     }
 
-    // if (this.lastOnError && this.lastOnError == this.current) {
-    //   MemlC.errorAtToken(
-    //     this.advance(),
-    //     'Recursion has occurred, skipping token.'
-    //   )
-    // } else {
-    //   this.lastOnError = this.current
-    // }
-
     this.error(this.peek(), 'Expected expression.')
+  }
+
+  // --------------------------
+  // Other datatypes
+
+  /**
+   * destructure = IDENTIFIER ( ',' IDENTIFIER )*;
+   */
+  private destructure(): DestructureExpr {
+    // Consume the first identifier
+    const identifiers = [this.advance()]
+
+    // If there is a comma, there will be another identifier
+    while (this.peek().type === TokenType.COMMA) {
+      // Consume the comma token
+      this.advance()
+      // Consume the next identifier and add it to the array
+      identifiers.push(this.advance())
+    }
+
+    return new DestructureExpr(identifiers)
   }
 
   // ===========================================================================
@@ -290,6 +338,11 @@ export class Parser {
     return this.peek().type === type
   }
 
+  private doubleCheck(type: TokenType): boolean {
+    if (this.isAtEnd()) return false
+    return this.doublePeek().type === type
+  }
+
   private advance(): Token {
     if (!this.isAtEnd()) this.current++
     return this.previous()
@@ -301,6 +354,10 @@ export class Parser {
 
   private peek(): Token {
     return this.tokens[this.current]
+  }
+
+  private doublePeek(): Token {
+    return this.tokens[this.current + 1]
   }
 
   private previous(): Token {

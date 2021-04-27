@@ -44,6 +44,9 @@ export class Scanner {
       case '*':
         this.addToken(TokenType.STAR)
         break
+      case ',':
+        this.addToken(TokenType.COMMA)
+        break
 
       case '!':
         this.addToken(this.match('=') ? TokenType.BANG_EQUAL : TokenType.BANG)
@@ -117,6 +120,10 @@ export class Scanner {
     let type = TokenType.IDENTIFIER
 
     switch (text) {
+      case 'component':
+        type = TokenType.COMPONENT
+        break
+
       case 'false':
         type = TokenType.FALSE
         break

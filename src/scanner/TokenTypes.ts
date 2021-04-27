@@ -6,6 +6,7 @@ export enum TokenType {
   PLUS = 'plus',
   SLASH = 'slash',
   STAR = 'star',
+  COMMA = 'comma',
 
   // One or two character tokens.
   BANG = 'bang',
@@ -25,6 +26,9 @@ export enum TokenType {
   FALSE = 'false',
   TRUE = 'true',
   NULL = 'null',
+
+  // Keywords
+  COMPONENT = 'component',
 
   EOF = 'eof',
 }

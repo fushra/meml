@@ -1,7 +1,8 @@
 import { Token } from '../scanner/Token'
-import { IExpr, MemlPropertiesExpr } from './Expr'
+import { IExpr, MemlPropertiesExpr, DestructureExpr } from './Expr'
 
 export interface StmtVisitor<R> {
+  visitComponentStmt: (stmt: ComponentStmt) => R
   visitMemlStmt: (stmt: MemlStmt) => R
   visitExpressionStmt: (stmt: ExpressionStmt) => R
   visitPageStmt: (stmt: PageStmt) => R
@@ -9,6 +10,23 @@ export interface StmtVisitor<R> {
 
 export interface IStmt {
   accept: <R>(visitor: StmtVisitor<R>) => R
+}
+
+export class ComponentStmt implements IStmt {
+  tagName: Token
+  props: DestructureExpr
+  meml: IStmt
+
+  constructor(tagName: Token, props: DestructureExpr, meml: IStmt) {
+    this.tagName = tagName
+    this.props = props
+    this.meml = meml
+  }
+
+  // Visitor pattern
+  accept<R>(visitor: StmtVisitor<R>): R {
+    return visitor.visitComponentStmt(this)
+  }
 }
 
 export class MemlStmt implements IStmt {

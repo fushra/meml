@@ -25,10 +25,13 @@ export class MemlC {
   }
 
   translate(source: string) {
+    console.log('Scanning...')
     const scanner = new Scanner(source)
     const tokens = scanner.scanTokens()
+    console.log('Parsing...')
     const parser = new Parser(tokens)
     const expression = parser.parse()
+    console.log('Translating...')
     const converter = new Web()
 
     // Bail if there was a syntax error
