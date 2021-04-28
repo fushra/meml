@@ -4,6 +4,7 @@ import {
   DestructureExpr,
   ExprVisitor,
   GroupingExpr,
+  IdentifierExpr,
   IExpr,
   LiteralExpr,
   MemlPropertiesExpr,
@@ -20,15 +21,18 @@ import {
 import { Environment } from './shared/Environment'
 import { ComponentDefinition } from './shared/ComponentDefinition'
 import { Tags } from '../scanner/Tags'
+import { MemlC } from '../core'
 
 export class Web
   implements
     ExprVisitor<string | number | boolean | null>,
     StmtVisitor<string> {
-  private environment = new Environment()
+  environment = new Environment()
 
   // TODO: Implement these
   visitDestructureExpr: (expr: DestructureExpr) => string | number | boolean
+
+  // Start converting the file
   convert(token: PageStmt): string {
     return this.visitPageStmt(token)
   }
@@ -52,8 +56,49 @@ export class Web
       // retrieve it from the environment
       const tag = this.environment.get(stmt.tagName) as ComponentDefinition
 
+      // Now the environment that will be used to evaluate each component needs to be created
+      // First, save the old environment so it can be restored once we are done
+      const previousEnv = this.environment
+
+      // Next, lets create a new environment specific for this component
+      const newEnv = new Environment(this.environment)
+
+      // Now for prop checking time. We will loop through all of the props that
+      // have been specified and try to add them. If they haven't been added
+      // we throw an error
+      tag.propsList().forEach((token) => {
+        const identifier = token.literal
+
+        let value
+
+        // Search for the identifier in the props
+        stmt.props.forEach((prop) => {
+          if (prop.name.literal === identifier) {
+            value = this.evaluate(prop.value)
+          }
+        })
+
+        if (!value) {
+          // If we can't find the value error
+          MemlC.errorAtToken(stmt.tagName, `Missing tag prop '${identifier}'`)
+          return
+        }
+
+        // Since it does exist, we can define it in the environment
+        newEnv.define(identifier, value)
+      })
+
+      // Set the new environment to be the one we just generated
+      this.environment = newEnv
+
+      // Construct the tag
+      const constructed = tag.construct(this)
+
+      // Restore the previous environment
+      this.environment = previousEnv
+
       // Return the constructed tag with all of the props
-      return tag.construct(stmt.props, this)
+      return constructed
     }
   }
 
@@ -81,6 +126,11 @@ export class Web
 
   // ===========================================================================
   // Expr visitor pattern implementations
+
+  // visitIdentifierExpr: (expr: IdentifierExpr) => string | number | boolean
+  visitIdentifierExpr(expr: IdentifierExpr): string | number | boolean {
+    return this.environment.get(expr.token)
+  }
 
   visitMemlPropertiesExpr(expr: MemlPropertiesExpr): string {
     return `${expr.name}=${this.evaluate(expr.value)}`

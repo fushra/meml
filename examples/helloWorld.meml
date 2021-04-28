@@ -1,9 +1,8 @@
 // Lets define a sample component
-(component helloComponent ()
-  (p "Hello from inside of a component!")
+(component helloComponent (name)
+  (p "Hello " name ". This comes from a component!")
 )
-
-
+// The rest of the file
 (
   head
     (title "Hello World!")
@@ -14,5 +13,5 @@
     (p "Basic website made with MEML!")
     (p "1 + 2 = " 1 + 2)
     (p "BODMAS: " 5 - 5 * 5 + 5)
-    (helloComponent)
+    (helloComponent name="TrickyPR")
 )

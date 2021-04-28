@@ -7,6 +7,7 @@ export interface ExprVisitor<R> {
   visitUnaryExpr: (expr: UnaryExpr) => R
   visitMemlPropertiesExpr: (expr: MemlPropertiesExpr) => R
   visitDestructureExpr: (expr: DestructureExpr) => R
+  visitIdentifierExpr: (expr: IdentifierExpr) => R
 }
 
 export interface IExpr {
@@ -96,5 +97,18 @@ export class DestructureExpr implements IExpr {
   // Visitor pattern
   accept<R>(visitor: ExprVisitor<R>): R {
     return visitor.visitDestructureExpr(this)
+  }
+}
+
+export class IdentifierExpr implements IExpr {
+  token: Token
+
+  constructor(token: Token) {
+    this.token = token
+  }
+
+  // Visitor pattern
+  accept<R>(visitor: ExprVisitor<R>): R {
+    return visitor.visitIdentifierExpr(this)
   }
 }

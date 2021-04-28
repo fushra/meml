@@ -4,6 +4,7 @@ import {
   BinaryExpr,
   DestructureExpr,
   GroupingExpr,
+  IdentifierExpr,
   IExpr,
   LiteralExpr,
   MemlPropertiesExpr,
@@ -64,7 +65,10 @@ export class Parser {
    */
   private statement(): IStmt {
     // Check if the next token is an identifier or a tag
-    if (this.doubleCheck(TokenType.IDENTIFIER)) {
+    if (
+      this.doubleCheck(TokenType.IDENTIFIER) &&
+      this.check(TokenType.LEFT_PAREN)
+    ) {
       // Then this is a meml tag and should be passed through
       return this.memlStmt()
     }
@@ -137,7 +141,7 @@ export class Parser {
    *             | IDENTIFIER '=' expression;
    */
   private memlProps(): MemlPropertiesExpr {
-    const identifier = this.advance()
+    const identifier = this.previous()
     let expression: IExpr = new LiteralExpr('')
 
     if (this.match(TokenType.EQUAL)) {
@@ -268,6 +272,9 @@ export class Parser {
       this.consume(TokenType.RIGHT_PAREN, `Expect ')' after expression.`)
       return new GroupingExpr(expr)
     }
+
+    if (this.match(TokenType.IDENTIFIER))
+      return new IdentifierExpr(this.previous())
 
     this.error(this.peek(), 'Expected expression.')
   }

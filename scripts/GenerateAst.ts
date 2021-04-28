@@ -72,6 +72,7 @@ defineAst(outDir, 'Expr', {
   Unary: ['operator: Token', 'right: IExpr'],
   MemlProperties: ['name: Token', 'value: IExpr'],
   Destructure: ['items: Token[]'],
+  Identifier: ['token: Token'],
 })
 
 defineAst(

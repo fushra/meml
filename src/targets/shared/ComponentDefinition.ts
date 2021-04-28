@@ -1,3 +1,4 @@
+import { Token } from '../../scanner/Token'
 import {
   DestructureExpr,
   ExprVisitor,
@@ -16,10 +17,11 @@ export class ComponentDefinition {
     this.name = name
   }
 
-  construct(
-    props: MemlPropertiesExpr[],
-    visitor: ExprVisitor<any> & StmtVisitor<any>
-  ): string {
+  propsList(): Token[] {
+    return this.props.items
+  }
+
+  construct(visitor: ExprVisitor<any> & StmtVisitor<any>): string {
     return `<!-- Start of meml component: ${
       this.name
     } -->${visitor.visitMemlStmt(
