@@ -13,7 +13,9 @@ import {
 import { MemlC } from '../core'
 import {
   ComponentStmt,
+  ExportStmt,
   ExpressionStmt,
+  ImportStmt,
   IStmt,
   MemlStmt,
   PageStmt,
@@ -22,7 +24,6 @@ import {
 export class Parser {
   private tokens: Token[]
   private current: number = 0
-  private lastOnError: number
 
   constructor(tokens: Token[]) {
     this.tokens = tokens
@@ -51,6 +52,7 @@ export class Parser {
   private declaration(): IStmt {
     try {
       if (this.doubleCheck(TokenType.COMPONENT)) return this.componentStmt()
+      if (this.doubleCheck(TokenType.EXPORT)) return this.exportDecl()
 
       return this.statement()
     } catch (err) {
@@ -72,6 +74,8 @@ export class Parser {
       // Then this is a meml tag and should be passed through
       return this.memlStmt()
     }
+
+    if (this.doubleCheck(TokenType.IMPORT)) return this.importStmt()
 
     // Otherwise it is an expression
     return new ExpressionStmt(this.expression())
@@ -110,6 +114,75 @@ export class Parser {
     )
 
     return new ComponentStmt(identifier, props, memlStmt)
+  }
+
+  /**
+   * exportDecl  = '(' 'export' '(' destructure ')' ')';
+   */
+  private exportDecl(): IStmt {
+    // Consume a bunch of the initial structure that we don't care about
+    this.consume(TokenType.LEFT_PAREN, 'Expected opening bracket before export')
+    this.advance()
+
+    // Consume the surrounding brackets of the export identifiers
+    this.consume(
+      TokenType.LEFT_PAREN,
+      'Expected opening bracket before the identifiers to be exported'
+    )
+
+    // Grab all of the exports, layed out in a destructure
+    const exports = this.destructure()
+
+    // Consume the closing brackets
+    this.consume(
+      TokenType.RIGHT_PAREN,
+      'Expected closing bracket after the identifiers to be exported'
+    )
+    this.consume(TokenType.RIGHT_PAREN, 'Expected closing bracket after export')
+
+    return new ExportStmt(exports)
+  }
+
+  /**
+   * importStmt  = '(' 'import' ((('(' destructure ')') | 'everything') 'from')? STRING ')'
+   */
+  private importStmt(): IStmt {
+    // Consume a bunch of the initial structure that we don't care about
+    this.consume(TokenType.LEFT_PAREN, 'Expected opening bracket before import')
+    this.advance()
+
+    let imports: DestructureExpr | null | 'everything' = null
+    let file: string
+
+    // If there is a string here, we are just importing a file, so we only have a path
+    if (this.check(TokenType.STRING)) {
+      file = this.advance().literal
+    } else {
+      // Otherwise this is a full import statement, so we are going to have to parse it properly
+      // We need to check if we are importing everything. If we are, there will be an identifier
+      // that has the contents of 'everything'
+      if (this.check(TokenType.IDENTIFIER)) {
+        if (this.peek().literal === 'everything') {
+          imports = 'everything'
+          this.advance()
+        } else {
+          const token = this.advance()
+          MemlC.errorAtToken(
+            token,
+            `Unexpected token '${token.literal}'. Try importing using a destructure ( '(import1, import2)' ) or adding the key 'everything'`
+          )
+        }
+      } else {
+        // Otherwise, we have a destructure as an import
+        this.consume(TokenType.LEFT_PAREN, 'Expected ( before destructure')
+
+        imports = this.destructure()
+
+        this.consume(TokenType.RIGHT_PAREN, 'Expected ( after destructure)')
+      }
+    }
+
+    return new ImportStmt(file, imports)
   }
 
   /**

@@ -12,7 +12,9 @@ import {
 } from '../parser/Expr'
 import {
   ComponentStmt,
+  ExportStmt,
   ExpressionStmt,
+  ImportStmt,
   IStmt,
   MemlStmt,
   PageStmt,
@@ -27,6 +29,8 @@ export class Web
   implements
     ExprVisitor<string | number | boolean | null>,
     StmtVisitor<string> {
+  visitExportStmt: (stmt: ExportStmt) => string
+  visitImportStmt: (stmt: ImportStmt) => string
   environment = new Environment()
 
   // TODO: Implement these

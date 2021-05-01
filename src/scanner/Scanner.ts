@@ -124,6 +124,14 @@ export class Scanner {
         type = TokenType.COMPONENT
         break
 
+      case 'import':
+        type = TokenType.IMPORT
+        break
+
+      case 'export':
+        type = TokenType.EXPORT
+        break
+
       case 'false':
         type = TokenType.FALSE
         break

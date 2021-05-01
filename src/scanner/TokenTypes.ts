@@ -29,6 +29,8 @@ export enum TokenType {
 
   // Keywords
   COMPONENT = 'component',
+  EXPORT = 'export',
+  IMPORT = 'import',
 
   EOF = 'eof',
 }

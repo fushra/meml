@@ -80,6 +80,8 @@ defineAst(
   'Stmt',
   {
     Component: ['tagName: Token', 'props: DestructureExpr', 'meml: IStmt'],
+    Export: ['exports: DestructureExpr'],
+    Import: ['file: string', 'imports: DestructureExpr | null | "everything"'],
     Meml: [
       'tagName: Token',
       'props: MemlPropertiesExpr[]',
