@@ -1,3 +1,6 @@
+import { readFileSync } from 'fs'
+import { dirname, join } from 'path'
+
 import { TokenType } from '../scanner/TokenTypes'
 import {
   BinaryExpr,
@@ -29,9 +32,14 @@ export class Web
   implements
     ExprVisitor<string | number | boolean | null>,
     StmtVisitor<string> {
-  visitExportStmt: (stmt: ExportStmt) => string
-  visitImportStmt: (stmt: ImportStmt) => string
   environment = new Environment()
+  exports = new Map<string, any>()
+
+  path: string
+
+  constructor(path: string) {
+    this.path = path
+  }
 
   // TODO: Implement these
   visitDestructureExpr: (expr: DestructureExpr) => string | number | boolean
@@ -39,6 +47,59 @@ export class Web
   // Start converting the file
   convert(token: PageStmt): string {
     return this.visitPageStmt(token)
+  }
+
+  // ===========================================================================
+  // Import and export statements
+  visitExportStmt(stmt: ExportStmt): string {
+    if (exports.size !== 0 && typeof exports.size !== 'undefined')
+      MemlC.linterAtToken(
+        stmt.exportToken,
+        'There should only be one export statement per meml file'
+      )
+
+    stmt.exports.items.forEach((exportedItem) => {
+      this.exports.set(exportedItem.literal, this.environment.get(exportedItem))
+    })
+
+    return ''
+  }
+
+  visitImportStmt(stmt: ImportStmt): string {
+    const filePath = join(dirname(this.path), stmt.file)
+
+    if (stmt.imports !== null) {
+      // Import a meml file
+      const c = new MemlC()
+      const fileParsed = c.parseFile(filePath)
+
+      // Execute it to get it's exports
+      const context = new Web(filePath)
+      context.convert(fileParsed)
+
+      if (stmt.imports === 'everything') {
+        context.exports.forEach((value, key) =>
+          this.environment.define(value, key)
+        )
+      } else {
+        stmt.imports.items.forEach((identifier) => {
+          if (!context.exports.has(identifier.literal))
+            MemlC.errorAtToken(
+              identifier,
+              `The file '${stmt.file}' doesn't export '${identifier.literal}'`
+            )
+
+          this.environment.define(
+            identifier.literal,
+            context.exports.get(identifier.literal)
+          )
+        })
+      }
+    } else {
+      return `<style>${readFileSync(filePath)}</style>`
+    }
+
+    return ''
   }
 
   // ===========================================================================

@@ -31,6 +31,7 @@ export enum TokenType {
   COMPONENT = 'component',
   EXPORT = 'export',
   IMPORT = 'import',
+  FROM = 'from',
 
   EOF = 'eof',
 }

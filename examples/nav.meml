@@ -1,0 +1,3 @@
+(component customNav () (div "hello world from the nav"))
+
+(export (customNav))

@@ -122,7 +122,7 @@ export class Parser {
   private exportDecl(): IStmt {
     // Consume a bunch of the initial structure that we don't care about
     this.consume(TokenType.LEFT_PAREN, 'Expected opening bracket before export')
-    this.advance()
+    const token = this.advance()
 
     // Consume the surrounding brackets of the export identifiers
     this.consume(
@@ -140,7 +140,7 @@ export class Parser {
     )
     this.consume(TokenType.RIGHT_PAREN, 'Expected closing bracket after export')
 
-    return new ExportStmt(exports)
+    return new ExportStmt(exports, token)
   }
 
   /**
@@ -180,7 +180,12 @@ export class Parser {
 
         this.consume(TokenType.RIGHT_PAREN, 'Expected ( after destructure)')
       }
+
+      this.consume(TokenType.FROM, `Expected 'from' after destructure`)
+      file = this.advance().literal
     }
+
+    this.consume(TokenType.RIGHT_PAREN, 'Expected opening bracket after import')
 
     return new ImportStmt(file, imports)
   }

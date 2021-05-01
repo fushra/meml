@@ -1,3 +1,5 @@
+(import (customNav) from "./nav.meml")
+
 // Lets define a sample component
 (component helloComponent (name)
   (p "Hello " name ". This comes from a component!")
@@ -10,8 +12,11 @@
 // This is a comment
 (
   body
+    (customNav)
     (p "Basic website made with MEML!")
     (p "1 + 2 = " 1 + 2)
     (p "BODMAS: " 5 - 5 * 5 + 5)
     (helloComponent name="TrickyPR")
 )
+
+(export (helloComponent))

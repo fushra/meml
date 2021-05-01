@@ -22,7 +22,7 @@ const cmd = command({
 
     const c = new MemlC()
 
-    writeFileSync(out, c.translate(meml))
+    writeFileSync(out, c.translate(meml, file))
     console.timeEnd('Compile time')
   },
 })

@@ -33,9 +33,11 @@ export class ComponentStmt implements IStmt {
 
 export class ExportStmt implements IStmt {
   exports: DestructureExpr
+  exportToken: Token
 
-  constructor(exports: DestructureExpr) {
+  constructor(exports: DestructureExpr, exportToken: Token) {
     this.exports = exports
+    this.exportToken = exportToken
   }
 
   // Visitor pattern

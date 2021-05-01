@@ -21,7 +21,7 @@ export class Scanner {
       this.scanToken()
     }
 
-    this.tokens.push(new Token(TokenType.EOF, '', null, this.line))
+    this.tokens.push(new Token(TokenType.EOF, '', null, this.line, ''))
     return this.tokens
   }
 
@@ -128,6 +128,10 @@ export class Scanner {
         type = TokenType.IMPORT
         break
 
+      case 'from':
+        type = TokenType.FROM
+        break
+
       case 'export':
         type = TokenType.EXPORT
         break
@@ -173,7 +177,7 @@ export class Scanner {
   }
 
   private string() {
-    while (this.peek() != '"' && !this.isAtEnd()) {
+    while (this.peek() != '"' && this.peek() != "'" && !this.isAtEnd()) {
       if (this.peek() == '\n') this.line++
       this.advance()
     }
@@ -218,8 +222,10 @@ export class Scanner {
   }
 
   private addToken(type: TokenType, literal: any = null) {
-    const text = this.source.substr(this.start, this.current)
-    this.tokens.push(new Token(type, text, literal, this.line))
+    const text = this.source.substring(this.start, this.current)
+    const context = this.source.substring(this.start - 40, this.current + 40)
+
+    this.tokens.push(new Token(type, text, literal, this.line, context))
   }
 
   private isAtEnd(): boolean {
