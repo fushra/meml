@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@types/node": "^14.14.36",
-    "cmd-ts": "^0.6.8",
+    "cmd-ts": "^0.6.9",
     "prettier": "^2.2.1",
     "testyts": "^1.1.2",
     "ts-node": "^9.1.1",
