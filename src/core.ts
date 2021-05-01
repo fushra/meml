@@ -3,7 +3,9 @@
 // Maybe one day I will rewrite this in rust or maybe even c to make it work natively
 // but at the moment I don't really care
 
-import { readFileSync, writeFileSync } from 'fs'
+import { readFileSync } from 'fs'
+import { grey, red, yellow } from 'chalk'
+
 import { Web } from './targets/Web'
 import { Parser } from './parser/Parser'
 import { Scanner } from './scanner/Scanner'
@@ -15,24 +17,33 @@ export class MemlC {
 
   runFile(path: string): boolean {
     const fileContents = readFileSync(path).toString()
-    this.translate(fileContents)
+    this.translate(fileContents, path)
 
     return MemlC.hadError
   }
 
   run(source: string) {
-    return this.translate(source)
+    return this.translate(source, './runit.meml')
   }
 
-  translate(source: string) {
-    console.log('Scanning...')
+  parseFile(path: string) {
+    const fileContents = readFileSync(path).toString()
+    return this.parse(fileContents)
+  }
+
+  parse(source: string) {
     const scanner = new Scanner(source)
     const tokens = scanner.scanTokens()
-    console.log('Parsing...')
+    const parser = new Parser(tokens)
+    return parser.parse()
+  }
+
+  translate(source: string, path: string) {
+    const scanner = new Scanner(source)
+    const tokens = scanner.scanTokens()
     const parser = new Parser(tokens)
     const expression = parser.parse()
-    console.log('Translating...')
-    const converter = new Web()
+    const converter = new Web(path)
 
     // Bail if there was a syntax error
     if (MemlC.hadError) return
@@ -48,7 +59,7 @@ export class MemlC {
     if (token.type === TokenType.EOF) {
       this.report(token.line, ' at end', message)
     } else {
-      this.report(token.line, ` at '${token.lexeme}'`, message)
+      this.report(token.line, ` at '${token.lexeme}'`, message, token.context)
     }
   }
 
@@ -56,8 +67,50 @@ export class MemlC {
     this.report(line, '', message)
   }
 
-  private static report(line: number, where: string, message: string) {
-    console.error(`[line ${line}] Error${where}: ${message}`)
+  static linterAtToken(token: Token, message: string): void {
+    this.warn(
+      token.line,
+      'Linter',
+      ` at '${token.lexeme}'`,
+      message,
+      token.context
+    )
+  }
+
+  private static report(
+    line: number,
+    where: string,
+    message: string,
+    context: string = ''
+  ): void {
+    console.error(
+      red(
+        `[line ${line}] Error${where}: ${message}\n${this.formatContext(
+          context
+        )}`
+      )
+    )
     this.hadError = true
+    throw new Error()
+  }
+
+  private static warn(
+    line: number,
+    type: 'Linter',
+    where: string,
+    message: string,
+    context: string = ''
+  ): void {
+    console.warn(
+      yellow(
+        `[line ${line}] ${type} warning${where}: ${message} \n${this.formatContext(
+          context
+        )}`
+      )
+    )
+  }
+
+  private static formatContext(context: string): string {
+    return grey(`    ┃${context.replace(/\n/g, '\n    ┃')}`)
   }
 }
