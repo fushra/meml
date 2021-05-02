@@ -6,7 +6,7 @@
   "bin": {"meml":"./dist/app.js"},
   "repository": "https://github.com/fushra/meml.git",
   "author": "TrickyPR <trickypr@icloud.com>",
-  "license": "MIT",
+  "license": "GPL-v3-only",
   "private": true,
   "scripts": {
     "test": "testyts",
