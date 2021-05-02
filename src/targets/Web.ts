@@ -108,7 +108,7 @@ export class Web
   visitMemlStmt(stmt: MemlStmt): string {
     // Check if this is a default tag. If it is, then we should pass it through to
     // html
-    if (typeof Tags[stmt.tagName.literal] !== 'undefined') {
+    if (Tags.has(stmt.tagName.literal)) {
       return `<${stmt.tagName.literal}${
         stmt.props.length !== 0
           ? `${stmt.props.map((prop) => this.evaluate(prop)).join(' ')} `
@@ -178,6 +178,13 @@ export class Web
   }
 
   visitComponentStmt(stmt: ComponentStmt): string {
+    if (Tags.has(stmt.tagName.literal)) {
+      MemlC.linterAtToken(
+        stmt.tagName,
+        `The tag name ${stmt.tagName.literal} is a html tag. The meml compiler will default to the html tag.`
+      )
+    }
+
     // Add the component tot the environment
     this.environment.define(
       stmt.tagName.literal,
