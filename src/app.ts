@@ -1,6 +1,9 @@
-import { command, run, string, array, positional, multioption } from 'cmd-ts'
+import { command, run, string, array, option, multioption } from 'cmd-ts'
 import { readFileSync, writeFileSync } from 'fs'
+import { join, resolve } from 'path'
 import { MemlC } from './core'
+
+const currentDir = process.cwd()
 
 const cmd = command({
   name: 'memlc',
@@ -10,17 +13,44 @@ const cmd = command({
     file: multioption({
       type: array(string),
       long: 'file',
+      short: 'f',
       description: 'The path to your meml file',
+    }),
+    src: option({
+      type: {
+        ...string,
+        defaultValue: () => './',
+        defaultValueIsSerializable: true,
+      },
+      long: 'src',
+      short: 's',
+      description: 'A root path that the compiler will use rather',
+    }),
+    out: option({
+      type: {
+        ...string,
+        defaultValue: () => './',
+        defaultValueIsSerializable: true,
+      },
+      long: 'out',
+      short: 'o',
+      description:
+        'Where the compiled outputs will be written. Best used with --src',
     }),
   },
   handler: (args) => {
     console.time('Compile time')
 
+    const src = resolve(currentDir, args.src)
+    const out = resolve(currentDir, args.out)
+
     args.file.forEach((file) => {
-      const out = file.replace('.meml', '.html')
-      const meml = readFileSync(file).toString()
+      const realPath = join(src, file)
+      const realOut = join(out, file.replace('.meml', '.html'))
+
+      const meml = readFileSync(realPath).toString()
       const c = new MemlC()
-      writeFileSync(out, c.translate(meml, file))
+      writeFileSync(realOut, c.translate(meml, realPath))
     })
 
     if (args.file.length == 0) {
