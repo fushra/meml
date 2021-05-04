@@ -81,7 +81,7 @@ export class MemlC {
     line: number,
     where: string,
     message: string,
-    context: string = ''
+    context = ''
   ): void {
     console.error(
       red(
@@ -99,7 +99,7 @@ export class MemlC {
     type: 'Linter',
     where: string,
     message: string,
-    context: string = ''
+    context = ''
   ): void {
     console.warn(
       yellow(

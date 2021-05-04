@@ -23,7 +23,7 @@ import {
 
 export class Parser {
   private tokens: Token[]
-  private current: number = 0
+  private current = 0
 
   constructor(tokens: Token[]) {
     this.tokens = tokens
