@@ -25,7 +25,7 @@ function defineAst(
   outDir: string,
   baseName: string,
   types: any,
-  imports: string = ''
+  imports = ''
 ) {
   const path = `${outDir}/${baseName}.ts`
 
