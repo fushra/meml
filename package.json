@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A basic meml interpreter written and tested in typescript",
   "main": "./dist/core.js",
-  "bin": {"meml":"./dist/app.js"},
+  "bin": {"memlc":"./dist/app.js"},
   "repository": "https://github.com/fushra/meml.git",
   "author": "TrickyPR <trickypr@icloud.com>",
   "license": "GPL-v3-only",
@@ -11,17 +11,19 @@
   "scripts": {
     "test": "testyts",
     "ast": "ts-node ./scripts/GenerateAst.ts && prettier . --write",
-    "app": "ts-node ./src/app.ts"
+    "app": "ts-node ./src/app.ts",
+    "build": "tsc && echo '#!/usr/bin/env node\n' >  tmpfile && cat ./dist/app.js >> tmpfile && mv tmpfile ./dist/app.js",
+    "postinstall": "tsc && echo '#!/usr/bin/env node\n' >  tmpfile && cat ./dist/app.js >> tmpfile && mv tmpfile ./dist/app.js"
   },
   "devDependencies": {
-    "@types/node": "^14.14.36",
-    "cmd-ts": "^0.6.9",
     "prettier": "^2.2.1",
     "testyts": "^1.1.2",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.2.3"
+    "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "chalk": "^4.1.1"
+    "cmd-ts": "^0.6.9",
+    "@types/node": "^14.14.36",
+    "chalk": "^4.1.1",
+    "typescript": "^4.2.3"
   }
 }
