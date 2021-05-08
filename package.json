@@ -12,9 +12,7 @@
     "test": "testyts",
     "ast": "ts-node ./scripts/GenerateAst.ts && prettier . --write",
     "app": "ts-node ./src/app.ts",
-    "build": "tsc && echo '#!/usr/bin/env node\n' >  tmpfile && cat ./dist/app.js >> tmpfile && mv tmpfile ./dist/app.js",
-    "postinstall": "tsc && echo '#!/usr/bin/env node\n' >  tmpfile && cat ./dist/app.js >> tmpfile && mv tmpfile ./dist/app.js && find node_modules"
-  },
+    "build": "tsc && echo '#!/usr/bin/env node\n' >  tmpfile && cat ./dist/app.js >> tmpfile && mv tmpfile ./dist/app.js"  },
   "devDependencies": {
     "prettier": "^2.2.1",
     "ts-node": "^9.1.1"
