@@ -16,6 +16,7 @@
     (p "Basic website made with MEML!")
     (p "1 + 2 = " 1 + 2)
     (p "BODMAS: " 5 - 5 * 5 + 5)
+    (p "This string contains \"Excaped character\"")
     (helloComponent name="TrickyPR")
 )
 

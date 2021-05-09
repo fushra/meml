@@ -177,8 +177,14 @@ export class Scanner {
   }
 
   private string() {
-    while (this.peek() != '"' && this.peek() != "'" && !this.isAtEnd()) {
+    const stringOpening = this.peekLast()
+
+    while (this.peek() != stringOpening && !this.isAtEnd()) {
       if (this.peek() == '\n') this.line++
+      if (this.peek() == '\\') {
+        // This character is an escaped character (like a quote) and thus should be ignored
+        this.advance() // Consume the escape
+      }
       this.advance()
     }
 
