@@ -5,13 +5,11 @@
   (p "Hello " name ". This comes from a component!")
 )
 // The rest of the file
-(
-  head
+(head
     (title "Hello World!")
 )
 // This is a comment
-(
-  body
+(body
     (nav)
     (p "Basic website made with MEML!")
     (p "1 + 2 = " 1 + 2)
