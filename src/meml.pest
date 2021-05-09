@@ -1,0 +1,79 @@
+// This is the entry point into the program (a single file).
+page = _{declaration*}
+
+// For declaring stuff like constants or components
+declaration = { GAP*~ (compDecl | exportDecl | importStmt | statement) ~GAP* }
+
+// This will contain all of the major logic, for the moment
+// it only accepts meml statements, but that will change once
+// scripting is being planned
+statement   = { (memlStmt | expression) }
+
+// This is how components should be defined. The MEML interpreter must
+// keep a log of all of the components defined and search through them
+// if it cannot find the correct tag as part of `memlStmt`. The destructure
+// here is for passing in props that will be used and the identifier
+// is the tag name.
+compDecl    = {open ~ "component" ~ IDENTIFIER ~ "(" ~ destructure ~ ")" ~ memlStmt ~ close}
+
+// This is how exports should be defined. Please limit this to one export
+// statement where possible. You may decide to implement support for multiple
+// but provide linter warnings of some kind just to keep meml code easier to read
+exportDecl  = { "(" ~ "export" ~ "(" ~ destructure ~ ")" ~ ")"}
+
+// Import statements should have a structure like this. You can either specify what you
+// want to import from specific exports or everything from a file. Additionally, for
+// css and js files, you can dump them into the current meml file with the command
+// (import "./file.(css|js)")
+importStmt  = { "(" ~GAP* ~ "import" ~ GAP* ~ ((("("  ~ destructure ~ ")") | "everything") ~ GAP* ~ "from")? ~ GAP* ~ STRING ~ ")"}
+
+// This is what a meml tag will look like. Note that there
+// can be as many expressions as is
+memlStmt    = { "(" ~ IDENTIFIER ~ memlProp* ~ statement* ~ ")" }
+
+// This is the layout for the properties of a meml tag. It
+// can either be a key-value pair or a key pair (for example
+// `disabled`)
+memlProp    = { GAP* ~ (IDENTIFIER | IDENTIFIER ~ "=" ~ expression) }
+
+
+expression  = { equality }
+
+// Check if something is equal
+equality    = { comparison ~ (("!=" | "==") ~ comparison)* }
+
+// Check how one value compares to anther
+comparison  = { term ~ ((">" | ">=" | "<" | "<=") ~ term)* }
+
+// Addition or subtraction
+term        = { factor ~ (("-" | "+") ~ factor)* }
+
+// Multiplication and division
+factor      = { unary ~ (("/" | "*") ~ unary)* }
+
+// Used to negate or invert a value
+unary       = { ("!" | "-") ~ unary
+            | primary }
+
+// Very basic stuff
+primary     = { NUMBER | STRING | "true" | "false" | "null"
+            | "(" ~ expression ~ ")" | identifier }
+
+// Identifier types are used specifically for variable declaration etc.
+identifier  = { IDENTIFIER }
+
+// When you need to pass parameters into a function or
+// component, you would use a destructure expression.
+// They only take in identifiers and WILL NOT take in
+// literals
+destructure = { GAP* ~ IDENTIFIER ~ ( GAP* ~ ","~GAP* ~ IDENTIFIER ~GAP*)*~GAP* }
+
+open = _{"("}
+close = _{")"}
+
+STRING = { ("\"" ~ STRING_CHAR* ~ "\"") | ("'" ~ STRING_CHAR* ~ "'")}
+IDENTIFIER = { ('a'..'z'|'A'..'Z') ~ CHARACTER* }
+STRING_CHAR = { CHARACTER | " " | "." | "/" }
+CHARACTER = { ASCII_ALPHANUMERIC }
+
+GAP = _{ NEWLINE | " " }
