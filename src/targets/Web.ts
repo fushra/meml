@@ -183,7 +183,7 @@ export class Web
     if (Tags.has(stmt.tagName.literal)) {
       MemlC.linterAtToken(
         stmt.tagName,
-        `The tag name ${stmt.tagName.literal} is a html tag. The meml compiler will default to the html tag.`
+        `The component '${stmt.tagName.literal}' shares a name with a html tag. Defaulting to html tag.`
       )
     }
 
