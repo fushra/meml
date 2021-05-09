@@ -32,9 +32,11 @@ export class Web
   implements
     ExprVisitor<string | number | boolean | null>,
     StmtVisitor<string> {
+  // Memory storage for SS execution
   environment = new Environment()
   exports = new Map<string, any>()
 
+  // The path to the file we are currently executing
   path: string
 
   constructor(path: string) {
@@ -111,7 +113,7 @@ export class Web
     if (Tags.has(stmt.tagName.literal)) {
       return `<${stmt.tagName.literal}${
         stmt.props.length !== 0
-          ? `${stmt.props.map((prop) => this.evaluate(prop)).join(' ')} `
+          ? ` ${stmt.props.map((prop) => this.evaluate(prop)).join(' ')} `
           : ''
       }>${stmt.exprOrMeml.map((el) => this.evaluate(el)).join('')}</${
         stmt.tagName.literal
@@ -205,7 +207,7 @@ export class Web
   }
 
   visitMemlPropertiesExpr(expr: MemlPropertiesExpr): string {
-    return `${expr.name}=${this.evaluate(expr.value)}`
+    return `${expr.name.literal}=${this.evaluate(expr.value)}`
   }
 
   visitLiteralExpr(expr: LiteralExpr): string | number | boolean | null {
