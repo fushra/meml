@@ -10,6 +10,7 @@ const Tags_1 = require("../scanner/Tags");
 const core_1 = require("../core");
 class Web {
     constructor(path) {
+        // Memory storage for SS execution
         this.environment = new Environment_1.Environment();
         this.exports = new Map();
         this.path = path;
@@ -60,7 +61,7 @@ class Web {
         // html
         if (Tags_1.Tags.has(stmt.tagName.literal)) {
             return `<${stmt.tagName.literal}${stmt.props.length !== 0
-                ? `${stmt.props.map((prop) => this.evaluate(prop)).join(' ')} `
+                ? ` ${stmt.props.map((prop) => this.evaluate(prop)).join(' ')} `
                 : ''}>${stmt.exprOrMeml.map((el) => this.evaluate(el)).join('')}</${stmt.tagName.literal}>`;
         }
         else {
@@ -112,7 +113,7 @@ class Web {
     }
     visitComponentStmt(stmt) {
         if (Tags_1.Tags.has(stmt.tagName.literal)) {
-            core_1.MemlC.linterAtToken(stmt.tagName, `The tag name ${stmt.tagName.literal} is a html tag. The meml compiler will default to the html tag.`);
+            core_1.MemlC.linterAtToken(stmt.tagName, `The component '${stmt.tagName.literal}' shares a name with a html tag. Defaulting to html tag.`);
         }
         // Add the component tot the environment
         this.environment.define(stmt.tagName.literal, new ComponentDefinition_1.ComponentDefinition(stmt.props, stmt.meml, stmt.tagName.literal));
@@ -127,7 +128,7 @@ class Web {
         return this.environment.get(expr.token);
     }
     visitMemlPropertiesExpr(expr) {
-        return `${expr.name}=${this.evaluate(expr.value)}`;
+        return `${expr.name.literal}=${this.evaluate(expr.value)}`;
     }
     visitLiteralExpr(expr) {
         return expr.value;
