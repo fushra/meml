@@ -1,8 +1,9 @@
 {
   "name": "meml",
-  "version": "1.0.0",
+  "version": "1.0.0-b",
   "description": "A basic meml interpreter written and tested in typescript",
   "main": "./dist/core.js",
+  "homepage": "https://meml.fivnex.co",
   "bin": {
     "memlc": "./dist/app.js"
   },

@@ -7,6 +7,9 @@ Write simpler code to target the web
 [![forthebadge](https://forthebadge.com/images/badges/built-by-developers.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/made-with-typescript.svg)](https://forthebadge.com)
 
+> Fushra `MEMLC` is not the only version of MEML! Read more [here](https://meml.fivnex.co)!! \
+Fushra is a subsidiary to [Fivnex](https://fivnex.co), who create the MEML standards
+
 </div>
 
 ## Installation and usage
@@ -16,7 +19,7 @@ Before you install, make sure you have both `node` and `npm` on your computer. C
 Then install the development version of MEML by running:
 
 ```sh
-npm install fushra/meml
+npm install meml
 ```
 
 You can then run it with
