@@ -16,7 +16,7 @@
     }
   ],
   "license": "GPL-v3-only",
-  "private": true,
+  "private": false,
   "scripts": {
     "test": "testyts",
     "ast": "ts-node ./scripts/GenerateAst.ts && prettier . --write",
