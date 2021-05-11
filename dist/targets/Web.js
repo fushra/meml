@@ -128,7 +128,7 @@ class Web {
         return this.environment.get(expr.token);
     }
     visitMemlPropertiesExpr(expr) {
-        return `${expr.name.literal}=${this.evaluate(expr.value)}`;
+        return `${expr.name.literal}="${this.evaluate(expr.value)}"`;
     }
     visitLiteralExpr(expr) {
         return expr.value;

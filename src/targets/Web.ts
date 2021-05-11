@@ -207,7 +207,7 @@ export class Web
   }
 
   visitMemlPropertiesExpr(expr: MemlPropertiesExpr): string {
-    return `${expr.name.literal}=${this.evaluate(expr.value)}`
+    return `${expr.name.literal}="${this.evaluate(expr.value)}"`
   }
 
   visitLiteralExpr(expr: LiteralExpr): string | number | boolean | null {

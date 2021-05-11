@@ -1,3 +1,5 @@
-(component nav () (div "hello world from the nav"))
+(component navBar ()
+    (div "hello world from the nav")
+)
 
-(export (nav))
+(export (navBar))

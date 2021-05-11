@@ -1,4 +1,4 @@
-(import (nav) from "./nav.meml")
+(import (navBar) from "./nav.meml")
 
 // Lets define a sample component
 (component helloComponent (name)
@@ -10,7 +10,7 @@
 )
 // This is a comment
 (body
-    (nav)
+    (navBar "test")
     (p "Basic website made with MEML!")
     (p "1 + 2 = " 1 + 2)
     (p "BODMAS: " 5 - 5 * 5 + 5)
