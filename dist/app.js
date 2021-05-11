@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const cmd_ts_1 = require("cmd-ts");
