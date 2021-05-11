@@ -8,6 +8,13 @@
   },
   "repository": "https://github.com/fushra/meml.git",
   "author": "TrickyPR <trickypr@icloud.com>",
+  "contributors": [
+    {
+      "name": "Kai Lyons",
+      "email": "kai@fivnex.co",
+      "url": "https://github.com/kaitheceo"
+    }
+  ],
   "license": "GPL-v3-only",
   "private": true,
   "scripts": {
