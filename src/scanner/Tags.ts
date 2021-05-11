@@ -85,4 +85,11 @@ export const Tags = mapFromArray([
   'meter',
   'nav',
   'style',
+  'table',
+  'tbody',
+  'td',
+  'tfoot',
+  'th',
+  'thead',
+  'tr',
 ])

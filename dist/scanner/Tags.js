@@ -81,5 +81,12 @@ exports.Tags = mapFromArray([
     'meter',
     'nav',
     'style',
+    'table',
+    'tbody',
+    'td',
+    'tfoot',
+    'th',
+    'thead',
+    'tr',
 ]);
 //# sourceMappingURL=Tags.js.map
