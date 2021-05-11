@@ -21,12 +21,7 @@ export class ${className}${baseName} implements I${baseName} {
 }`
 }
 
-function defineAst(
-  outDir: string,
-  baseName: string,
-  types: any,
-  imports = ''
-) {
+function defineAst(outDir: string, baseName: string, types: any, imports = '') {
   const path = `${outDir}/${baseName}.ts`
 
   const contents = `
@@ -81,7 +76,11 @@ defineAst(
   {
     Component: ['tagName: Token', 'props: DestructureExpr', 'meml: IStmt'],
     Export: ['exports: DestructureExpr', 'exportToken: Token'],
-    Import: ['file: string', 'imports: DestructureExpr | null | "everything"'],
+    Import: [
+      'file: string',
+      'fileToken: Token',
+      'imports: DestructureExpr | null | "everything"',
+    ],
     Meml: [
       'tagName: Token',
       'props: MemlPropertiesExpr[]',

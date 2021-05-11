@@ -102,9 +102,10 @@ class Parser {
         this.advance();
         let imports = null;
         let file;
+        let fileToken;
         // If there is a string here, we are just importing a file, so we only have a path
         if (this.check(TokenTypes_1.TokenType.STRING)) {
-            file = this.advance().literal;
+            fileToken = this.advance();
         }
         else {
             // Otherwise this is a full import statement, so we are going to have to parse it properly
@@ -127,10 +128,11 @@ class Parser {
                 this.consume(TokenTypes_1.TokenType.RIGHT_PAREN, 'Expected ( after destructure)');
             }
             this.consume(TokenTypes_1.TokenType.FROM, `Expected 'from' after destructure`);
-            file = this.advance().literal;
+            fileToken = this.advance();
         }
         this.consume(TokenTypes_1.TokenType.RIGHT_PAREN, 'Expected opening bracket after import');
-        return new Stmt_1.ImportStmt(file, imports);
+        file = fileToken.literal;
+        return new Stmt_1.ImportStmt(file, fileToken, imports);
     }
     /**
      * memlStmt    = IDENTIFIER memlProp* statement*;

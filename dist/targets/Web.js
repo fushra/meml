@@ -30,8 +30,14 @@ class Web {
         return '';
     }
     visitImportStmt(stmt) {
+        const rawPath = stmt.file;
         const filePath = path_1.join(path_1.dirname(this.path), stmt.file);
+        const isUrl = rawPath.replace('http://', '').replace('https://', '') != rawPath;
         if (stmt.imports !== null) {
+            // Check if it is a url. If it is, it cannot be imported in this way
+            if (isUrl) {
+                core_1.MemlC.errorAtToken(stmt.fileToken, `You cannot perform this type of import on a url. Try using (import "[url]") for html and css resources instead`);
+            }
             // Import a meml file
             const c = new core_1.MemlC();
             const fileParsed = c.parseFile(filePath);
@@ -50,6 +56,56 @@ class Web {
             }
         }
         else {
+            // This is an import tag without specified content, for example:
+            // (import "./example.css")
+            // The following should be handled in this section
+            // [ ] Check its file type and appropriately handle it
+            // [ ] Check if its a url and appropriately handle it
+            // Get the extension name for niceness
+            const fileExtension = path_1.extname(rawPath);
+            if (isUrl) {
+                // Handle urls here
+                switch (fileExtension) {
+                    case '.html':
+                        // Error out. Getting html files from the web is a massive security hazard
+                        core_1.MemlC.errorAtToken(stmt.fileToken, `You cannot import page from the internet`);
+                        break;
+                    case '.meml':
+                        // Error out. Getting meml files from the web is a massive security hazard
+                        core_1.MemlC.errorAtToken(stmt.fileToken, `You cannot import meml file from the internet`);
+                        break;
+                    case '.css':
+                        // Link to this resource
+                        return `<link rel="stylesheet" href="${rawPath}">`;
+                    case '.js':
+                        // Return a script with a src pointing to this resource
+                        return `<script src="${rawPath}"></script>`;
+                    default:
+                        core_1.MemlC.errorAtToken(stmt.fileToken, `Unknown file extension '${fileExtension}'`);
+                }
+            }
+            else {
+                // Must be a local file
+                switch (fileExtension) {
+                    case '.html':
+                        // Dump its contents into a meml file
+                        return fs_1.readFileSync(filePath).toString();
+                    case '.meml':
+                        // Parse the meml file and dump it into the web page
+                        const c = new core_1.MemlC();
+                        const fileParsed = c.parseFile(filePath);
+                        const context = new Web(filePath);
+                        return context.convert(fileParsed);
+                    case '.css':
+                        // Link to this resource
+                        return `<style>${fs_1.readFileSync(filePath)}</style>`;
+                    case '.js':
+                        // Return a script with a src pointing to this resource
+                        return `<script>${fs_1.readFileSync(filePath)}</script>`;
+                    default:
+                        core_1.MemlC.errorAtToken(stmt.fileToken, `Unknown file extension '${fileExtension}'`);
+                }
+            }
             return `<style>${fs_1.readFileSync(filePath)}</style>`;
         }
         return '';

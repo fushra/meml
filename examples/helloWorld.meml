@@ -14,7 +14,7 @@
     (p "Basic website made with MEML!")
     (p "1 + 2 = " 1 + 2)
     (p "BODMAS: " 5 - 5 * 5 + 5)
-    (p "This string contains \"Excaped character\"")
+    (p "This string contains \"Excaped characters\"")
     (helloComponent name="TrickyPR")
     (a href="https://fushra.com" "Our website!")
 )

@@ -25,8 +25,9 @@ class ExportStmt {
 }
 exports.ExportStmt = ExportStmt;
 class ImportStmt {
-    constructor(file, imports) {
+    constructor(file, fileToken, imports) {
         this.file = file;
+        this.fileToken = fileToken;
         this.imports = imports;
     }
     // Visitor pattern

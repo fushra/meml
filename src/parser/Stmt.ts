@@ -48,10 +48,16 @@ export class ExportStmt implements IStmt {
 
 export class ImportStmt implements IStmt {
   file: string
+  fileToken: Token
   imports: DestructureExpr | null | 'everything'
 
-  constructor(file: string, imports: DestructureExpr | null | 'everything') {
+  constructor(
+    file: string,
+    fileToken: Token,
+    imports: DestructureExpr | null | 'everything'
+  ) {
     this.file = file
+    this.fileToken = fileToken
     this.imports = imports
   }
 

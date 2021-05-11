@@ -153,10 +153,11 @@ export class Parser {
 
     let imports: DestructureExpr | null | 'everything' = null
     let file: string
+    let fileToken: Token
 
     // If there is a string here, we are just importing a file, so we only have a path
     if (this.check(TokenType.STRING)) {
-      file = this.advance().literal
+      fileToken = this.advance()
     } else {
       // Otherwise this is a full import statement, so we are going to have to parse it properly
       // We need to check if we are importing everything. If we are, there will be an identifier
@@ -182,12 +183,14 @@ export class Parser {
       }
 
       this.consume(TokenType.FROM, `Expected 'from' after destructure`)
-      file = this.advance().literal
+      fileToken = this.advance()
     }
 
     this.consume(TokenType.RIGHT_PAREN, 'Expected opening bracket after import')
 
-    return new ImportStmt(file, imports)
+    file = fileToken.literal
+
+    return new ImportStmt(file, fileToken, imports)
   }
 
   /**
