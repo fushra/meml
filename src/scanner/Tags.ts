@@ -88,7 +88,7 @@ export const Tags = mapFromArray([
   'table',
   'tbody',
   'td',
-  'tfoot'
+  'tfoot',
   'th',
   'thead',
   'tr'
