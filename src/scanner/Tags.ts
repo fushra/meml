@@ -91,5 +91,5 @@ export const Tags = mapFromArray([
   'tfoot',
   'th',
   'thead',
-  'tr'
+  'tr',
 ])
