@@ -21,13 +21,12 @@ import {
 } from './Stmt'
 
 export class AstPrinter implements ExprVisitor<string>, StmtVisitor<string> {
-  print(expr: IExpr | IStmt): string {
+  print(expr: any): string {
     return expr.accept(this)
   }
 
-  private parenthesize(name: string, ...exprs: (IExpr | IStmt)[]): string {
+  private parenthesize(name: string, ...exprs: any[]): string {
     let final = `(${name}`
-
     exprs.forEach((expr) => {
       final += ` ${expr.accept(this)}`
     })
@@ -41,13 +40,11 @@ export class AstPrinter implements ExprVisitor<string>, StmtVisitor<string> {
   }
 
   visitDestructureExpr(expr: DestructureExpr): string {
-    return this.parenthesize(
-      'Destructure ' + expr.items.map((item) => `${item.literal},`)
-    )
+    return `(Destructure ${expr.items.map((item) => `${item.literal},`)})`
   }
 
   visitIdentifierExpr(expr: IdentifierExpr): string {
-    return this.parenthesize('Identifier ' + expr.token.literal)
+    return `(Identifier ${expr.token.literal})`
   }
 
   visitComponentStmt(stmt: ComponentStmt): string {
@@ -67,8 +64,8 @@ export class AstPrinter implements ExprVisitor<string>, StmtVisitor<string> {
 
   visitMemlStmt(stmt: MemlStmt): string {
     return this.parenthesize(
-      `MEML ${stmt.tagName}`,
-      (stmt.props as unknown) as IExpr,
+      stmt.tagName.literal,
+      ...((stmt.props as unknown) as IExpr[]),
       ...stmt.exprOrMeml
     )
   }

@@ -9,7 +9,7 @@ import { IStmt, MemlStmt, StmtVisitor } from '../../parser/Stmt'
 export class ComponentDefinition {
   private props: DestructureExpr
   private meml: IStmt
-  private name
+  private name: string
 
   constructor(props: DestructureExpr, meml: IStmt, name: string) {
     this.props = props

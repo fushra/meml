@@ -354,7 +354,7 @@ export class Web
   // ===========================================================================
   // Utils
 
-  private evaluate(expr: IExpr | IStmt): string | number | boolean {
+  private evaluate(expr: any): string | number | boolean {
     return expr.accept(this)
   }
 
