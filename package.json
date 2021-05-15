@@ -20,6 +20,7 @@
   "private": false,
   "scripts": {
     "test": "nyc --reporter=lcov --reporter=html testyts",
+    "test:dev": "testyts",
     "ast": "ts-node ./scripts/GenerateAst.ts && prettier . --write",
     "app": "ts-node ./src/app.ts",
     "build": "tsc && echo '#!/usr/bin/env node\n' >  tmpfile && cat ./dist/app.js >> tmpfile && mv tmpfile ./dist/app.js",

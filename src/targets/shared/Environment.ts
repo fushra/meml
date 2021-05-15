@@ -13,26 +13,28 @@ export class Environment {
     this.values.set(name, value)
   }
 
-  assign(name: Token, value: any) {
+  assign(name: Token, value: any): void {
     if (this.values.has(name.literal)) {
       this.values.set(name.literal, value)
       return
     }
 
     if (this.enclosing != null) {
-      this.enclosing.assign(name.literal, value)
+      this.enclosing.assign(name, value)
       return
     }
 
     MemlC.errorAtToken(name, `Undefined variable`)
   }
 
-  get(name: Token): any {
+  get(name: Token): unknown | void {
     if (this.values.has(name.literal)) {
       return this.values.get(name.literal)
     }
 
-    if (this.enclosing != null) return this.enclosing.get(name)
+    if (this.enclosing != null) {
+      return this.enclosing.get(name)
+    }
 
     MemlC.errorAtToken(name, `Undefined variable '${name.literal}'.`)
   }
