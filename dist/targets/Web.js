@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Web = void 0;
-const fs_1 = require("fs");
-const path_1 = require("path");
+const fs_1 = require("../fs");
+const { readFileSync } = fs_1.fs;
+const { dirname, join, extname } = fs_1.path;
 const TokenTypes_1 = require("../scanner/TokenTypes");
 const Environment_1 = require("./shared/Environment");
 const ComponentDefinition_1 = require("./shared/ComponentDefinition");
@@ -31,7 +32,7 @@ class Web {
     }
     visitImportStmt(stmt) {
         const rawPath = stmt.file;
-        const filePath = path_1.join(path_1.dirname(this.path), stmt.file);
+        const filePath = join(dirname(this.path), stmt.file);
         const isUrl = rawPath.replace('http://', '').replace('https://', '') != rawPath;
         if (stmt.imports !== null) {
             // Check if it is a url. If it is, it cannot be imported in this way
@@ -62,7 +63,7 @@ class Web {
             // [ ] Check its file type and appropriately handle it
             // [ ] Check if its a url and appropriately handle it
             // Get the extension name for niceness
-            const fileExtension = path_1.extname(rawPath);
+            const fileExtension = extname(rawPath);
             if (isUrl) {
                 // Handle urls here
                 switch (fileExtension) {
@@ -89,7 +90,7 @@ class Web {
                 switch (fileExtension) {
                     case '.html':
                         // Dump its contents into a meml file
-                        return fs_1.readFileSync(filePath).toString();
+                        return readFileSync(filePath).toString();
                     case '.meml':
                         // Parse the meml file and dump it into the web page
                         const c = new core_1.MemlC();
@@ -98,15 +99,15 @@ class Web {
                         return context.convert(fileParsed);
                     case '.css':
                         // Link to this resource
-                        return `<style>${fs_1.readFileSync(filePath)}</style>`;
+                        return `<style>${readFileSync(filePath)}</style>`;
                     case '.js':
                         // Return a script with a src pointing to this resource
-                        return `<script>${fs_1.readFileSync(filePath)}</script>`;
+                        return `<script>${readFileSync(filePath)}</script>`;
                     default:
                         core_1.MemlC.errorAtToken(stmt.fileToken, `Unknown file extension '${fileExtension}'`);
                 }
             }
-            return `<style>${fs_1.readFileSync(filePath)}</style>`;
+            return `<style>${readFileSync(filePath)}</style>`;
         }
         return '';
     }
@@ -124,6 +125,11 @@ class Web {
             // Otherwise, the tag may be a custom component and thus we should try and
             // retrieve it from the environment
             const tag = this.environment.get(stmt.tagName);
+            // If we have an undefined tag, we will just return an empty string, to
+            // let the compile finish properly
+            if (typeof tag == 'undefined') {
+                return '';
+            }
             // Now the environment that will be used to evaluate each component needs to be created
             // First, save the old environment so it can be restored once we are done
             const previousEnv = this.environment;
@@ -181,7 +187,13 @@ class Web {
     // Expr visitor pattern implementations
     // visitIdentifierExpr: (expr: IdentifierExpr) => string | number | boolean
     visitIdentifierExpr(expr) {
-        return this.environment.get(expr.token);
+        const variable = this.environment.get(expr.token);
+        // If the variable doesn't exist return null and continue, an error has
+        // already been logged to the console
+        if (typeof variable == 'undefined') {
+            return `[undefined variable ${expr.token.literal}]`;
+        }
+        return variable;
     }
     visitMemlPropertiesExpr(expr) {
         return `${expr.name.literal}="${this.evaluate(expr.value)}"`;

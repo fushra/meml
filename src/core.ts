@@ -3,7 +3,9 @@
 // Maybe one day I will rewrite this in rust or maybe even c to make it work natively
 // but at the moment I don't really care
 
-import { readFileSync } from 'fs'
+import { fs } from './fs'
+const { readFileSync } = fs
+
 import { grey, red, yellow } from 'chalk'
 
 import { Web } from './targets/Web'

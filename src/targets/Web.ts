@@ -1,5 +1,6 @@
-import { readFileSync } from 'fs'
-import { dirname, join, extname } from 'path'
+import { fs, path } from '../fs'
+const { readFileSync } = fs
+const { dirname, join, extname } = path
 
 import { TokenType } from '../scanner/TokenTypes'
 import {

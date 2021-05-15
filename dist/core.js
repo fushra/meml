@@ -5,7 +5,8 @@
 // but at the moment I don't really care
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MemlC = void 0;
-const fs_1 = require("fs");
+const fs_1 = require("./fs");
+const { readFileSync } = fs_1.fs;
 const chalk_1 = require("chalk");
 const Web_1 = require("./targets/Web");
 const Parser_1 = require("./parser/Parser");
@@ -13,7 +14,7 @@ const Scanner_1 = require("./scanner/Scanner");
 const TokenTypes_1 = require("./scanner/TokenTypes");
 class MemlC {
     runFile(path) {
-        const fileContents = fs_1.readFileSync(path).toString();
+        const fileContents = readFileSync(path).toString();
         this.translate(fileContents, path);
         return MemlC.hadError;
     }
@@ -21,7 +22,7 @@ class MemlC {
         return this.translate(source, './runit.meml');
     }
     parseFile(path) {
-        const fileContents = fs_1.readFileSync(path).toString();
+        const fileContents = readFileSync(path).toString();
         return this.parse(fileContents);
     }
     parse(source) {
