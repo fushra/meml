@@ -17,10 +17,10 @@ class AstPrinter {
         return this.parenthesize('Properties ' + expr.name, expr.value);
     }
     visitDestructureExpr(expr) {
-        return this.parenthesize('Destructure ' + expr.items.map((item) => `${item.literal},`));
+        return `(Destructure ${expr.items.map((item) => `${item.literal},`)})`;
     }
     visitIdentifierExpr(expr) {
-        return this.parenthesize('Identifier ' + expr.token.literal);
+        return `(Identifier ${expr.token.literal})`;
     }
     visitComponentStmt(stmt) {
         return this.parenthesize('Component ' + stmt.tagName, stmt.props, stmt.meml);
@@ -32,7 +32,7 @@ class AstPrinter {
         return this.parenthesize('Import from ' + stmt.file, stmt.imports);
     }
     visitMemlStmt(stmt) {
-        return this.parenthesize(`MEML ${stmt.tagName}`, stmt.props, ...stmt.exprOrMeml);
+        return this.parenthesize(stmt.tagName.literal, ...stmt.props, ...stmt.exprOrMeml);
     }
     visitExpressionStmt(stmt) {
         return this.parenthesize('expression', stmt.expression);

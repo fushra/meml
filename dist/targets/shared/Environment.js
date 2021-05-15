@@ -19,7 +19,7 @@ class Environment {
             this.enclosing.assign(name.literal, value);
             return;
         }
-        core_1.MemlC.error(-1, `Undefined variable '${name}'.`);
+        core_1.MemlC.errorAtToken(name, `Undefined variable`);
     }
     get(name) {
         if (this.values.has(name.literal)) {

@@ -61,7 +61,6 @@ class MemlC {
     static report(line, where, message, context = '') {
         console.error(chalk_1.red(`[line ${line}] Error${where}: ${message}\n${this.formatContext(context)}`));
         this.hadError = true;
-        throw new Error();
     }
     static warn(line, type, where, message, context = '') {
         console.warn(chalk_1.yellow(`[line ${line}] ${type} warning${where}: ${message} \n${this.formatContext(context)}`));

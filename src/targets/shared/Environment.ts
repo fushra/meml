@@ -24,7 +24,7 @@ export class Environment {
       return
     }
 
-    MemlC.error(-1, `Undefined variable '${name}'.`)
+    MemlC.errorAtToken(name, `Undefined variable`)
   }
 
   get(name: Token): any {

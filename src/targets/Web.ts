@@ -207,6 +207,12 @@ export class Web
       // retrieve it from the environment
       const tag = this.environment.get(stmt.tagName) as ComponentDefinition
 
+      // If we have an undefined tag, we will just return an empty string, to
+      // let the compile finish properly
+      if (typeof tag == 'undefined') {
+        return ''
+      }
+
       // Now the environment that will be used to evaluate each component needs to be created
       // First, save the old environment so it can be restored once we are done
       const previousEnv = this.environment
@@ -287,7 +293,15 @@ export class Web
 
   // visitIdentifierExpr: (expr: IdentifierExpr) => string | number | boolean
   visitIdentifierExpr(expr: IdentifierExpr): string | number | boolean {
-    return this.environment.get(expr.token)
+    const variable = this.environment.get(expr.token)
+
+    // If the variable doesn't exist return null and continue, an error has
+    // already been logged to the console
+    if (typeof variable == 'undefined') {
+      return `[undefined variable ${expr.token.literal}]`
+    }
+
+    return variable
   }
 
   visitMemlPropertiesExpr(expr: MemlPropertiesExpr): string {

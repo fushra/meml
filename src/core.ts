@@ -91,7 +91,6 @@ export class MemlC {
       )
     )
     this.hadError = true
-    throw new Error()
   }
 
   private static warn(
