@@ -27,7 +27,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Install
-        run: npm install codecov -g
+        run: sudo npm install codecov -g
 
       - name: run
         run: codecov
