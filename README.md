@@ -8,7 +8,8 @@ Write simpler code to target the web
 [![forthebadge](https://forthebadge.com/images/badges/made-with-typescript.svg)](https://forthebadge.com)
 
 [![Codecov](https://img.shields.io/codecov/c/github/fushra/meml?style=for-the-badge)](https://app.codecov.io/gh/fushra/meml/)
-![Discord](https://img.shields.io/discord/841238828042944562?style=for-the-badge)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/fushra/meml/CodeCov?label=Tests&style=for-the-badge)](https://github.com/fushra/meml/actions/workflows/tests.yml)
+[![Discord](https://img.shields.io/discord/841238828042944562?style=for-the-badge)](https://discord.gg/UPQW9juP5Z)
 
 > Fushra `MEMLC` is not the only version of MEML! Read more [here](https://meml.fivnex.co)!! \
 Fushra is a subsidiary to [Fivnex](https://fivnex.co), who create the MEML standards
