@@ -6,6 +6,7 @@ Write simpler code to target the web
 
 [![forthebadge](https://forthebadge.com/images/badges/built-by-developers.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/made-with-typescript.svg)](https://forthebadge.com)
+[![Codecov](https://img.shields.io/codecov/c/github/fushra/meml?style=for-the-badge)](https://app.codecov.io/gh/fushra/meml/)
 
 > Fushra `MEMLC` is not the only version of MEML! Read more [here](https://meml.fivnex.co)!! \
 Fushra is a subsidiary to [Fivnex](https://fivnex.co), who create the MEML standards
