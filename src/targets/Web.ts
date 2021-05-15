@@ -301,7 +301,7 @@ export class Web
       return `[undefined variable ${expr.token.literal}]`
     }
 
-    return variable
+    return variable as string | number | boolean
   }
 
   visitMemlPropertiesExpr(expr: MemlPropertiesExpr): string {
