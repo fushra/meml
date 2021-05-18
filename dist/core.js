@@ -60,16 +60,19 @@ class MemlC {
         this.warn(token.line, 'Linter', ` at '${token.lexeme}'`, message, token.context);
     }
     static report(line, where, message, context = '') {
-        console.error(chalk_1.red(`[line ${line}] Error${where}: ${message}\n${this.formatContext(context)}`));
+        console.error(chalk_1.red(`[line ${line}] Error${where}: ${message}\n${chalk_1.grey(this.formatContext(context))}`));
         this.hadError = true;
+        this.errors += `[line ${line}] Error${where}: ${message}\n${this.formatContext(context)}\n`;
     }
     static warn(line, type, where, message, context = '') {
-        console.warn(chalk_1.yellow(`[line ${line}] ${type} warning${where}: ${message} \n${this.formatContext(context)}`));
+        console.warn(chalk_1.yellow(`[line ${line}] ${type} warning${where}: ${message} \n${chalk_1.grey(this.formatContext(context))}`));
+        this.errors += `[line ${line}] ${type} warning${where}: ${message} \n${this.formatContext(context)}\n`;
     }
     static formatContext(context) {
-        return chalk_1.grey(`    ┃${context.replace(/\n/g, '\n    ┃')}`);
+        return `    ┃${context.replace(/\n/g, '\n    ┃')}`;
     }
 }
 exports.MemlC = MemlC;
 MemlC.hadError = false;
+MemlC.errors = '';
 //# sourceMappingURL=core.js.map

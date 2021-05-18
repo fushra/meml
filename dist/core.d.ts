@@ -1,6 +1,7 @@
 import { Token } from './scanner/Token';
 export declare class MemlC {
     static hadError: boolean;
+    static errors: string;
     runFile(path: string): boolean;
     run(source: string): string;
     parseFile(path: string): import("./parser/Stmt").PageStmt;

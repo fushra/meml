@@ -313,6 +313,7 @@ class Parser {
     }
     error(token, message) {
         core_1.MemlC.errorAtToken(token, message);
+        this.advance();
     }
     check(type) {
         if (this.isAtEnd())
