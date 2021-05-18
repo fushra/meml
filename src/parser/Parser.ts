@@ -419,6 +419,7 @@ export class Parser {
 
   private error(token: Token, message: string) {
     MemlC.errorAtToken(token, message)
+    this.advance()
   }
 
   private check(type: TokenType): boolean {

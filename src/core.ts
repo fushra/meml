@@ -16,6 +16,7 @@ import { TokenType } from './scanner/TokenTypes'
 
 export class MemlC {
   static hadError = false
+  static errors = ''
 
   runFile(path: string): boolean {
     const fileContents = readFileSync(path).toString()
@@ -87,12 +88,15 @@ export class MemlC {
   ): void {
     console.error(
       red(
-        `[line ${line}] Error${where}: ${message}\n${this.formatContext(
-          context
+        `[line ${line}] Error${where}: ${message}\n${grey(
+          this.formatContext(context)
         )}`
       )
     )
     this.hadError = true
+    this.errors += `[line ${line}] Error${where}: ${message}\n${this.formatContext(
+      context
+    )}\n`
   }
 
   private static warn(
@@ -104,14 +108,18 @@ export class MemlC {
   ): void {
     console.warn(
       yellow(
-        `[line ${line}] ${type} warning${where}: ${message} \n${this.formatContext(
-          context
+        `[line ${line}] ${type} warning${where}: ${message} \n${grey(
+          this.formatContext(context)
         )}`
       )
     )
+
+    this.errors += `[line ${line}] ${type} warning${where}: ${message} \n${this.formatContext(
+      context
+    )}\n`
   }
 
   private static formatContext(context: string): string {
-    return grey(`    ┃${context.replace(/\n/g, '\n    ┃')}`)
+    return `    ┃${context.replace(/\n/g, '\n    ┃')}`
   }
 }
