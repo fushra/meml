@@ -16,7 +16,14 @@ class Parser {
     parse() {
         let stmts = [];
         while (!this.isAtEnd()) {
-            stmts.push(this.declaration());
+            try {
+                const declaration = this.declaration();
+                if (typeof declaration !== 'undefined')
+                    stmts.push(declaration);
+            }
+            catch (e) {
+                this.synchronize();
+            }
         }
         return new Stmt_1.PageStmt(stmts);
     }
@@ -305,6 +312,8 @@ class Parser {
             if (this.previous().type === TokenTypes_1.TokenType.RIGHT_PAREN)
                 return;
             switch (this.peek().type) {
+                case TokenTypes_1.TokenType.LEFT_PAREN:
+                    return;
                 case TokenTypes_1.TokenType.TAG:
                     return;
             }
@@ -313,7 +322,7 @@ class Parser {
     }
     error(token, message) {
         core_1.MemlC.errorAtToken(token, message);
-        this.advance();
+        throw new Error(message);
     }
     check(type) {
         if (this.isAtEnd())

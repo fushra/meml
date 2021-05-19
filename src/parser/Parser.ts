@@ -36,7 +36,12 @@ export class Parser {
     let stmts = []
 
     while (!this.isAtEnd()) {
-      stmts.push(this.declaration())
+      try {
+        const declaration = this.declaration()
+        if (typeof declaration !== 'undefined') stmts.push(declaration)
+      } catch (e) {
+        this.synchronize()
+      }
     }
 
     return new PageStmt(stmts)
@@ -409,6 +414,9 @@ export class Parser {
       if (this.previous().type === TokenType.RIGHT_PAREN) return
 
       switch (this.peek().type) {
+        case TokenType.LEFT_PAREN:
+          return
+        
         case TokenType.TAG:
           return
       }
@@ -419,7 +427,7 @@ export class Parser {
 
   private error(token: Token, message: string) {
     MemlC.errorAtToken(token, message)
-    this.advance()
+    throw new Error(message)
   }
 
   private check(type: TokenType): boolean {
