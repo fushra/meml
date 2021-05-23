@@ -13,49 +13,49 @@ import { Parser } from './parser/Parser'
 import { Scanner } from './scanner/Scanner'
 import { Token } from './scanner/Token'
 import { TokenType } from './scanner/TokenTypes'
+import { PageStmt } from './parser/Stmt'
 
-export class MemlC {
+export class MemlCore {
   static hadError = false
   static errors = ''
 
-  runFile(path: string): boolean {
-    const fileContents = readFileSync(path).toString()
-    this.translate(fileContents, path)
+  // ------------------------------------------------------------
+  // Interpreter stepping function
 
-    return MemlC.hadError
-  }
-
-  run(source: string) {
-    return this.translate(source, './runit.meml')
-  }
-
-  parseFile(path: string) {
-    const fileContents = readFileSync(path).toString()
-    return this.parse(fileContents)
-  }
-
-  parse(source: string) {
+  tokenize(source: string): Token[] {
     const scanner = new Scanner(source)
-    const tokens = scanner.scanTokens()
+    return scanner.scanTokens()
+  }
+
+  parse(tokens: Token[]): PageStmt {
     const parser = new Parser(tokens)
     return parser.parse()
   }
 
-  translate(source: string, path: string) {
-    const scanner = new Scanner(source)
-    const tokens = scanner.scanTokens()
-    const parser = new Parser(tokens)
-    const expression = parser.parse()
-    const converter = new Web(path)
-
-    // Bail if there was a syntax error
-    if (MemlC.hadError) return
-
-    return converter.convert(expression)
+  targetWeb(page: PageStmt, path: string = 'memory.meml'): string {
+    const target = new Web(path)
+    return target.convert(page)
   }
 
-  private sleep(time: number) {
-    return new Promise((res) => setTimeout(res, time))
+  // ------------------------------------------------------------
+  // Interpreter full functions
+
+  sourceToWeb(source: string, path: string = 'memory.meml'): string {
+    const tokens = this.tokenize(source)
+    const parsed = this.parse(tokens)
+    return this.targetWeb(parsed, path)
+  }
+
+  fileToWeb(path: string): string {
+    return this.sourceToWeb(readFileSync(path).toString(), path)
+  }
+
+  // ------------------------------------------------------------
+  // Error functions
+
+  static resetErrors() {
+    this.hadError = false
+    this.errors = ''
   }
 
   static errorAtToken(token: Token, message: string): void {
@@ -80,6 +80,10 @@ export class MemlC {
     )
   }
 
+  static generalWarning(line: number, message: string) {
+    this.warn(line, 'General', '', message)
+  }
+
   private static report(
     line: number,
     where: string,
@@ -101,7 +105,7 @@ export class MemlC {
 
   private static warn(
     line: number,
-    type: 'Linter',
+    type: 'Linter' | 'General',
     where: string,
     message: string,
     context = ''
@@ -121,5 +125,12 @@ export class MemlC {
 
   private static formatContext(context: string): string {
     return `    ┃${context.replace(/\n/g, '\n    ┃')}`
+  }
+}
+
+export class MemlC extends MemlCore {
+  constructor() {
+    super()
+    console.error('Using MemlC is depreciated. Use the MemlCore class')
   }
 }
