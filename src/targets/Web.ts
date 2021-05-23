@@ -310,6 +310,7 @@ export class Web
   }
 
   visitLiteralExpr(expr: LiteralExpr): string | number | boolean | null {
+    if (expr.value == null) return 'null'
     return expr.value
   }
 
@@ -384,6 +385,6 @@ export class Web
     if (left == null && right == null) return false
     if (left == null) return false
 
-    return left.equal(right)
+    return left == right
   }
 }

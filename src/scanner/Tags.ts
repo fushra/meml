@@ -1,16 +1,3 @@
-const dupEntries = (base: any) => {
-  const obj: any = {}
-
-  for (const key in base) {
-    const value = base[key]
-
-    obj[key] = value
-    obj[value] = key
-  }
-
-  return obj
-}
-
 const mapFromArray = (array: string[]) => {
   const map = new Map()
 
