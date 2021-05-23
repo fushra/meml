@@ -27,12 +27,11 @@ import {
 import { Environment } from './shared/Environment'
 import { ComponentDefinition } from './shared/ComponentDefinition'
 import { Tags } from '../scanner/Tags'
-import { MemlC } from '../core'
+import { MemlC, MemlCore } from '../core'
 
 export class Web
-  implements
-    ExprVisitor<string | number | boolean | null>,
-    StmtVisitor<string> {
+  implements ExprVisitor<string | number | boolean | null>, StmtVisitor<string>
+{
   // Memory storage for SS execution
   environment = new Environment()
   exports = new Map<string, any>()
@@ -85,7 +84,7 @@ export class Web
 
       // Import a meml file
       const c = new MemlC()
-      const fileParsed = c.parseFile(filePath)
+      const fileParsed = c.tokenizeAndParse(filePath)
 
       // Execute it to get it's exports
       const context = new Web(filePath)
@@ -161,11 +160,8 @@ export class Web
 
           case '.meml':
             // Parse the meml file and dump it into the web page
-            const c = new MemlC()
-            const fileParsed = c.parseFile(filePath)
-
-            const context = new Web(filePath)
-            return context.convert(fileParsed)
+            const c = new MemlCore()
+            return c.fileToWeb(filePath)
 
           case '.css':
             // Link to this resource

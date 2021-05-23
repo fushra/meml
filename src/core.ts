@@ -37,6 +37,10 @@ export class MemlCore {
     return target.convert(page)
   }
 
+  tokenizeAndParse(source: string): PageStmt {
+    return this.parse(this.tokenize(source))
+  }
+
   // ------------------------------------------------------------
   // Interpreter full functions
 
