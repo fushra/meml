@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const cmd_ts_1 = require("cmd-ts");
@@ -46,9 +44,8 @@ const cmd = cmd_ts_1.command({
         args.file.forEach((file) => {
             const realPath = path_1.join(src, file);
             const realOut = path_1.join(out, file.replace('.meml', '.html'));
-            const meml = fs_1.readFileSync(realPath).toString();
-            const c = new core_1.MemlC();
-            fs_1.writeFileSync(realOut, c.translate(meml, realPath));
+            const c = new core_1.MemlCore();
+            fs_1.writeFileSync(realOut, c.fileToWeb(realPath));
         });
         if (args.file.length == 0) {
             console.log('--help for list of commands');

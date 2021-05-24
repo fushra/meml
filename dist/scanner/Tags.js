@@ -1,15 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Tags = void 0;
-const dupEntries = (base) => {
-    const obj = {};
-    for (const key in base) {
-        const value = base[key];
-        obj[key] = value;
-        obj[value] = key;
-    }
-    return obj;
-};
 const mapFromArray = (array) => {
     const map = new Map();
     array.forEach((key) => map.set(key, true));

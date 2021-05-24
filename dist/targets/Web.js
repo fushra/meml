@@ -35,13 +35,14 @@ class Web {
         const filePath = join(dirname(this.path), stmt.file);
         const isUrl = rawPath.replace('http://', '').replace('https://', '') != rawPath;
         if (stmt.imports !== null) {
+            //
             // Check if it is a url. If it is, it cannot be imported in this way
             if (isUrl) {
-                core_1.MemlC.errorAtToken(stmt.fileToken, `You cannot perform this type of import on a url. Try using (import "[url]") for html and css resources instead`);
+                core_1.MemlCore.errorAtToken(stmt.fileToken, `You cannot perform this type of import on a url. Try using (import "[url]") for html and css resources instead`, this.path);
             }
             // Import a meml file
-            const c = new core_1.MemlC();
-            const fileParsed = c.parseFile(filePath);
+            const c = new core_1.MemlCore();
+            const fileParsed = c.tokenizeAndParse(readFileSync(filePath).toString(), filePath);
             // Execute it to get it's exports
             const context = new Web(filePath);
             context.convert(fileParsed);
@@ -51,7 +52,7 @@ class Web {
             else {
                 stmt.imports.items.forEach((identifier) => {
                     if (!context.exports.has(identifier.literal))
-                        core_1.MemlC.errorAtToken(identifier, `The file '${stmt.file}' doesn't export '${identifier.literal}'`);
+                        core_1.MemlCore.errorAtToken(identifier, `The file '${stmt.file}' doesn't export '${identifier.literal}'`, this.path);
                     this.environment.define(identifier.literal, context.exports.get(identifier.literal));
                 });
             }
@@ -69,11 +70,11 @@ class Web {
                 switch (fileExtension) {
                     case '.html':
                         // Error out. Getting html files from the web is a massive security hazard
-                        core_1.MemlC.errorAtToken(stmt.fileToken, `You cannot import page from the internet`);
+                        core_1.MemlCore.errorAtToken(stmt.fileToken, `You cannot import page from the internet`, this.path);
                         break;
                     case '.meml':
                         // Error out. Getting meml files from the web is a massive security hazard
-                        core_1.MemlC.errorAtToken(stmt.fileToken, `You cannot import meml file from the internet`);
+                        core_1.MemlCore.errorAtToken(stmt.fileToken, `You cannot import meml file from the internet`, this.path);
                         break;
                     case '.css':
                         // Link to this resource
@@ -82,7 +83,7 @@ class Web {
                         // Return a script with a src pointing to this resource
                         return `<script src="${rawPath}"></script>`;
                     default:
-                        core_1.MemlC.errorAtToken(stmt.fileToken, `Unknown file extension '${fileExtension}'`);
+                        core_1.MemlCore.errorAtToken(stmt.fileToken, `Unknown file extension '${fileExtension}'`, this.path);
                 }
             }
             else {
@@ -93,10 +94,8 @@ class Web {
                         return readFileSync(filePath).toString();
                     case '.meml':
                         // Parse the meml file and dump it into the web page
-                        const c = new core_1.MemlC();
-                        const fileParsed = c.parseFile(filePath);
-                        const context = new Web(filePath);
-                        return context.convert(fileParsed);
+                        const c = new core_1.MemlCore();
+                        return c.fileToWeb(filePath);
                     case '.css':
                         // Link to this resource
                         return `<style>${readFileSync(filePath)}</style>`;
@@ -104,7 +103,7 @@ class Web {
                         // Return a script with a src pointing to this resource
                         return `<script>${readFileSync(filePath)}</script>`;
                     default:
-                        core_1.MemlC.errorAtToken(stmt.fileToken, `Unknown file extension '${fileExtension}'`);
+                        core_1.MemlCore.errorAtToken(stmt.fileToken, `Unknown file extension '${fileExtension}'`, this.path);
                 }
             }
             return `<style>${readFileSync(filePath)}</style>`;
@@ -149,7 +148,7 @@ class Web {
                 });
                 if (!value) {
                     // If we can't find the value error
-                    core_1.MemlC.errorAtToken(stmt.tagName, `Missing tag prop '${identifier}'`);
+                    core_1.MemlCore.errorAtToken(stmt.tagName, `Missing tag prop '${identifier}'`, this.path);
                     return;
                 }
                 // Since it does exist, we can define it in the environment
@@ -199,6 +198,8 @@ class Web {
         return `${expr.name.literal}="${this.evaluate(expr.value)}"`;
     }
     visitLiteralExpr(expr) {
+        if (expr.value == null)
+            return 'null';
         return expr.value;
     }
     visitGroupingExpr(expr) {
@@ -263,7 +264,7 @@ class Web {
             return false;
         if (left == null)
             return false;
-        return left.equal(right);
+        return left == right;
     }
 }
 exports.Web = Web;

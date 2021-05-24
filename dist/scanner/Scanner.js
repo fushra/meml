@@ -5,12 +5,15 @@ const core_1 = require("../core");
 const Token_1 = require("./Token");
 const TokenTypes_1 = require("./TokenTypes");
 class Scanner {
-    constructor(source) {
+    constructor(source, file = '') {
         this.tokens = [];
         this.start = 0;
         this.current = 0;
         this.line = 1;
+        if (typeof source != 'string')
+            throw new Error('Expected type string, got: ' + typeof source);
         this.source = source;
+        this.file = file;
     }
     scanTokens() {
         while (!this.isAtEnd()) {
@@ -85,7 +88,8 @@ class Scanner {
                     this.identifier();
                 }
                 else {
-                    core_1.MemlC.error(this.line, `Unexpected character ${c}`);
+                    console.log(this.file);
+                    core_1.MemlCore.error(this.line, `Unexpected character ${c}`, this.file);
                 }
                 break;
         }
@@ -155,7 +159,7 @@ class Scanner {
             this.advance();
         }
         if (this.isAtEnd()) {
-            core_1.MemlC.error(this.line, 'Unterminated string.');
+            core_1.MemlCore.error(this.line, 'Unterminated string.', this.file);
             return;
         }
         // The closing ".

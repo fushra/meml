@@ -6,9 +6,10 @@ const Expr_1 = require("./Expr");
 const core_1 = require("../core");
 const Stmt_1 = require("./Stmt");
 class Parser {
-    constructor(tokens) {
+    constructor(tokens, file = '') {
         this.current = 0;
         this.tokens = tokens;
+        this.file = file;
     }
     /**
      * page        = ('(' declaration ')')* EOF;
@@ -125,7 +126,7 @@ class Parser {
                 }
                 else {
                     const token = this.advance();
-                    core_1.MemlC.errorAtToken(token, `Unexpected token '${token.literal}'. Try importing using a destructure ( '(import1, import2)' ) or adding the key 'everything'`);
+                    core_1.MemlCore.errorAtToken(token, `Unexpected token '${token.literal}'. Try importing using a destructure ( '(import1, import2)' ) or adding the key 'everything'`, this.file);
                 }
             }
             else {
@@ -321,7 +322,7 @@ class Parser {
         }
     }
     error(token, message) {
-        core_1.MemlC.errorAtToken(token, message);
+        core_1.MemlCore.errorAtToken(token, message, this.file);
         throw new Error(message);
     }
     check(type) {

@@ -4,7 +4,7 @@
 // Maybe one day I will rewrite this in rust or maybe even c to make it work natively
 // but at the moment I don't really care
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MemlC = void 0;
+exports.MemlC = exports.MemlCore = void 0;
 const fs_1 = require("./fs");
 const { readFileSync } = fs_1.fs;
 const chalk_1 = require("chalk");
@@ -12,57 +12,61 @@ const Web_1 = require("./targets/Web");
 const Parser_1 = require("./parser/Parser");
 const Scanner_1 = require("./scanner/Scanner");
 const TokenTypes_1 = require("./scanner/TokenTypes");
-class MemlC {
-    runFile(path) {
-        const fileContents = readFileSync(path).toString();
-        this.translate(fileContents, path);
-        return MemlC.hadError;
+class MemlCore {
+    // ------------------------------------------------------------
+    // Interpreter stepping function
+    tokenize(source, file = '') {
+        const scanner = new Scanner_1.Scanner(source, file);
+        return scanner.scanTokens();
     }
-    run(source) {
-        return this.translate(source, './runit.meml');
-    }
-    parseFile(path) {
-        const fileContents = readFileSync(path).toString();
-        return this.parse(fileContents);
-    }
-    parse(source) {
-        const scanner = new Scanner_1.Scanner(source);
-        const tokens = scanner.scanTokens();
-        const parser = new Parser_1.Parser(tokens);
+    parse(tokens, file = '') {
+        const parser = new Parser_1.Parser(tokens, file);
         return parser.parse();
     }
-    translate(source, path) {
-        const scanner = new Scanner_1.Scanner(source);
-        const tokens = scanner.scanTokens();
-        const parser = new Parser_1.Parser(tokens);
-        const expression = parser.parse();
-        const converter = new Web_1.Web(path);
-        // Bail if there was a syntax error
-        if (MemlC.hadError)
-            return;
-        return converter.convert(expression);
+    targetWeb(page, path = 'memory.meml') {
+        const target = new Web_1.Web(path);
+        return target.convert(page);
     }
-    sleep(time) {
-        return new Promise((res) => setTimeout(res, time));
+    tokenizeAndParse(source, file = '') {
+        return this.parse(this.tokenize(source, file), file);
     }
-    static errorAtToken(token, message) {
+    // ------------------------------------------------------------
+    // Interpreter full functions
+    sourceToWeb(source, path = 'memory.meml') {
+        const tokens = this.tokenize(source, path);
+        const parsed = this.parse(tokens, path);
+        return this.targetWeb(parsed, path);
+    }
+    fileToWeb(path) {
+        return this.sourceToWeb(readFileSync(path).toString(), path);
+    }
+    // ------------------------------------------------------------
+    // Error functions
+    static resetErrors() {
+        this.hadError = false;
+        this.errors = '';
+    }
+    static errorAtToken(token, message, file = '') {
         if (token.type === TokenTypes_1.TokenType.EOF) {
-            this.report(token.line, ' at end', message);
+            this.report(token.line, ' at end', message, '', file);
         }
         else {
-            this.report(token.line, ` at '${token.lexeme}'`, message, token.context);
+            this.report(token.line, ` at '${token.lexeme}'`, message, token.context, file);
         }
     }
-    static error(line, message) {
-        this.report(line, '', message);
+    static error(line, message, file = '') {
+        this.report(line, '', message, file);
     }
     static linterAtToken(token, message) {
         this.warn(token.line, 'Linter', ` at '${token.lexeme}'`, message, token.context);
     }
-    static report(line, where, message, context = '') {
-        console.error(chalk_1.red(`[line ${line}] Error${where}: ${message}\n${chalk_1.grey(this.formatContext(context))}`));
+    static generalWarning(line, message) {
+        this.warn(line, 'General', '', message);
+    }
+    static report(line, where, message, context = '', file = '') {
+        console.error(chalk_1.red(`[line ${line}${file != '' ? ` in file ${file}` : ''}] Error${where}: ${message}\n${chalk_1.grey(this.formatContext(context))}`));
         this.hadError = true;
-        this.errors += `[line ${line}] Error${where}: ${message}\n${this.formatContext(context)}\n`;
+        this.errors += `[line ${line}${file != '' ? ` in file ${file}` : ''}] Error${where}: ${message}\n${this.formatContext(context)}\n`;
     }
     static warn(line, type, where, message, context = '') {
         console.warn(chalk_1.yellow(`[line ${line}] ${type} warning${where}: ${message} \n${chalk_1.grey(this.formatContext(context))}`));
@@ -72,7 +76,14 @@ class MemlC {
         return `    ┃${context.replace(/\n/g, '\n    ┃')}`;
     }
 }
+exports.MemlCore = MemlCore;
+MemlCore.hadError = false;
+MemlCore.errors = '';
+class MemlC extends MemlCore {
+    constructor() {
+        super();
+        console.error('Using MemlC is depreciated. Use the MemlCore class');
+    }
+}
 exports.MemlC = MemlC;
-MemlC.hadError = false;
-MemlC.errors = '';
 //# sourceMappingURL=core.js.map

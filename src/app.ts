@@ -1,7 +1,7 @@
 import { command, run, string, array, option, multioption } from 'cmd-ts'
 import { readFileSync, writeFileSync } from 'fs'
 import { join, resolve } from 'path'
-import { MemlC } from './core'
+import { MemlCore } from './core'
 
 const currentDir = process.cwd()
 
@@ -48,9 +48,8 @@ const cmd = command({
       const realPath = join(src, file)
       const realOut = join(out, file.replace('.meml', '.html'))
 
-      const meml = readFileSync(realPath).toString()
-      const c = new MemlC()
-      writeFileSync(realOut, c.translate(meml, realPath))
+      const c = new MemlCore()
+      writeFileSync(realOut, c.fileToWeb(realPath))
     })
 
     if (args.file.length == 0) {

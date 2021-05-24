@@ -1,4 +1,4 @@
-import { MemlC } from '../../core'
+import { MemlCore } from '../../core'
 import { Token } from '../../scanner/Token'
 
 export class Environment {
@@ -24,7 +24,7 @@ export class Environment {
       return
     }
 
-    MemlC.errorAtToken(name, `Undefined variable`)
+    MemlCore.errorAtToken(name, `Undefined variable`)
   }
 
   get(name: Token): unknown | void {
@@ -36,6 +36,6 @@ export class Environment {
       return this.enclosing.get(name)
     }
 
-    MemlC.errorAtToken(name, `Undefined variable '${name.literal}'.`)
+    MemlCore.errorAtToken(name, `Undefined variable '${name.literal}'.`)
   }
 }

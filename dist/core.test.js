@@ -53,9 +53,16 @@ __decorate([
     testyCore_1.TestCase('Basic addition', '(head (title "Hello World!")) (body (h1 "1 + 1 = " 1 + 1))', '(page (head (title (expression Hello World!))) (body (h1 (expression 1 + 1 = ) (expression (+ 1 1)))))')
 ], MemlCTests.prototype, "parser", null);
 __decorate([
-    testyCore_1.Test('Full pass'),
+    testyCore_1.Test('End to end'),
     testyCore_1.TestCase('Title', '(title "Hello world!")', '<!DOCTYPE html><html><title>Hello world!</title></html>'),
-    testyCore_1.TestCase('Meta: description', '(meta name="description" content="I make computer programs")', '<!DOCTYPE html><html><meta name="description" content="I make computer programs" ></meta></html>')
+    testyCore_1.TestCase('Meta: description', '(meta name="description" content="I make computer programs")', '<!DOCTYPE html><html><meta name="description" content="I make computer programs" ></meta></html>'),
+    testyCore_1.TestCase('Boolean: true', '(p true)', '<!DOCTYPE html><html><p>true</p></html>'),
+    testyCore_1.TestCase('Boolean: false', '(p false)', '<!DOCTYPE html><html><p>false</p></html>'),
+    testyCore_1.TestCase('null', '(p null)', '<!DOCTYPE html><html><p>null</p></html>'),
+    testyCore_1.TestCase('export', '(component test () (p "test")) (export (test))', '<!DOCTYPE html><html></html>'),
+    testyCore_1.TestCase('Division', '(p 5/2.3)', '<!DOCTYPE html><html><p>2.173913043478261</p></html>'),
+    testyCore_1.TestCase('Logic', '(p 1 == 1)(p 1 == 2)(p 1 != 2)(p 1 < 2)(p 2 > 1)', '<!DOCTYPE html><html><p>true</p><p>false</p><p>true</p><p>true</p><p>true</p></html>'),
+    testyCore_1.TestCase('Component', '(component test () (p "Hello world"))(test)', '<!DOCTYPE html><html><!-- Start of meml component: test --><p>Hello world</p><!-- End of meml component: test --></html>')
 ], MemlCTests.prototype, "full", null);
 MemlCTests = __decorate([
     testyCore_1.TestSuite('Core tests')

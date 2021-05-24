@@ -74,17 +74,23 @@ export class Web
       rawPath.replace('http://', '').replace('https://', '') != rawPath
 
     if (stmt.imports !== null) {
+      //
+
       // Check if it is a url. If it is, it cannot be imported in this way
       if (isUrl) {
-        MemlC.errorAtToken(
+        MemlCore.errorAtToken(
           stmt.fileToken,
-          `You cannot perform this type of import on a url. Try using (import "[url]") for html and css resources instead`
+          `You cannot perform this type of import on a url. Try using (import "[url]") for html and css resources instead`,
+          this.path
         )
       }
 
       // Import a meml file
-      const c = new MemlC()
-      const fileParsed = c.tokenizeAndParse(filePath)
+      const c = new MemlCore()
+      const fileParsed = c.tokenizeAndParse(
+        readFileSync(filePath).toString(),
+        filePath
+      )
 
       // Execute it to get it's exports
       const context = new Web(filePath)
@@ -97,9 +103,10 @@ export class Web
       } else {
         stmt.imports.items.forEach((identifier) => {
           if (!context.exports.has(identifier.literal))
-            MemlC.errorAtToken(
+            MemlCore.errorAtToken(
               identifier,
-              `The file '${stmt.file}' doesn't export '${identifier.literal}'`
+              `The file '${stmt.file}' doesn't export '${identifier.literal}'`,
+              this.path
             )
 
           this.environment.define(
@@ -123,17 +130,19 @@ export class Web
         switch (fileExtension) {
           case '.html':
             // Error out. Getting html files from the web is a massive security hazard
-            MemlC.errorAtToken(
+            MemlCore.errorAtToken(
               stmt.fileToken,
-              `You cannot import page from the internet`
+              `You cannot import page from the internet`,
+              this.path
             )
             break
 
           case '.meml':
             // Error out. Getting meml files from the web is a massive security hazard
-            MemlC.errorAtToken(
+            MemlCore.errorAtToken(
               stmt.fileToken,
-              `You cannot import meml file from the internet`
+              `You cannot import meml file from the internet`,
+              this.path
             )
             break
 
@@ -146,9 +155,10 @@ export class Web
             return `<script src="${rawPath}"></script>`
 
           default:
-            MemlC.errorAtToken(
+            MemlCore.errorAtToken(
               stmt.fileToken,
-              `Unknown file extension '${fileExtension}'`
+              `Unknown file extension '${fileExtension}'`,
+              this.path
             )
         }
       } else {
@@ -172,9 +182,10 @@ export class Web
             return `<script>${readFileSync(filePath)}</script>`
 
           default:
-            MemlC.errorAtToken(
+            MemlCore.errorAtToken(
               stmt.fileToken,
-              `Unknown file extension '${fileExtension}'`
+              `Unknown file extension '${fileExtension}'`,
+              this.path
             )
         }
       }
@@ -234,7 +245,11 @@ export class Web
 
         if (!value) {
           // If we can't find the value error
-          MemlC.errorAtToken(stmt.tagName, `Missing tag prop '${identifier}'`)
+          MemlCore.errorAtToken(
+            stmt.tagName,
+            `Missing tag prop '${identifier}'`,
+            this.path
+          )
           return
         }
 

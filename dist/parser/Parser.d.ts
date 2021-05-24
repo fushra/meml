@@ -2,8 +2,9 @@ import { Token } from '../scanner/Token';
 import { PageStmt } from './Stmt';
 export declare class Parser {
     private tokens;
+    private file;
     private current;
-    constructor(tokens: Token[]);
+    constructor(tokens: Token[], file?: string);
     /**
      * page        = ('(' declaration ')')* EOF;
      */

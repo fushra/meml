@@ -22,13 +22,13 @@ export class MemlCore {
   // ------------------------------------------------------------
   // Interpreter stepping function
 
-  tokenize(source: string): Token[] {
-    const scanner = new Scanner(source)
+  tokenize(source: string, file = ''): Token[] {
+    const scanner = new Scanner(source, file)
     return scanner.scanTokens()
   }
 
-  parse(tokens: Token[]): PageStmt {
-    const parser = new Parser(tokens)
+  parse(tokens: Token[], file = ''): PageStmt {
+    const parser = new Parser(tokens, file)
     return parser.parse()
   }
 
@@ -37,16 +37,16 @@ export class MemlCore {
     return target.convert(page)
   }
 
-  tokenizeAndParse(source: string): PageStmt {
-    return this.parse(this.tokenize(source))
+  tokenizeAndParse(source: string, file = ''): PageStmt {
+    return this.parse(this.tokenize(source, file), file)
   }
 
   // ------------------------------------------------------------
   // Interpreter full functions
 
   sourceToWeb(source: string, path: string = 'memory.meml'): string {
-    const tokens = this.tokenize(source)
-    const parsed = this.parse(tokens)
+    const tokens = this.tokenize(source, path)
+    const parsed = this.parse(tokens, path)
     return this.targetWeb(parsed, path)
   }
 
@@ -62,16 +62,22 @@ export class MemlCore {
     this.errors = ''
   }
 
-  static errorAtToken(token: Token, message: string): void {
+  static errorAtToken(token: Token, message: string, file = ''): void {
     if (token.type === TokenType.EOF) {
-      this.report(token.line, ' at end', message)
+      this.report(token.line, ' at end', message, '', file)
     } else {
-      this.report(token.line, ` at '${token.lexeme}'`, message, token.context)
+      this.report(
+        token.line,
+        ` at '${token.lexeme}'`,
+        message,
+        token.context,
+        file
+      )
     }
   }
 
-  static error(line: number, message: string) {
-    this.report(line, '', message)
+  static error(line: number, message: string, file = '') {
+    this.report(line, '', message, file)
   }
 
   static linterAtToken(token: Token, message: string): void {
@@ -92,19 +98,20 @@ export class MemlCore {
     line: number,
     where: string,
     message: string,
-    context = ''
+    context = '',
+    file = ''
   ): void {
     console.error(
       red(
-        `[line ${line}] Error${where}: ${message}\n${grey(
-          this.formatContext(context)
-        )}`
+        `[line ${line}${
+          file != '' ? ` in file ${file}` : ''
+        }] Error${where}: ${message}\n${grey(this.formatContext(context))}`
       )
     )
     this.hadError = true
-    this.errors += `[line ${line}] Error${where}: ${message}\n${this.formatContext(
-      context
-    )}\n`
+    this.errors += `[line ${line}${
+      file != '' ? ` in file ${file}` : ''
+    }] Error${where}: ${message}\n${this.formatContext(context)}\n`
   }
 
   private static warn(

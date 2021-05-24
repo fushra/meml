@@ -8,13 +8,15 @@ export interface Loader {
 
   webDestructureImport(
     pathContents: string,
-    path: string
+    path: string,
+    toImport: string[]
   ): Map<string, string | ComponentDefinition>
   webContentImport(pathContents: string, path: string): string
 
   localDestructureImport(
     pathContents: string,
-    path: string
+    path: string,
+    toImport: string[]
   ): Map<string, string | ComponentDefinition>
   localContentImport(pathContents: string, path: string): string
 }
