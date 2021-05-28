@@ -79,6 +79,7 @@ class MemlCore {
 exports.MemlCore = MemlCore;
 MemlCore.hadError = false;
 MemlCore.errors = '';
+MemlCore.globalLoaders = [];
 class MemlC extends MemlCore {
     constructor() {
         super();

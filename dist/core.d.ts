@@ -1,8 +1,10 @@
 import { Token } from './scanner/Token';
 import { PageStmt } from './parser/Stmt';
+import { ILoader } from './targets/loaders/ILoader';
 export declare class MemlCore {
     static hadError: boolean;
     static errors: string;
+    static globalLoaders: ILoader[];
     tokenize(source: string, file?: string): Token[];
     parse(tokens: Token[], file?: string): PageStmt;
     targetWeb(page: PageStmt, path?: string): string;

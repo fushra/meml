@@ -1,3 +1,5 @@
+import fetch from 'node-fetch'
+
 import { fs, path } from '../fs'
 const { readFileSync } = fs
 const { dirname, join, extname } = path
@@ -28,9 +30,12 @@ import { Environment } from './shared/Environment'
 import { ComponentDefinition } from './shared/ComponentDefinition'
 import { Tags } from '../scanner/Tags'
 import { MemlC, MemlCore } from '../core'
+import { expect } from '@testy/assertion'
 
 export class Web
-  implements ExprVisitor<string | number | boolean | null>, StmtVisitor<string>
+  implements
+    ExprVisitor<Promise<string | number | boolean | null>>,
+    StmtVisitor<Promise<string>>
 {
   // Memory storage for SS execution
   environment = new Environment()
@@ -44,16 +49,18 @@ export class Web
   }
 
   // TODO: Implement these
-  visitDestructureExpr: (expr: DestructureExpr) => string | number | boolean
+  visitDestructureExpr: (
+    expr: DestructureExpr
+  ) => Promise<string | number | boolean>
 
   // Start converting the file
-  convert(token: PageStmt): string {
-    return this.visitPageStmt(token)
+  async convert(token: PageStmt): Promise<string> {
+    return await this.visitPageStmt(token)
   }
 
   // ===========================================================================
   // Import and export statements
-  visitExportStmt(stmt: ExportStmt): string {
+  async visitExportStmt(stmt: ExportStmt): Promise<string> {
     if (exports.size !== 0 && typeof exports.size !== 'undefined')
       MemlC.linterAtToken(
         stmt.exportToken,
@@ -67,14 +74,66 @@ export class Web
     return ''
   }
 
-  visitImportStmt(stmt: ImportStmt): string {
+  async visitImportStmt(stmt: ImportStmt): Promise<string> {
     const rawPath = stmt.file
     const filePath = join(dirname(this.path), stmt.file)
     const isUrl =
       rawPath.replace('http://', '').replace('https://', '') != rawPath
 
     if (stmt.imports !== null) {
-      //
+      // This implements a custom loader for destructure loaders
+
+      // Loop through all of the loaders
+      for (const loader of MemlCore.globalLoaders) {
+        // Check if this loader fits
+        if (loader.fileMatch.test(filePath)) {
+          // Check if this is a web resource
+          if (isUrl) {
+            // Check if the current loader allows for web imports
+            if (loader.supportsDestructureImport) {
+              // Download the resources
+              const contents = await (await fetch(rawPath)).text()
+              // Pass it into the loader
+              const fileExports = await loader.webDestructureImport(
+                contents,
+                rawPath,
+                stmt.imports == 'everything' ? [] : stmt.imports.items
+              )
+
+              if (stmt.imports == 'everything') {
+                // Dump everything into the current environment
+                fileExports.forEach((value, key) =>
+                  this.environment.define(key, value)
+                )
+              } else {
+                // Import only what we want
+                stmt.imports.items.forEach((key) => {
+                  if (fileExports.has(key.literal)) {
+                    this.environment.define(
+                      key.literal,
+                      fileExports.get(key.literal)
+                    )
+                  } else {
+                    MemlC.errorAtToken(
+                      key,
+                      `The export from ${rawPath} doesn't contain the export ${key}`,
+                      this.path
+                    )
+                  }
+                })
+              }
+            } else {
+              // Error out
+              MemlCore.errorAtToken(
+                stmt.fileToken,
+                `You cannot use a destructure import on '${loader.name}'. Try using a different type of import or a different loader`,
+                this.path
+              )
+            }
+          } else {
+          }
+        }
+      }
 
       // Check if it is a url. If it is, it cannot be imported in this way
       if (isUrl) {
@@ -199,17 +258,19 @@ export class Web
   // ===========================================================================
   // Stmt visitor pattern implementations
 
-  visitMemlStmt(stmt: MemlStmt): string {
+  async visitMemlStmt(stmt: MemlStmt): Promise<string> {
     // Check if this is a default tag. If it is, then we should pass it through to
     // html
     if (Tags.has(stmt.tagName.literal)) {
       return `<${stmt.tagName.literal}${
         stmt.props.length !== 0
-          ? ` ${stmt.props.map((prop) => this.evaluate(prop)).join(' ')} `
+          ? ` ${(
+              await Promise.all(stmt.props.map((prop) => this.evaluate(prop)))
+            ).join(' ')} `
           : ''
-      }>${stmt.exprOrMeml.map((el) => this.evaluate(el)).join('')}</${
-        stmt.tagName.literal
-      }>`
+      }>${(
+        await Promise.all(stmt.exprOrMeml.map((el) => this.evaluate(el)))
+      ).join('')}</${stmt.tagName.literal}>`
     } else {
       // Otherwise, the tag may be a custom component and thus we should try and
       // retrieve it from the environment
@@ -231,17 +292,17 @@ export class Web
       // Now for prop checking time. We will loop through all of the props that
       // have been specified and try to add them. If they haven't been added
       // we throw an error
-      tag.propsList().forEach((token) => {
+      for (const token of tag.propsList()) {
         const identifier = token.literal
 
         let value
 
         // Search for the identifier in the props
-        stmt.props.forEach((prop) => {
+        for (const prop of stmt.props) {
           if (prop.name.literal === identifier) {
-            value = this.evaluate(prop.value)
+            value = await this.evaluate(prop.value)
           }
-        })
+        }
 
         if (!value) {
           // If we can't find the value error
@@ -255,7 +316,7 @@ export class Web
 
         // Since it does exist, we can define it in the environment
         newEnv.define(identifier, value)
-      })
+      }
 
       // Set the new environment to be the one we just generated
       this.environment = newEnv
@@ -271,17 +332,17 @@ export class Web
     }
   }
 
-  visitExpressionStmt(stmt: ExpressionStmt): string {
-    return this.evaluate(stmt.expression).toString()
+  async visitExpressionStmt(stmt: ExpressionStmt): Promise<string> {
+    return (await this.evaluate(stmt.expression)).toString()
   }
 
-  visitPageStmt(stmt: PageStmt): string {
-    return `<!DOCTYPE html><html>${stmt.children
-      .map((el) => this.evaluate(el))
-      .join('')}</html>`
+  async visitPageStmt(stmt: PageStmt): Promise<string> {
+    return `<!DOCTYPE html><html>${(
+      await Promise.all(stmt.children.map((el) => this.evaluate(el)))
+    ).join('')}</html>`
   }
 
-  visitComponentStmt(stmt: ComponentStmt): string {
+  async visitComponentStmt(stmt: ComponentStmt): Promise<string> {
     if (Tags.has(stmt.tagName.literal)) {
       MemlC.linterAtToken(
         stmt.tagName,
@@ -304,7 +365,9 @@ export class Web
   // Expr visitor pattern implementations
 
   // visitIdentifierExpr: (expr: IdentifierExpr) => string | number | boolean
-  visitIdentifierExpr(expr: IdentifierExpr): string | number | boolean {
+  async visitIdentifierExpr(
+    expr: IdentifierExpr
+  ): Promise<string | number | boolean> {
     const variable = this.environment.get(expr.token)
 
     // If the variable doesn't exist return null and continue, an error has
@@ -316,21 +379,25 @@ export class Web
     return variable as string | number | boolean
   }
 
-  visitMemlPropertiesExpr(expr: MemlPropertiesExpr): string {
-    return `${expr.name.literal}="${this.evaluate(expr.value)}"`
+  async visitMemlPropertiesExpr(expr: MemlPropertiesExpr): Promise<string> {
+    return `${expr.name.literal}="${await this.evaluate(expr.value)}"`
   }
 
-  visitLiteralExpr(expr: LiteralExpr): string | number | boolean | null {
+  async visitLiteralExpr(
+    expr: LiteralExpr
+  ): Promise<string | number | boolean | null> {
     if (expr.value == null) return 'null'
     return expr.value
   }
 
-  visitGroupingExpr(expr: GroupingExpr): string | number | boolean | null {
+  visitGroupingExpr(
+    expr: GroupingExpr
+  ): Promise<string | number | boolean | null> {
     return this.evaluate(expr.expression)
   }
 
-  visitUnaryExpr(expr: UnaryExpr): number | boolean | null {
-    const right = this.evaluate(expr.right)
+  async visitUnaryExpr(expr: UnaryExpr): Promise<number | boolean | null> {
+    const right = await this.evaluate(expr.right)
 
     switch (expr.operator.type) {
       case TokenType.MINUS:
@@ -342,9 +409,11 @@ export class Web
     return null
   }
 
-  visitBinaryExpr(expr: BinaryExpr): number | boolean | string | null {
-    const left = this.evaluate(expr.left)
-    const right = this.evaluate(expr.right)
+  async visitBinaryExpr(
+    expr: BinaryExpr
+  ): Promise<number | boolean | string | null> {
+    const left = await this.evaluate(expr.left)
+    const right = await this.evaluate(expr.right)
 
     switch (expr.operator.type) {
       case TokenType.MINUS:
@@ -381,8 +450,8 @@ export class Web
   // ===========================================================================
   // Utils
 
-  private evaluate(expr: any): string | number | boolean {
-    return expr.accept(this)
+  private async evaluate(expr: any): Promise<string | number | boolean> {
+    return await expr.accept(this)
   }
 
   private isTruthy(obj: any): boolean {

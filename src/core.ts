@@ -14,10 +14,12 @@ import { Scanner } from './scanner/Scanner'
 import { Token } from './scanner/Token'
 import { TokenType } from './scanner/TokenTypes'
 import { PageStmt } from './parser/Stmt'
+import { ILoader } from './targets/loaders/ILoader'
 
 export class MemlCore {
   static hadError = false
   static errors = ''
+  static globalLoaders: ILoader[] = []
 
   // ------------------------------------------------------------
   // Interpreter stepping function
@@ -32,7 +34,7 @@ export class MemlCore {
     return parser.parse()
   }
 
-  targetWeb(page: PageStmt, path: string = 'memory.meml'): string {
+  targetWeb(page: PageStmt, path: string = 'memory.meml'): Promise<string> {
     const target = new Web(path)
     return target.convert(page)
   }
@@ -44,13 +46,13 @@ export class MemlCore {
   // ------------------------------------------------------------
   // Interpreter full functions
 
-  sourceToWeb(source: string, path: string = 'memory.meml'): string {
+  sourceToWeb(source: string, path: string = 'memory.meml'): Promise<string> {
     const tokens = this.tokenize(source, path)
     const parsed = this.parse(tokens, path)
     return this.targetWeb(parsed, path)
   }
 
-  fileToWeb(path: string): string {
+  fileToWeb(path: string): Promise<string> {
     return this.sourceToWeb(readFileSync(path).toString(), path)
   }
 

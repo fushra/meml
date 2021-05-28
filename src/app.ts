@@ -38,19 +38,19 @@ const cmd = command({
         'Where the compiled outputs will be written. Best used with --src',
     }),
   },
-  handler: (args) => {
+  handler: async (args) => {
     console.time('Compile time')
 
     const src = resolve(currentDir, args.src)
     const out = resolve(currentDir, args.out)
 
-    args.file.forEach((file) => {
+    for (const file of args.file) {
       const realPath = join(src, file)
       const realOut = join(out, file.replace('.meml', '.html'))
 
       const c = new MemlCore()
-      writeFileSync(realOut, c.fileToWeb(realPath))
-    })
+      writeFileSync(realOut, await c.fileToWeb(realPath))
+    }
 
     if (args.file.length == 0) {
       console.log('--help for list of commands')

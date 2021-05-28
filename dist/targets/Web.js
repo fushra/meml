@@ -17,12 +17,12 @@ class Web {
         this.path = path;
     }
     // Start converting the file
-    convert(token) {
+    async convert(token) {
         return this.visitPageStmt(token);
     }
     // ===========================================================================
     // Import and export statements
-    visitExportStmt(stmt) {
+    async visitExportStmt(stmt) {
         if (exports.size !== 0 && typeof exports.size !== 'undefined')
             core_1.MemlC.linterAtToken(stmt.exportToken, 'There should only be one export statement per meml file');
         stmt.exports.items.forEach((exportedItem) => {
@@ -30,12 +30,32 @@ class Web {
         });
         return '';
     }
-    visitImportStmt(stmt) {
+    async visitImportStmt(stmt) {
         const rawPath = stmt.file;
         const filePath = join(dirname(this.path), stmt.file);
         const isUrl = rawPath.replace('http://', '').replace('https://', '') != rawPath;
         if (stmt.imports !== null) {
-            //
+            // This implements a custom loader for destructure loaders
+            // Loop through all of the loaders
+            for (const loader of core_1.MemlCore.globalLoaders) {
+                // Check if this loader fits
+                if (loader.file.test(filePath)) {
+                    // Check if this is a web resource
+                    if (isUrl) {
+                        // Check if the current loader allows for web imports
+                        if (loader.supportsDestructureImport) {
+                            // Download the resources
+                            cosnt;
+                        }
+                        else {
+                            // Error out
+                            core_1.MemlCore.errorAtToken(stmt.fileToken, `You cannot use a destructure import on '${loader.name}'. Try using a different type of import or a different loader`, this.path);
+                        }
+                    }
+                    else {
+                    }
+                }
+            }
             // Check if it is a url. If it is, it cannot be imported in this way
             if (isUrl) {
                 core_1.MemlCore.errorAtToken(stmt.fileToken, `You cannot perform this type of import on a url. Try using (import "[url]") for html and css resources instead`, this.path);
@@ -112,13 +132,13 @@ class Web {
     }
     // ===========================================================================
     // Stmt visitor pattern implementations
-    visitMemlStmt(stmt) {
+    async visitMemlStmt(stmt) {
         // Check if this is a default tag. If it is, then we should pass it through to
         // html
         if (Tags_1.Tags.has(stmt.tagName.literal)) {
             return `<${stmt.tagName.literal}${stmt.props.length !== 0
-                ? ` ${stmt.props.map((prop) => this.evaluate(prop)).join(' ')} `
-                : ''}>${stmt.exprOrMeml.map((el) => this.evaluate(el)).join('')}</${stmt.tagName.literal}>`;
+                ? ` ${(await Promise.all(stmt.props.map((prop) => this.evaluate(prop)))).join(' ')} `
+                : ''}>${(await Promise.all(stmt.exprOrMeml.map((el) => this.evaluate(el)))).join('')}</${stmt.tagName.literal}>`;
         }
         else {
             // Otherwise, the tag may be a custom component and thus we should try and
@@ -137,7 +157,7 @@ class Web {
             // Now for prop checking time. We will loop through all of the props that
             // have been specified and try to add them. If they haven't been added
             // we throw an error
-            tag.propsList().forEach((token) => {
+            for (const token of tag.propsList()) {
                 const identifier = token.literal;
                 let value;
                 // Search for the identifier in the props
@@ -153,7 +173,7 @@ class Web {
                 }
                 // Since it does exist, we can define it in the environment
                 newEnv.define(identifier, value);
-            });
+            }
             // Set the new environment to be the one we just generated
             this.environment = newEnv;
             // Construct the tag
@@ -164,15 +184,15 @@ class Web {
             return constructed;
         }
     }
-    visitExpressionStmt(stmt) {
+    async visitExpressionStmt(stmt) {
         return this.evaluate(stmt.expression).toString();
     }
-    visitPageStmt(stmt) {
+    async visitPageStmt(stmt) {
         return `<!DOCTYPE html><html>${stmt.children
             .map((el) => this.evaluate(el))
             .join('')}</html>`;
     }
-    visitComponentStmt(stmt) {
+    async visitComponentStmt(stmt) {
         if (Tags_1.Tags.has(stmt.tagName.literal)) {
             core_1.MemlC.linterAtToken(stmt.tagName, `The component '${stmt.tagName.literal}' shares a name with a html tag. Defaulting to html tag.`);
         }
@@ -185,7 +205,7 @@ class Web {
     // ===========================================================================
     // Expr visitor pattern implementations
     // visitIdentifierExpr: (expr: IdentifierExpr) => string | number | boolean
-    visitIdentifierExpr(expr) {
+    async visitIdentifierExpr(expr) {
         const variable = this.environment.get(expr.token);
         // If the variable doesn't exist return null and continue, an error has
         // already been logged to the console
@@ -194,19 +214,19 @@ class Web {
         }
         return variable;
     }
-    visitMemlPropertiesExpr(expr) {
-        return `${expr.name.literal}="${this.evaluate(expr.value)}"`;
+    async visitMemlPropertiesExpr(expr) {
+        return `${expr.name.literal}="${await this.evaluate(expr.value)}"`;
     }
-    visitLiteralExpr(expr) {
+    async visitLiteralExpr(expr) {
         if (expr.value == null)
             return 'null';
         return expr.value;
     }
-    visitGroupingExpr(expr) {
+    async visitGroupingExpr(expr) {
         return this.evaluate(expr.expression);
     }
-    visitUnaryExpr(expr) {
-        const right = this.evaluate(expr.right);
+    async visitUnaryExpr(expr) {
+        const right = await this.evaluate(expr.right);
         switch (expr.operator.type) {
             case TokenTypes_1.TokenType.MINUS:
                 return -right;
@@ -215,9 +235,9 @@ class Web {
         }
         return null;
     }
-    visitBinaryExpr(expr) {
-        const left = this.evaluate(expr.left);
-        const right = this.evaluate(expr.right);
+    async visitBinaryExpr(expr) {
+        const left = await this.evaluate(expr.left);
+        const right = await this.evaluate(expr.right);
         switch (expr.operator.type) {
             case TokenTypes_1.TokenType.MINUS:
                 return left - right;
@@ -249,7 +269,7 @@ class Web {
     }
     // ===========================================================================
     // Utils
-    evaluate(expr) {
+    async evaluate(expr) {
         return expr.accept(this);
     }
     isTruthy(obj) {

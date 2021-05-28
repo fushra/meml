@@ -1,9 +1,5 @@
 import { Token } from '../../scanner/Token'
-import {
-  DestructureExpr,
-  ExprVisitor,
-  MemlPropertiesExpr,
-} from '../../parser/Expr'
+import { DestructureExpr, ExprVisitor } from '../../parser/Expr'
 import { IStmt, MemlStmt, StmtVisitor } from '../../parser/Stmt'
 
 export class ComponentDefinition {
@@ -21,10 +17,12 @@ export class ComponentDefinition {
     return this.props.items
   }
 
-  construct(visitor: ExprVisitor<any> & StmtVisitor<any>): string {
+  async construct(
+    visitor: ExprVisitor<any> & StmtVisitor<any>
+  ): Promise<string> {
     return `<!-- Start of meml component: ${
       this.name
-    } -->${visitor.visitMemlStmt(
+    } -->${await visitor.visitMemlStmt(
       this.meml as MemlStmt
     )}<!-- End of meml component: ${this.name} -->`
   }
