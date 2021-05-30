@@ -14,13 +14,12 @@ import { Scanner } from './scanner/Scanner'
 import { Token } from './scanner/Token'
 import { TokenType } from './scanner/TokenTypes'
 import { PageStmt } from './parser/Stmt'
-import { ILoader } from './targets/loaders/ILoader'
-import { MemlLoader } from './targets/loaders/MemlLoader'
+import { CSSLoader, ILoader, MemlLoader } from './targets/loaders'
 
 export class MemlCore {
   static hadError = false
   static errors = ''
-  static globalLoaders: ILoader[] = [new MemlLoader()]
+  static globalLoaders: ILoader[] = [new MemlLoader(), new CSSLoader()]
   static isProduction = false
 
   // ------------------------------------------------------------

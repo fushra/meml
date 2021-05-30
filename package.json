@@ -27,6 +27,7 @@
     "examples": "yarn app --file ./css.meml --file ./helloWorld.meml --src ./examples --out ./examples"
   },
   "devDependencies": {
+    "@types/clean-css": "^4.2.4",
     "@types/node": "^14.14.44",
     "@types/node-fetch": "^2.5.10",
     "nyc": "^15.1.0",
@@ -38,6 +39,7 @@
   },
   "dependencies": {
     "chalk": "^4.1.1",
+    "clean-css": "^5.1.2",
     "cmd-ts": "^0.6.9",
     "is-browser": "^2.1.0",
     "memfs": "^3.2.2",
