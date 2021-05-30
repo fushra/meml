@@ -10,8 +10,8 @@ class ComponentDefinition {
     propsList() {
         return this.props.items;
     }
-    construct(visitor) {
-        return `<!-- Start of meml component: ${this.name} -->${visitor.visitMemlStmt(this.meml)}<!-- End of meml component: ${this.name} -->`;
+    async construct(visitor) {
+        return `<!-- Start of meml component: ${this.name} -->${await visitor.visitMemlStmt(this.meml)}<!-- End of meml component: ${this.name} -->`;
     }
 }
 exports.ComponentDefinition = ComponentDefinition;

@@ -11,7 +11,6 @@ import {
   ExprVisitor,
   GroupingExpr,
   IdentifierExpr,
-  IExpr,
   LiteralExpr,
   MemlPropertiesExpr,
   UnaryExpr,
@@ -30,7 +29,6 @@ import { Environment } from './shared/Environment'
 import { ComponentDefinition } from './shared/ComponentDefinition'
 import { Tags } from '../scanner/Tags'
 import { MemlC, MemlCore } from '../core'
-import { expect } from '@testy/assertion'
 
 export class Web
   implements
@@ -83,6 +81,8 @@ export class Web
     if (stmt.imports !== null) {
       // This implements a custom loader for destructure loaders
 
+      let importedSomething = false
+
       // Loop through all of the loaders
       for (const loader of MemlCore.globalLoaders) {
         // Check if this loader fits
@@ -90,7 +90,7 @@ export class Web
           // Check if this is a web resource
           if (isUrl) {
             // Check if the current loader allows for web imports
-            if (loader.supportsDestructureImport) {
+            if (loader.supportsDestructureImport && loader.supportsWebImport) {
               // Download the resources
               const contents = await (await fetch(rawPath)).text()
               // Pass it into the loader
@@ -122,6 +122,9 @@ export class Web
                   }
                 })
               }
+
+              importedSomething = true
+              break
             } else {
               // Error out
               MemlCore.errorAtToken(
@@ -131,48 +134,63 @@ export class Web
               )
             }
           } else {
+            // Check if the current loader allows for web imports
+            if (
+              loader.supportsDestructureImport &&
+              loader.supportsLocalImport
+            ) {
+              // Load all of the contents of the files
+              const contents = readFileSync(filePath).toString()
+              // Pass it into the loader
+              const fileExports = await loader.localDestructureImport(
+                contents,
+                filePath,
+                stmt.imports == 'everything' ? [] : stmt.imports.items
+              )
+
+              if (stmt.imports == 'everything') {
+                // Dump everything into the current environment
+                fileExports.forEach((value, key) =>
+                  this.environment.define(key, value)
+                )
+              } else {
+                // Import only what we want
+                stmt.imports.items.forEach((key) => {
+                  if (fileExports.has(key.literal)) {
+                    this.environment.define(
+                      key.literal,
+                      fileExports.get(key.literal)
+                    )
+                  } else {
+                    MemlC.errorAtToken(
+                      key,
+                      `The export from ${rawPath} doesn't contain the export ${key}`,
+                      this.path
+                    )
+                  }
+                })
+              }
+
+              importedSomething = true
+              break
+            } else {
+              // Error out
+              MemlCore.errorAtToken(
+                stmt.fileToken,
+                `You cannot use a destructure import on '${loader.name}'. Try using a different type of import or a different loader`,
+                this.path
+              )
+            }
           }
         }
       }
 
-      // Check if it is a url. If it is, it cannot be imported in this way
-      if (isUrl) {
+      if (!importedSomething) {
         MemlCore.errorAtToken(
           stmt.fileToken,
-          `You cannot perform this type of import on a url. Try using (import "[url]") for html and css resources instead`,
+          'There is no loader that can import this file',
           this.path
         )
-      }
-
-      // Import a meml file
-      const c = new MemlCore()
-      const fileParsed = c.tokenizeAndParse(
-        readFileSync(filePath).toString(),
-        filePath
-      )
-
-      // Execute it to get it's exports
-      const context = new Web(filePath)
-      context.convert(fileParsed)
-
-      if (stmt.imports === 'everything') {
-        context.exports.forEach((value, key) =>
-          this.environment.define(value, key)
-        )
-      } else {
-        stmt.imports.items.forEach((identifier) => {
-          if (!context.exports.has(identifier.literal))
-            MemlCore.errorAtToken(
-              identifier,
-              `The file '${stmt.file}' doesn't export '${identifier.literal}'`,
-              this.path
-            )
-
-          this.environment.define(
-            identifier.literal,
-            context.exports.get(identifier.literal)
-          )
-        })
       }
     } else {
       // This is an import tag without specified content, for example:
@@ -262,15 +280,21 @@ export class Web
     // Check if this is a default tag. If it is, then we should pass it through to
     // html
     if (Tags.has(stmt.tagName.literal)) {
+      const evaluatedProps = []
+
+      for (const prop of stmt.props) {
+        evaluatedProps.push(await this.evaluate(prop))
+      }
+
+      const children = []
+
+      for (const el of stmt.exprOrMeml) {
+        children.push(await this.evaluate(el))
+      }
+
       return `<${stmt.tagName.literal}${
-        stmt.props.length !== 0
-          ? ` ${(
-              await Promise.all(stmt.props.map((prop) => this.evaluate(prop)))
-            ).join(' ')} `
-          : ''
-      }>${(
-        await Promise.all(stmt.exprOrMeml.map((el) => this.evaluate(el)))
-      ).join('')}</${stmt.tagName.literal}>`
+        stmt.props.length !== 0 ? ` ${evaluatedProps.join(' ')} ` : ''
+      }>${children.join('')}</${stmt.tagName.literal}>`
     } else {
       // Otherwise, the tag may be a custom component and thus we should try and
       // retrieve it from the environment
@@ -322,7 +346,7 @@ export class Web
       this.environment = newEnv
 
       // Construct the tag
-      const constructed = tag.construct(this)
+      const constructed = await tag.construct(this)
 
       // Restore the previous environment
       this.environment = previousEnv
@@ -337,9 +361,13 @@ export class Web
   }
 
   async visitPageStmt(stmt: PageStmt): Promise<string> {
-    return `<!DOCTYPE html><html>${(
-      await Promise.all(stmt.children.map((el) => this.evaluate(el)))
-    ).join('')}</html>`
+    const children = []
+
+    for (const el of stmt.children) {
+      children.push(await this.evaluate(el))
+    }
+
+    return `<!DOCTYPE html><html>${children.join('')}</html>`
   }
 
   async visitComponentStmt(stmt: ComponentStmt): Promise<string> {

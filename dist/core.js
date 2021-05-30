@@ -12,6 +12,7 @@ const Web_1 = require("./targets/Web");
 const Parser_1 = require("./parser/Parser");
 const Scanner_1 = require("./scanner/Scanner");
 const TokenTypes_1 = require("./scanner/TokenTypes");
+const MemlLoader_1 = require("./targets/loaders/MemlLoader");
 class MemlCore {
     // ------------------------------------------------------------
     // Interpreter stepping function
@@ -79,7 +80,7 @@ class MemlCore {
 exports.MemlCore = MemlCore;
 MemlCore.hadError = false;
 MemlCore.errors = '';
-MemlCore.globalLoaders = [];
+MemlCore.globalLoaders = [new MemlLoader_1.MemlLoader()];
 class MemlC extends MemlCore {
     constructor() {
         super();

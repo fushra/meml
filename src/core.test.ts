@@ -1,5 +1,5 @@
 import { TestSuite, Test, TestCase, expect } from 'testyts/build/testyCore'
-import { MemlC } from './core'
+import { MemlCore } from './core'
 import { Parser } from './parser/Parser'
 import { AstPrinter } from './parser/Printer'
 import { Scanner } from './scanner/Scanner'
@@ -9,13 +9,13 @@ import { Web } from './targets/Web'
 export class MemlCTests {
   @Test('Construct')
   construct() {
-    new MemlC()
+    new MemlCore()
   }
 
   @Test('Run from file')
   runFile() {
-    const memlC = new MemlC()
-    memlC.runFile('./examples/helloWorld.meml')
+    const memlC = new MemlCore()
+    memlC.fileToWeb('./examples/helloWorld.meml')
   }
 
   @Test('Parser')
@@ -77,20 +77,24 @@ export class MemlCTests {
     '(component test () (p "test")) (export (test))',
     '<!DOCTYPE html><html></html>'
   )
-  @TestCase('Division', '(p 5/2.3)', '<!DOCTYPE html><html><p>2.173913043478261</p></html>')
+  @TestCase(
+    'Division',
+    '(p 5/2.3)',
+    '<!DOCTYPE html><html><p>2.173913043478261</p></html>'
+  )
   @TestCase(
     'Logic',
     '(p 1 == 1)(p 1 == 2)(p 1 != 2)(p 1 < 2)(p 2 > 1)',
     '<!DOCTYPE html><html><p>true</p><p>false</p><p>true</p><p>true</p><p>true</p></html>'
   )
-  @TestCase('Component', '(component test () (p "Hello world"))(test)', '<!DOCTYPE html><html><!-- Start of meml component: test --><p>Hello world</p><!-- End of meml component: test --></html>')
-  full(source: string, out: string) {
-    const scanner = new Scanner(source)
-    const tokens = scanner.scanTokens()
-    const parser = new Parser(tokens)
-    const expression = parser.parse()
-    const web = new Web(__dirname + '/void.meml')
-    const html = web.convert(expression)
+  @TestCase(
+    'Component',
+    '(component test () (p "Hello world"))(test)',
+    '<!DOCTYPE html><html><!-- Start of meml component: test --><p>Hello world</p><!-- End of meml component: test --></html>'
+  )
+  async full(source: string, out: string) {
+    const c = new MemlCore()
+    const html = await c.sourceToWeb(source)
 
     expect.toBeEqual(html, out)
   }

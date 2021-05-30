@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Web = void 0;
+const node_fetch_1 = __importDefault(require("node-fetch"));
 const fs_1 = require("../fs");
 const { readFileSync } = fs_1.fs;
 const { dirname, join, extname } = fs_1.path;
@@ -18,7 +22,7 @@ class Web {
     }
     // Start converting the file
     async convert(token) {
-        return this.visitPageStmt(token);
+        return await this.visitPageStmt(token);
     }
     // ===========================================================================
     // Import and export statements
@@ -36,16 +40,36 @@ class Web {
         const isUrl = rawPath.replace('http://', '').replace('https://', '') != rawPath;
         if (stmt.imports !== null) {
             // This implements a custom loader for destructure loaders
+            let importedSomething = false;
             // Loop through all of the loaders
             for (const loader of core_1.MemlCore.globalLoaders) {
                 // Check if this loader fits
-                if (loader.file.test(filePath)) {
+                if (loader.fileMatch.test(filePath)) {
                     // Check if this is a web resource
                     if (isUrl) {
                         // Check if the current loader allows for web imports
-                        if (loader.supportsDestructureImport) {
+                        if (loader.supportsDestructureImport && loader.supportsWebImport) {
                             // Download the resources
-                            cosnt;
+                            const contents = await (await node_fetch_1.default(rawPath)).text();
+                            // Pass it into the loader
+                            const fileExports = await loader.webDestructureImport(contents, rawPath, stmt.imports == 'everything' ? [] : stmt.imports.items);
+                            if (stmt.imports == 'everything') {
+                                // Dump everything into the current environment
+                                fileExports.forEach((value, key) => this.environment.define(key, value));
+                            }
+                            else {
+                                // Import only what we want
+                                stmt.imports.items.forEach((key) => {
+                                    if (fileExports.has(key.literal)) {
+                                        this.environment.define(key.literal, fileExports.get(key.literal));
+                                    }
+                                    else {
+                                        core_1.MemlC.errorAtToken(key, `The export from ${rawPath} doesn't contain the export ${key}`, this.path);
+                                    }
+                                });
+                            }
+                            importedSomething = true;
+                            break;
                         }
                         else {
                             // Error out
@@ -53,28 +77,40 @@ class Web {
                         }
                     }
                     else {
+                        // Check if the current loader allows for web imports
+                        if (loader.supportsDestructureImport &&
+                            loader.supportsLocalImport) {
+                            // Load all of the contents of the files
+                            const contents = readFileSync(filePath).toString();
+                            // Pass it into the loader
+                            const fileExports = await loader.localDestructureImport(contents, filePath, stmt.imports == 'everything' ? [] : stmt.imports.items);
+                            if (stmt.imports == 'everything') {
+                                // Dump everything into the current environment
+                                fileExports.forEach((value, key) => this.environment.define(key, value));
+                            }
+                            else {
+                                // Import only what we want
+                                stmt.imports.items.forEach((key) => {
+                                    if (fileExports.has(key.literal)) {
+                                        this.environment.define(key.literal, fileExports.get(key.literal));
+                                    }
+                                    else {
+                                        core_1.MemlC.errorAtToken(key, `The export from ${rawPath} doesn't contain the export ${key}`, this.path);
+                                    }
+                                });
+                            }
+                            importedSomething = true;
+                            break;
+                        }
+                        else {
+                            // Error out
+                            core_1.MemlCore.errorAtToken(stmt.fileToken, `You cannot use a destructure import on '${loader.name}'. Try using a different type of import or a different loader`, this.path);
+                        }
                     }
                 }
             }
-            // Check if it is a url. If it is, it cannot be imported in this way
-            if (isUrl) {
-                core_1.MemlCore.errorAtToken(stmt.fileToken, `You cannot perform this type of import on a url. Try using (import "[url]") for html and css resources instead`, this.path);
-            }
-            // Import a meml file
-            const c = new core_1.MemlCore();
-            const fileParsed = c.tokenizeAndParse(readFileSync(filePath).toString(), filePath);
-            // Execute it to get it's exports
-            const context = new Web(filePath);
-            context.convert(fileParsed);
-            if (stmt.imports === 'everything') {
-                context.exports.forEach((value, key) => this.environment.define(value, key));
-            }
-            else {
-                stmt.imports.items.forEach((identifier) => {
-                    if (!context.exports.has(identifier.literal))
-                        core_1.MemlCore.errorAtToken(identifier, `The file '${stmt.file}' doesn't export '${identifier.literal}'`, this.path);
-                    this.environment.define(identifier.literal, context.exports.get(identifier.literal));
-                });
+            if (!importedSomething) {
+                core_1.MemlCore.errorAtToken(stmt.fileToken, 'There is no loader that can import this file', this.path);
             }
         }
         else {
@@ -136,9 +172,15 @@ class Web {
         // Check if this is a default tag. If it is, then we should pass it through to
         // html
         if (Tags_1.Tags.has(stmt.tagName.literal)) {
-            return `<${stmt.tagName.literal}${stmt.props.length !== 0
-                ? ` ${(await Promise.all(stmt.props.map((prop) => this.evaluate(prop)))).join(' ')} `
-                : ''}>${(await Promise.all(stmt.exprOrMeml.map((el) => this.evaluate(el)))).join('')}</${stmt.tagName.literal}>`;
+            const evaluatedProps = [];
+            for (const prop of stmt.props) {
+                evaluatedProps.push(await this.evaluate(prop));
+            }
+            const children = [];
+            for (const el of stmt.exprOrMeml) {
+                children.push(await this.evaluate(el));
+            }
+            return `<${stmt.tagName.literal}${stmt.props.length !== 0 ? ` ${evaluatedProps.join(' ')} ` : ''}>${children.join('')}</${stmt.tagName.literal}>`;
         }
         else {
             // Otherwise, the tag may be a custom component and thus we should try and
@@ -161,11 +203,11 @@ class Web {
                 const identifier = token.literal;
                 let value;
                 // Search for the identifier in the props
-                stmt.props.forEach((prop) => {
+                for (const prop of stmt.props) {
                     if (prop.name.literal === identifier) {
-                        value = this.evaluate(prop.value);
+                        value = await this.evaluate(prop.value);
                     }
-                });
+                }
                 if (!value) {
                     // If we can't find the value error
                     core_1.MemlCore.errorAtToken(stmt.tagName, `Missing tag prop '${identifier}'`, this.path);
@@ -177,7 +219,7 @@ class Web {
             // Set the new environment to be the one we just generated
             this.environment = newEnv;
             // Construct the tag
-            const constructed = tag.construct(this);
+            const constructed = await tag.construct(this);
             // Restore the previous environment
             this.environment = previousEnv;
             // Return the constructed tag with all of the props
@@ -185,12 +227,14 @@ class Web {
         }
     }
     async visitExpressionStmt(stmt) {
-        return this.evaluate(stmt.expression).toString();
+        return (await this.evaluate(stmt.expression)).toString();
     }
     async visitPageStmt(stmt) {
-        return `<!DOCTYPE html><html>${stmt.children
-            .map((el) => this.evaluate(el))
-            .join('')}</html>`;
+        const children = [];
+        for (const el of stmt.children) {
+            children.push(await this.evaluate(el));
+        }
+        return `<!DOCTYPE html><html>${children.join('')}</html>`;
     }
     async visitComponentStmt(stmt) {
         if (Tags_1.Tags.has(stmt.tagName.literal)) {
@@ -222,7 +266,7 @@ class Web {
             return 'null';
         return expr.value;
     }
-    async visitGroupingExpr(expr) {
+    visitGroupingExpr(expr) {
         return this.evaluate(expr.expression);
     }
     async visitUnaryExpr(expr) {
@@ -270,7 +314,7 @@ class Web {
     // ===========================================================================
     // Utils
     async evaluate(expr) {
-        return expr.accept(this);
+        return await expr.accept(this);
     }
     isTruthy(obj) {
         if (obj == null)

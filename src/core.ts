@@ -15,11 +15,12 @@ import { Token } from './scanner/Token'
 import { TokenType } from './scanner/TokenTypes'
 import { PageStmt } from './parser/Stmt'
 import { ILoader } from './targets/loaders/ILoader'
+import { MemlLoader } from './targets/loaders/MemlLoader'
 
 export class MemlCore {
   static hadError = false
   static errors = ''
-  static globalLoaders: ILoader[] = []
+  static globalLoaders: ILoader[] = [new MemlLoader()]
 
   // ------------------------------------------------------------
   // Interpreter stepping function

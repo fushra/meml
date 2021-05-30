@@ -12,14 +12,13 @@ const core_1 = require("./core");
 const Parser_1 = require("./parser/Parser");
 const Printer_1 = require("./parser/Printer");
 const Scanner_1 = require("./scanner/Scanner");
-const Web_1 = require("./targets/Web");
 let MemlCTests = class MemlCTests {
     construct() {
-        new core_1.MemlC();
+        new core_1.MemlCore();
     }
     runFile() {
-        const memlC = new core_1.MemlC();
-        memlC.runFile('./examples/helloWorld.meml');
+        const memlC = new core_1.MemlCore();
+        memlC.fileToWeb('./examples/helloWorld.meml');
     }
     parser(source, out) {
         const scanner = new Scanner_1.Scanner(source);
@@ -29,13 +28,9 @@ let MemlCTests = class MemlCTests {
         const printed = new Printer_1.AstPrinter().print(expression);
         testyCore_1.expect.toBeEqual(printed, out);
     }
-    full(source, out) {
-        const scanner = new Scanner_1.Scanner(source);
-        const tokens = scanner.scanTokens();
-        const parser = new Parser_1.Parser(tokens);
-        const expression = parser.parse();
-        const web = new Web_1.Web(__dirname + '/void.meml');
-        const html = web.convert(expression);
+    async full(source, out) {
+        const c = new core_1.MemlCore();
+        const html = await c.sourceToWeb(source);
         testyCore_1.expect.toBeEqual(html, out);
     }
 };

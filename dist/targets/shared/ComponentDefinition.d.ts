@@ -7,5 +7,5 @@ export declare class ComponentDefinition {
     private name;
     constructor(props: DestructureExpr, meml: IStmt, name: string);
     propsList(): Token[];
-    construct(visitor: ExprVisitor<any> & StmtVisitor<any>): string;
+    construct(visitor: ExprVisitor<any> & StmtVisitor<any>): Promise<string>;
 }

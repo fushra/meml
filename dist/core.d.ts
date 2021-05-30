@@ -7,10 +7,10 @@ export declare class MemlCore {
     static globalLoaders: ILoader[];
     tokenize(source: string, file?: string): Token[];
     parse(tokens: Token[], file?: string): PageStmt;
-    targetWeb(page: PageStmt, path?: string): string;
+    targetWeb(page: PageStmt, path?: string): Promise<string>;
     tokenizeAndParse(source: string, file?: string): PageStmt;
-    sourceToWeb(source: string, path?: string): string;
-    fileToWeb(path: string): string;
+    sourceToWeb(source: string, path?: string): Promise<string>;
+    fileToWeb(path: string): Promise<string>;
     static resetErrors(): void;
     static errorAtToken(token: Token, message: string, file?: string): void;
     static error(line: number, message: string, file?: string): void;

@@ -1,6 +1,7 @@
 import { Token } from '../../scanner/Token';
 import { ComponentDefinition } from '../shared/ComponentDefinition';
-export interface ILoader {
+import { ILoader } from './ILoader';
+export declare class MemlLoader implements ILoader {
     supportsWebImport: boolean;
     supportsLocalImport: boolean;
     supportsDestructureImport: boolean;
