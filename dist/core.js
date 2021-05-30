@@ -81,6 +81,7 @@ exports.MemlCore = MemlCore;
 MemlCore.hadError = false;
 MemlCore.errors = '';
 MemlCore.globalLoaders = [new MemlLoader_1.MemlLoader()];
+MemlCore.isProduction = false;
 class MemlC extends MemlCore {
     constructor() {
         super();

@@ -97,7 +97,8 @@ export class Web
               const fileExports = await loader.webDestructureImport(
                 contents,
                 rawPath,
-                stmt.imports == 'everything' ? [] : stmt.imports.items
+                stmt.imports == 'everything' ? [] : stmt.imports.items,
+                MemlCore.isProduction
               )
 
               if (stmt.imports == 'everything') {
@@ -125,13 +126,6 @@ export class Web
 
               importedSomething = true
               break
-            } else {
-              // Error out
-              MemlCore.errorAtToken(
-                stmt.fileToken,
-                `You cannot use a destructure import on '${loader.name}'. Try using a different type of import or a different loader`,
-                this.path
-              )
             }
           } else {
             // Check if the current loader allows for web imports
@@ -145,7 +139,8 @@ export class Web
               const fileExports = await loader.localDestructureImport(
                 contents,
                 filePath,
-                stmt.imports == 'everything' ? [] : stmt.imports.items
+                stmt.imports == 'everything' ? [] : stmt.imports.items,
+                MemlCore.isProduction
               )
 
               if (stmt.imports == 'everything') {
@@ -173,13 +168,6 @@ export class Web
 
               importedSomething = true
               break
-            } else {
-              // Error out
-              MemlCore.errorAtToken(
-                stmt.fileToken,
-                `You cannot use a destructure import on '${loader.name}'. Try using a different type of import or a different loader`,
-                this.path
-              )
             }
           }
         }
@@ -199,75 +187,38 @@ export class Web
       // [ ] Check its file type and appropriately handle it
       // [ ] Check if its a url and appropriately handle it
 
-      // Get the extension name for niceness
-      const fileExtension = extname(rawPath)
+      for (const loader of MemlCore.globalLoaders) {
+        if (loader.fileMatch.test(filePath)) {
+          if (isUrl) {
+            if (loader.supportsWebImport && loader.supportContentImport) {
+              // Download the resources
+              const contents = await (await fetch(rawPath)).text()
 
-      if (isUrl) {
-        // Handle urls here
-        switch (fileExtension) {
-          case '.html':
-            // Error out. Getting html files from the web is a massive security hazard
-            MemlCore.errorAtToken(
-              stmt.fileToken,
-              `You cannot import page from the internet`,
-              this.path
-            )
-            break
+              return await loader.webContentImport(
+                contents,
+                rawPath,
+                MemlCore.isProduction
+              )
+            }
+          } else {
+            if (loader.supportsLocalImport && loader.supportContentImport) {
+              // Read the file from disk
+              const contents = readFileSync(filePath).toString()
 
-          case '.meml':
-            // Error out. Getting meml files from the web is a massive security hazard
-            MemlCore.errorAtToken(
-              stmt.fileToken,
-              `You cannot import meml file from the internet`,
-              this.path
-            )
-            break
-
-          case '.css':
-            // Link to this resource
-            return `<link rel="stylesheet" href="${rawPath}">`
-
-          case '.js':
-            // Return a script with a src pointing to this resource
-            return `<script src="${rawPath}"></script>`
-
-          default:
-            MemlCore.errorAtToken(
-              stmt.fileToken,
-              `Unknown file extension '${fileExtension}'`,
-              this.path
-            )
-        }
-      } else {
-        // Must be a local file
-        switch (fileExtension) {
-          case '.html':
-            // Dump its contents into a meml file
-            return readFileSync(filePath).toString()
-
-          case '.meml':
-            // Parse the meml file and dump it into the web page
-            const c = new MemlCore()
-            return c.fileToWeb(filePath)
-
-          case '.css':
-            // Link to this resource
-            return `<style>${readFileSync(filePath)}</style>`
-
-          case '.js':
-            // Return a script with a src pointing to this resource
-            return `<script>${readFileSync(filePath)}</script>`
-
-          default:
-            MemlCore.errorAtToken(
-              stmt.fileToken,
-              `Unknown file extension '${fileExtension}'`,
-              this.path
-            )
+              return await loader.localContentImport(
+                contents,
+                filePath,
+                MemlCore.isProduction
+              )
+            }
+          }
         }
       }
 
-      return `<style>${readFileSync(filePath)}</style>`
+      MemlCore.errorAtToken(
+        stmt.fileToken,
+        'There is no loader for this file. Try install one'
+      )
     }
 
     return ''

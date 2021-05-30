@@ -7,17 +7,5 @@
   (span "Poems are hard")
   (p "I am sorry")
 
-  (style "
-  h1 {
-    color: red;
-  }
-
-  h2 {
-    color: blue;
-  }
-
-  span {
-    font-size: 5px;
-  }
-  ")
+  (import "./style.css")
 )

@@ -52,7 +52,7 @@ class Web {
                             // Download the resources
                             const contents = await (await node_fetch_1.default(rawPath)).text();
                             // Pass it into the loader
-                            const fileExports = await loader.webDestructureImport(contents, rawPath, stmt.imports == 'everything' ? [] : stmt.imports.items);
+                            const fileExports = await loader.webDestructureImport(contents, rawPath, stmt.imports == 'everything' ? [] : stmt.imports.items, core_1.MemlCore.isProduction);
                             if (stmt.imports == 'everything') {
                                 // Dump everything into the current environment
                                 fileExports.forEach((value, key) => this.environment.define(key, value));
@@ -70,10 +70,6 @@ class Web {
                             }
                             importedSomething = true;
                             break;
-                        }
-                        else {
-                            // Error out
-                            core_1.MemlCore.errorAtToken(stmt.fileToken, `You cannot use a destructure import on '${loader.name}'. Try using a different type of import or a different loader`, this.path);
                         }
                     }
                     else {
@@ -83,7 +79,7 @@ class Web {
                             // Load all of the contents of the files
                             const contents = readFileSync(filePath).toString();
                             // Pass it into the loader
-                            const fileExports = await loader.localDestructureImport(contents, filePath, stmt.imports == 'everything' ? [] : stmt.imports.items);
+                            const fileExports = await loader.localDestructureImport(contents, filePath, stmt.imports == 'everything' ? [] : stmt.imports.items, core_1.MemlCore.isProduction);
                             if (stmt.imports == 'everything') {
                                 // Dump everything into the current environment
                                 fileExports.forEach((value, key) => this.environment.define(key, value));
@@ -101,10 +97,6 @@ class Web {
                             }
                             importedSomething = true;
                             break;
-                        }
-                        else {
-                            // Error out
-                            core_1.MemlCore.errorAtToken(stmt.fileToken, `You cannot use a destructure import on '${loader.name}'. Try using a different type of import or a different loader`, this.path);
                         }
                     }
                 }
@@ -119,50 +111,25 @@ class Web {
             // The following should be handled in this section
             // [ ] Check its file type and appropriately handle it
             // [ ] Check if its a url and appropriately handle it
-            // Get the extension name for niceness
-            const fileExtension = extname(rawPath);
-            if (isUrl) {
-                // Handle urls here
-                switch (fileExtension) {
-                    case '.html':
-                        // Error out. Getting html files from the web is a massive security hazard
-                        core_1.MemlCore.errorAtToken(stmt.fileToken, `You cannot import page from the internet`, this.path);
-                        break;
-                    case '.meml':
-                        // Error out. Getting meml files from the web is a massive security hazard
-                        core_1.MemlCore.errorAtToken(stmt.fileToken, `You cannot import meml file from the internet`, this.path);
-                        break;
-                    case '.css':
-                        // Link to this resource
-                        return `<link rel="stylesheet" href="${rawPath}">`;
-                    case '.js':
-                        // Return a script with a src pointing to this resource
-                        return `<script src="${rawPath}"></script>`;
-                    default:
-                        core_1.MemlCore.errorAtToken(stmt.fileToken, `Unknown file extension '${fileExtension}'`, this.path);
+            for (const loader of core_1.MemlCore.globalLoaders) {
+                if (loader.fileMatch.test(filePath)) {
+                    if (isUrl) {
+                        if (loader.supportsWebImport && loader.supportContentImport) {
+                            // Download the resources
+                            const contents = await (await node_fetch_1.default(rawPath)).text();
+                            return await loader.webContentImport(contents, rawPath, core_1.MemlCore.isProduction);
+                        }
+                    }
+                    else {
+                        if (loader.supportsLocalImport && loader.supportContentImport) {
+                            // Read the file from disk
+                            const contents = readFileSync(filePath).toString();
+                            return await loader.localContentImport(contents, filePath, core_1.MemlCore.isProduction);
+                        }
+                    }
                 }
             }
-            else {
-                // Must be a local file
-                switch (fileExtension) {
-                    case '.html':
-                        // Dump its contents into a meml file
-                        return readFileSync(filePath).toString();
-                    case '.meml':
-                        // Parse the meml file and dump it into the web page
-                        const c = new core_1.MemlCore();
-                        return c.fileToWeb(filePath);
-                    case '.css':
-                        // Link to this resource
-                        return `<style>${readFileSync(filePath)}</style>`;
-                    case '.js':
-                        // Return a script with a src pointing to this resource
-                        return `<script>${readFileSync(filePath)}</script>`;
-                    default:
-                        core_1.MemlCore.errorAtToken(stmt.fileToken, `Unknown file extension '${fileExtension}'`, this.path);
-                }
-            }
-            return `<style>${readFileSync(filePath)}</style>`;
+            core_1.MemlCore.errorAtToken(stmt.fileToken, 'There is no loader for this file. Try install one');
         }
         return '';
     }

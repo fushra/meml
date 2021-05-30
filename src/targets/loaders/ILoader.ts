@@ -13,14 +13,24 @@ export interface ILoader {
   webDestructureImport(
     pathContents: string,
     path: string,
-    toImport: Token[]
+    toImport: Token[],
+    production: boolean
   ): Promise<Map<string, string | ComponentDefinition>>
-  webContentImport(pathContents: string, path: string): Promise<string>
+  webContentImport(
+    pathContents: string,
+    path: string,
+    production: boolean
+  ): Promise<string>
 
   localDestructureImport(
     pathContents: string,
     path: string,
-    toImport: Token[]
+    toImport: Token[],
+    production: boolean
   ): Promise<Map<string, string | ComponentDefinition>>
-  localContentImport(pathContents: string, path: string): Promise<string>
+  localContentImport(
+    pathContents: string,
+    path: string,
+    production: boolean
+  ): Promise<string>
 }

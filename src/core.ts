@@ -21,6 +21,7 @@ export class MemlCore {
   static hadError = false
   static errors = ''
   static globalLoaders: ILoader[] = [new MemlLoader()]
+  static isProduction = false
 
   // ------------------------------------------------------------
   // Interpreter stepping function
