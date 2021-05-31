@@ -14,7 +14,13 @@ import { Scanner } from './scanner/Scanner'
 import { Token } from './scanner/Token'
 import { TokenType } from './scanner/TokenTypes'
 import { PageStmt } from './parser/Stmt'
-import { CSSLoader, HTMLLoader, ILoader, MemlLoader } from './targets/loaders'
+import {
+  CSSLoader,
+  HTMLLoader,
+  ILoader,
+  JSLoader,
+  MemlLoader,
+} from './targets/loaders'
 
 export class MemlCore {
   static hadError = false
@@ -23,6 +29,7 @@ export class MemlCore {
     new MemlLoader(),
     new CSSLoader(),
     new HTMLLoader(),
+    new JSLoader(),
   ]
   static isProduction = false
 

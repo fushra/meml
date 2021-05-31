@@ -46,6 +46,7 @@
     "is-browser": "^2.1.0",
     "memfs": "^3.2.2",
     "node-fetch": "^2.6.1",
-    "path.js": "^1.0.7"
+    "path.js": "^1.0.7",
+    "terser": "^5.7.0"
   }
 }

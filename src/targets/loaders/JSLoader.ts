@@ -1,18 +1,20 @@
-import CleanCSS from 'clean-css'
+import { minify } from 'terser'
 
 import { Token } from '../../scanner/Token'
 import { ComponentDefinition } from '../shared/ComponentDefinition'
 import { ILoader } from './ILoader'
 
-export class CSSLoader implements ILoader {
+export class JSLoader implements ILoader {
   supportsWebImport = true
   supportsLocalImport = true
 
-  supportsDestructureImport = false
+  supportsDestructureImport = false //TODO: Add destructure support with dynamics
   supportContentImport = true
 
-  fileMatch = new RegExp('.+\\.css')
-  name = 'meml-loader-css'
+  // Maybe in the future JSX / react support could be added
+  // Although that might be better left to an external loader
+  fileMatch = RegExp('.+\\.js')
+  name = 'meml-loader-javascript'
 
   webDestructureImport(
     pathContents: string,
@@ -28,7 +30,7 @@ export class CSSLoader implements ILoader {
     path: string,
     production: boolean
   ): Promise<string> {
-    return `<link rel="stylesheet" href="${path}">`
+    return `<script src="${path}"></script>`
   }
 
   localDestructureImport(
@@ -45,8 +47,8 @@ export class CSSLoader implements ILoader {
     path: string,
     production: boolean
   ): Promise<string> {
-    return `<style>${
-      production ? new CleanCSS().minify(pathContents) : pathContents
-    }</style>`
+    return `<script>${
+      production ? minify(pathContents) : pathContents
+    }</script>`
   }
 }

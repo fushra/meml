@@ -12,7 +12,7 @@ export class MemlLoader implements ILoader {
   supportContentImport = false
 
   fileMatch = new RegExp('.+\\.meml')
-  name = 'meml-meml-loader'
+  name = 'meml-loader-meml'
 
   webDestructureImport(
     pathContents: string,

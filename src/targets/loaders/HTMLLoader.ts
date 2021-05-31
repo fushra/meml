@@ -11,7 +11,7 @@ export class HTMLLoader implements ILoader {
   supportContentImport = true
 
   fileMatch = new RegExp('.+\\.html?')
-  name = 'meml-html-loader'
+  name = 'meml-loader-html'
 
   webDestructureImport(
     pathContents: string,
