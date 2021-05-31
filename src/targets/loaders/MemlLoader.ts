@@ -11,8 +11,8 @@ export class MemlLoader implements ILoader {
   supportsDestructureImport = true
   supportContentImport = false
 
-  fileMatch = new RegExp('.+.meml')
-  name = 'meml'
+  fileMatch = new RegExp('.+\\.meml')
+  name = 'meml-meml-loader'
 
   webDestructureImport(
     pathContents: string,

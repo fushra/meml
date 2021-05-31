@@ -11,7 +11,7 @@ export class CSSLoader implements ILoader {
   supportsDestructureImport = false
   supportContentImport = true
 
-  fileMatch = new RegExp('.+.css')
+  fileMatch = new RegExp('.+\\.css')
   name = 'meml-css-loader'
 
   webDestructureImport(
