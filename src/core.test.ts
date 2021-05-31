@@ -1,15 +1,57 @@
 import { TestSuite, Test, TestCase, expect } from 'testyts/build/testyCore'
-import { MemlCore } from './core'
+import { MemlC, MemlCore } from './core'
 import { Parser } from './parser/Parser'
 import { AstPrinter } from './parser/Printer'
 import { Scanner } from './scanner/Scanner'
-import { Web } from './targets/Web'
+import { Token } from './scanner/Token'
+import { TokenType } from './scanner/TokenTypes'
 
 @TestSuite('Core tests')
 export class MemlCTests {
   @Test('Construct')
   construct() {
     new MemlCore()
+  }
+
+  @Test('Old constructor')
+  oldConstruct() {
+    new MemlC()
+  }
+
+  // -----------------------------------------------------------------------------
+  //                               Error tests
+  // -----------------------------------------------------------------------------
+
+  @Test('Reset Errors')
+  resetErrors() {
+    // Emulate having an error
+    MemlCore.errors = 'This is some error text'
+    MemlCore.hadError = true
+
+    // Make sure that these values were properly stored
+    expect.toBeEqual(MemlCore.errors, 'This is some error text')
+    expect.toBeTrue(MemlCore.hadError)
+
+    // Reset the errors
+    MemlCore.resetErrors()
+
+    // Make sure they reset
+    expect.toBeEqual(MemlCore.errors, '')
+    expect.toBeFalse(MemlCore.hadError)
+  }
+
+  @Test('Error at token')
+  errorAtToken() {
+    MemlCore.errorAtToken(
+      new Token(TokenType.IDENTIFIER, 'a', 'b', 3, 'Example context'),
+      'Test error'
+    )
+
+    expect.toBeTrue(MemlCore.hadError)
+    expect.toBeEqual(
+      MemlCore.errors,
+      "[line 3] Error at 'a': Test error\n    ┃Example context\n"
+    )
   }
 
   @Test('Run from file')

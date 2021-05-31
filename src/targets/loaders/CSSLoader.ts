@@ -8,7 +8,7 @@ export class CSSLoader implements ILoader {
   supportsWebImport = true
   supportsLocalImport = true
 
-  supportsDestructureImport = false
+  supportsDestructureImport = false // TODO: CSS Modules
   supportContentImport = true
 
   fileMatch = new RegExp('.+\\.css')
