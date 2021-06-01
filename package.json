@@ -16,8 +16,11 @@
       "url": "https://github.com/kaitheceo"
     }
   ],
-  "license": "GPL-v3-only",
-  "private": false,
+  "license": "GPL-3.0-or-later",
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/trickypr"
+  },
   "scripts": {
     "test": "nyc --reporter=lcov --reporter=html testyts",
     "test:dev": "testyts",
@@ -41,7 +44,7 @@
   "dependencies": {
     "chalk": "^4.1.1",
     "clean-css": "^5.1.2",
-    "cmd-ts": "^0.6.9",
+    "commander": "^7.2.0",
     "html-minifier-terser": "^5.1.1",
     "is-browser": "^2.1.0",
     "memfs": "^3.2.2",
