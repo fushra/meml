@@ -1,6 +1,6 @@
 {
   "name": "meml",
-  "version": "1.0.0-b.3",
+  "version": "1.0.0-b.5",
   "description": "A basic meml interpreter written and tested in typescript",
   "main": "./dist/index.js",
   "homepage": "https://meml.fivnex.co",
@@ -27,7 +27,8 @@
     "ast": "ts-node ./scripts/GenerateAst.ts && prettier . --write",
     "app": "ts-node ./src/app.ts",
     "build": "tsc && echo '#!/usr/bin/env node\n' >  tmpfile && cat ./dist/app.js >> tmpfile && mv tmpfile ./dist/app.js",
-    "examples": "yarn app --file ./css.meml --file ./helloWorld.meml --src ./examples --out ./examples"
+    "examples": "yarn app --file ./css.meml --file ./helloWorld.meml --src ./examples --out ./examples",
+    "prepublishOnly": "yarn build"
   },
   "devDependencies": {
     "@types/clean-css": "^4.2.4",
