@@ -1,3 +1,5 @@
+import fetch from 'node-fetch'
+
 import { fs, path } from '../fs'
 const { readFileSync } = fs
 const { dirname, join, extname } = path
@@ -9,7 +11,6 @@ import {
   ExprVisitor,
   GroupingExpr,
   IdentifierExpr,
-  IExpr,
   LiteralExpr,
   MemlPropertiesExpr,
   UnaryExpr,
@@ -27,12 +28,13 @@ import {
 import { Environment } from './shared/Environment'
 import { ComponentDefinition } from './shared/ComponentDefinition'
 import { Tags } from '../scanner/Tags'
-import { MemlC } from '../core'
+import { MemlC, MemlCore } from '../core'
 
 export class Web
   implements
-    ExprVisitor<string | number | boolean | null>,
-    StmtVisitor<string> {
+    ExprVisitor<Promise<string | number | boolean | null>>,
+    StmtVisitor<Promise<string>>
+{
   // Memory storage for SS execution
   environment = new Environment()
   exports = new Map<string, any>()
@@ -45,16 +47,18 @@ export class Web
   }
 
   // TODO: Implement these
-  visitDestructureExpr: (expr: DestructureExpr) => string | number | boolean
+  visitDestructureExpr: (
+    expr: DestructureExpr
+  ) => Promise<string | number | boolean>
 
   // Start converting the file
-  convert(token: PageStmt): string {
-    return this.visitPageStmt(token)
+  async convert(token: PageStmt): Promise<string> {
+    return await this.visitPageStmt(token)
   }
 
   // ===========================================================================
   // Import and export statements
-  visitExportStmt(stmt: ExportStmt): string {
+  async visitExportStmt(stmt: ExportStmt): Promise<string> {
     if (exports.size !== 0 && typeof exports.size !== 'undefined')
       MemlC.linterAtToken(
         stmt.exportToken,
@@ -68,46 +72,113 @@ export class Web
     return ''
   }
 
-  visitImportStmt(stmt: ImportStmt): string {
+  async visitImportStmt(stmt: ImportStmt): Promise<string> {
     const rawPath = stmt.file
     const filePath = join(dirname(this.path), stmt.file)
     const isUrl =
       rawPath.replace('http://', '').replace('https://', '') != rawPath
 
     if (stmt.imports !== null) {
-      // Check if it is a url. If it is, it cannot be imported in this way
-      if (isUrl) {
-        MemlC.errorAtToken(
-          stmt.fileToken,
-          `You cannot perform this type of import on a url. Try using (import "[url]") for html and css resources instead`
-        )
+      // This implements a custom loader for destructure loaders
+
+      let importedSomething = false
+
+      // Loop through all of the loaders
+      for (const loader of MemlCore.globalLoaders) {
+        // Check if this loader fits
+        if (loader.fileMatch.test(filePath)) {
+          // Check if this is a web resource
+          if (isUrl) {
+            // Check if the current loader allows for web imports
+            if (loader.supportsDestructureImport && loader.supportsWebImport) {
+              // Download the resources
+              const contents = await (await fetch(rawPath)).text()
+              // Pass it into the loader
+              const fileExports = await loader.webDestructureImport(
+                contents,
+                rawPath,
+                stmt.imports == 'everything' ? [] : stmt.imports.items,
+                MemlCore.isProduction
+              )
+
+              if (stmt.imports == 'everything') {
+                // Dump everything into the current environment
+                fileExports.forEach((value, key) =>
+                  this.environment.define(key, value)
+                )
+              } else {
+                // Import only what we want
+                stmt.imports.items.forEach((key) => {
+                  if (fileExports.has(key.literal)) {
+                    this.environment.define(
+                      key.literal,
+                      fileExports.get(key.literal)
+                    )
+                  } else {
+                    MemlC.errorAtToken(
+                      key,
+                      `The export from ${rawPath} doesn't contain the export ${key}`,
+                      this.path
+                    )
+                  }
+                })
+              }
+
+              importedSomething = true
+              break
+            }
+          } else {
+            // Check if the current loader allows for web imports
+            if (
+              loader.supportsDestructureImport &&
+              loader.supportsLocalImport
+            ) {
+              // Load all of the contents of the files
+              const contents = readFileSync(filePath).toString()
+              // Pass it into the loader
+              const fileExports = await loader.localDestructureImport(
+                contents,
+                filePath,
+                stmt.imports == 'everything' ? [] : stmt.imports.items,
+                MemlCore.isProduction
+              )
+
+              if (stmt.imports == 'everything') {
+                // Dump everything into the current environment
+                fileExports.forEach((value, key) =>
+                  this.environment.define(key, value)
+                )
+              } else {
+                // Import only what we want
+                stmt.imports.items.forEach((key) => {
+                  if (fileExports.has(key.literal)) {
+                    this.environment.define(
+                      key.literal,
+                      fileExports.get(key.literal)
+                    )
+                  } else {
+                    MemlC.errorAtToken(
+                      key,
+                      `The export from ${rawPath} doesn't contain the export ${key}`,
+                      this.path
+                    )
+                  }
+                })
+              }
+
+              importedSomething = true
+              break
+            }
+          }
+        }
       }
 
-      // Import a meml file
-      const c = new MemlC()
-      const fileParsed = c.parseFile(filePath)
-
-      // Execute it to get it's exports
-      const context = new Web(filePath)
-      context.convert(fileParsed)
-
-      if (stmt.imports === 'everything') {
-        context.exports.forEach((value, key) =>
-          this.environment.define(value, key)
+      if (!importedSomething) {
+        MemlCore.errorAtToken(
+          stmt.fileToken,
+          'There is no loader that can import this file',
+          this.path
         )
-      } else {
-        stmt.imports.items.forEach((identifier) => {
-          if (!context.exports.has(identifier.literal))
-            MemlC.errorAtToken(
-              identifier,
-              `The file '${stmt.file}' doesn't export '${identifier.literal}'`
-            )
-
-          this.environment.define(
-            identifier.literal,
-            context.exports.get(identifier.literal)
-          )
-        })
       }
     } else {
       // This is an import tag without specified content, for example:
@@ -116,74 +187,38 @@ export class Web
       // [ ] Check its file type and appropriately handle it
       // [ ] Check if its a url and appropriately handle it
 
-      // Get the extension name for niceness
-      const fileExtension = extname(rawPath)
+      for (const loader of MemlCore.globalLoaders) {
+        if (loader.fileMatch.test(filePath)) {
+          if (isUrl) {
+            if (loader.supportsWebImport && loader.supportContentImport) {
+              // Download the resources
+              const contents = await (await fetch(rawPath)).text()
 
-      if (isUrl) {
-        // Handle urls here
-        switch (fileExtension) {
-          case '.html':
-            // Error out. Getting html files from the web is a massive security hazard
-            MemlC.errorAtToken(
-              stmt.fileToken,
-              `You cannot import page from the internet`
-            )
-            break
+              return await loader.webContentImport(
+                contents,
+                rawPath,
+                MemlCore.isProduction
+              )
+            }
+          } else {
+            if (loader.supportsLocalImport && loader.supportContentImport) {
+              // Read the file from disk
+              const contents = readFileSync(filePath).toString()
 
-          case '.meml':
-            // Error out. Getting meml files from the web is a massive security hazard
-            MemlC.errorAtToken(
-              stmt.fileToken,
-              `You cannot import meml file from the internet`
-            )
-            break
-
-          case '.css':
-            // Link to this resource
-            return `<link rel="stylesheet" href="${rawPath}">`
-
-          case '.js':
-            // Return a script with a src pointing to this resource
-            return `<script src="${rawPath}"></script>`
-
-          default:
-            MemlC.errorAtToken(
-              stmt.fileToken,
-              `Unknown file extension '${fileExtension}'`
-            )
-        }
-      } else {
-        // Must be a local file
-        switch (fileExtension) {
-          case '.html':
-            // Dump its contents into a meml file
-            return readFileSync(filePath).toString()
-
-          case '.meml':
-            // Parse the meml file and dump it into the web page
-            const c = new MemlC()
-            const fileParsed = c.parseFile(filePath)
-
-            const context = new Web(filePath)
-            return context.convert(fileParsed)
-
-          case '.css':
-            // Link to this resource
-            return `<style>${readFileSync(filePath)}</style>`
-
-          case '.js':
-            // Return a script with a src pointing to this resource
-            return `<script>${readFileSync(filePath)}</script>`
-
-          default:
-            MemlC.errorAtToken(
-              stmt.fileToken,
-              `Unknown file extension '${fileExtension}'`
-            )
+              return await loader.localContentImport(
+                contents,
+                filePath,
+                MemlCore.isProduction
+              )
+            }
+          }
         }
       }
 
-      return `<style>${readFileSync(filePath)}</style>`
+      MemlCore.errorAtToken(
+        stmt.fileToken,
+        'There is no loader for this file. Try install one'
+      )
     }
 
     return ''
@@ -192,17 +227,25 @@ export class Web
   // ===========================================================================
   // Stmt visitor pattern implementations
 
-  visitMemlStmt(stmt: MemlStmt): string {
+  async visitMemlStmt(stmt: MemlStmt): Promise<string> {
     // Check if this is a default tag. If it is, then we should pass it through to
     // html
     if (Tags.has(stmt.tagName.literal)) {
+      const evaluatedProps = []
+
+      for (const prop of stmt.props) {
+        evaluatedProps.push(await this.evaluate(prop))
+      }
+
+      const children = []
+
+      for (const el of stmt.exprOrMeml) {
+        children.push(await this.evaluate(el))
+      }
+
       return `<${stmt.tagName.literal}${
-        stmt.props.length !== 0
-          ? ` ${stmt.props.map((prop) => this.evaluate(prop)).join(' ')} `
-          : ''
-      }>${stmt.exprOrMeml.map((el) => this.evaluate(el)).join('')}</${
-        stmt.tagName.literal
-      }>`
+        stmt.props.length !== 0 ? ` ${evaluatedProps.join(' ')} ` : ''
+      }>${children.join('')}</${stmt.tagName.literal}>`
     } else {
       // Otherwise, the tag may be a custom component and thus we should try and
       // retrieve it from the environment
@@ -224,33 +267,37 @@ export class Web
       // Now for prop checking time. We will loop through all of the props that
       // have been specified and try to add them. If they haven't been added
       // we throw an error
-      tag.propsList().forEach((token) => {
+      for (const token of tag.propsList()) {
         const identifier = token.literal
 
         let value
 
         // Search for the identifier in the props
-        stmt.props.forEach((prop) => {
+        for (const prop of stmt.props) {
           if (prop.name.literal === identifier) {
-            value = this.evaluate(prop.value)
+            value = await this.evaluate(prop.value)
           }
-        })
+        }
 
         if (!value) {
           // If we can't find the value error
-          MemlC.errorAtToken(stmt.tagName, `Missing tag prop '${identifier}'`)
+          MemlCore.errorAtToken(
+            stmt.tagName,
+            `Missing tag prop '${identifier}'`,
+            this.path
+          )
           return
         }
 
         // Since it does exist, we can define it in the environment
         newEnv.define(identifier, value)
-      })
+      }
 
       // Set the new environment to be the one we just generated
       this.environment = newEnv
 
       // Construct the tag
-      const constructed = tag.construct(this)
+      const constructed = await tag.construct(this)
 
       // Restore the previous environment
       this.environment = previousEnv
@@ -260,17 +307,21 @@ export class Web
     }
   }
 
-  visitExpressionStmt(stmt: ExpressionStmt): string {
-    return this.evaluate(stmt.expression).toString()
+  async visitExpressionStmt(stmt: ExpressionStmt): Promise<string> {
+    return (await this.evaluate(stmt.expression)).toString()
   }
 
-  visitPageStmt(stmt: PageStmt): string {
-    return `<!DOCTYPE html><html>${stmt.children
-      .map((el) => this.evaluate(el))
-      .join('')}</html>`
+  async visitPageStmt(stmt: PageStmt): Promise<string> {
+    const children = []
+
+    for (const el of stmt.children) {
+      children.push(await this.evaluate(el))
+    }
+
+    return `<!DOCTYPE html><html>${children.join('')}</html>`
   }
 
-  visitComponentStmt(stmt: ComponentStmt): string {
+  async visitComponentStmt(stmt: ComponentStmt): Promise<string> {
     if (Tags.has(stmt.tagName.literal)) {
       MemlC.linterAtToken(
         stmt.tagName,
@@ -293,7 +344,9 @@ export class Web
   // Expr visitor pattern implementations
 
   // visitIdentifierExpr: (expr: IdentifierExpr) => string | number | boolean
-  visitIdentifierExpr(expr: IdentifierExpr): string | number | boolean {
+  async visitIdentifierExpr(
+    expr: IdentifierExpr
+  ): Promise<string | number | boolean> {
     const variable = this.environment.get(expr.token)
 
     // If the variable doesn't exist return null and continue, an error has
@@ -305,21 +358,25 @@ export class Web
     return variable as string | number | boolean
   }
 
-  visitMemlPropertiesExpr(expr: MemlPropertiesExpr): string {
-    return `${expr.name.literal}="${this.evaluate(expr.value)}"`
+  async visitMemlPropertiesExpr(expr: MemlPropertiesExpr): Promise<string> {
+    return `${expr.name.literal}="${await this.evaluate(expr.value)}"`
   }
 
-  visitLiteralExpr(expr: LiteralExpr): string | number | boolean | null {
+  async visitLiteralExpr(
+    expr: LiteralExpr
+  ): Promise<string | number | boolean | null> {
     if (expr.value == null) return 'null'
     return expr.value
   }
 
-  visitGroupingExpr(expr: GroupingExpr): string | number | boolean | null {
+  visitGroupingExpr(
+    expr: GroupingExpr
+  ): Promise<string | number | boolean | null> {
     return this.evaluate(expr.expression)
   }
 
-  visitUnaryExpr(expr: UnaryExpr): number | boolean | null {
-    const right = this.evaluate(expr.right)
+  async visitUnaryExpr(expr: UnaryExpr): Promise<number | boolean | null> {
+    const right = await this.evaluate(expr.right)
 
     switch (expr.operator.type) {
       case TokenType.MINUS:
@@ -331,9 +388,11 @@ export class Web
     return null
   }
 
-  visitBinaryExpr(expr: BinaryExpr): number | boolean | string | null {
-    const left = this.evaluate(expr.left)
-    const right = this.evaluate(expr.right)
+  async visitBinaryExpr(
+    expr: BinaryExpr
+  ): Promise<number | boolean | string | null> {
+    const left = await this.evaluate(expr.left)
+    const right = await this.evaluate(expr.right)
 
     switch (expr.operator.type) {
       case TokenType.MINUS:
@@ -370,8 +429,8 @@ export class Web
   // ===========================================================================
   // Utils
 
-  private evaluate(expr: any): string | number | boolean {
-    return expr.accept(this)
+  private async evaluate(expr: any): Promise<string | number | boolean> {
+    return await expr.accept(this)
   }
 
   private isTruthy(obj: any): boolean {

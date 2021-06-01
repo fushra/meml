@@ -1,18 +1,22 @@
-import { MemlC } from '../core'
-import { Tags } from './Tags'
+import { MemlCore } from '../core'
 import { Token } from './Token'
 import { TokenType } from './TokenTypes'
 
 export class Scanner {
   private source: string
+  private file: string
   private tokens: Token[] = []
 
   private start = 0
   private current = 0
   private line = 1
 
-  constructor(source: string) {
+  constructor(source: string, file = '') {
+    if (typeof source != 'string')
+      throw new Error('Expected type string, got: ' + typeof source)
+
     this.source = source
+    this.file = file
   }
 
   scanTokens(): Token[] {
@@ -95,7 +99,8 @@ export class Scanner {
         } else if (this.isAlpha(c)) {
           this.identifier()
         } else {
-          MemlC.error(this.line, `Unexpected character ${c}`)
+          console.log(this.file)
+          MemlCore.error(this.line, `Unexpected character ${c}`, this.file)
         }
 
         break
@@ -189,7 +194,7 @@ export class Scanner {
     }
 
     if (this.isAtEnd()) {
-      MemlC.error(this.line, 'Unterminated string.')
+      MemlCore.error(this.line, 'Unterminated string.', this.file)
       return
     }
 

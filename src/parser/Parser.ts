@@ -10,7 +10,7 @@ import {
   MemlPropertiesExpr,
   UnaryExpr,
 } from './Expr'
-import { MemlC } from '../core'
+import { MemlCore } from '../core'
 import {
   ComponentStmt,
   ExportStmt,
@@ -23,10 +23,12 @@ import {
 
 export class Parser {
   private tokens: Token[]
+  private file: string
   private current = 0
 
-  constructor(tokens: Token[]) {
+  constructor(tokens: Token[], file = '') {
     this.tokens = tokens
+    this.file = file
   }
 
   /**
@@ -173,9 +175,10 @@ export class Parser {
           this.advance()
         } else {
           const token = this.advance()
-          MemlC.errorAtToken(
+          MemlCore.errorAtToken(
             token,
-            `Unexpected token '${token.literal}'. Try importing using a destructure ( '(import1, import2)' ) or adding the key 'everything'`
+            `Unexpected token '${token.literal}'. Try importing using a destructure ( '(import1, import2)' ) or adding the key 'everything'`,
+            this.file
           )
         }
       } else {
@@ -416,7 +419,7 @@ export class Parser {
       switch (this.peek().type) {
         case TokenType.LEFT_PAREN:
           return
-        
+
         case TokenType.TAG:
           return
       }
@@ -426,7 +429,7 @@ export class Parser {
   }
 
   private error(token: Token, message: string) {
-    MemlC.errorAtToken(token, message)
+    MemlCore.errorAtToken(token, message, this.file)
     throw new Error(message)
   }
 
