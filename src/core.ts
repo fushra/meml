@@ -6,7 +6,7 @@
 import { fs } from './fs'
 const { readFileSync } = fs
 
-import { grey, red, yellow } from 'chalk'
+import { grey, red, yellow } from 'kleur'
 
 import { Web } from './targets/Web'
 import { Parser } from './parser/Parser'
