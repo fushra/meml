@@ -149,7 +149,7 @@ export class MemlCore {
     )}\n`
   }
 
-  private static formatContext(context: string): string {
+  static formatContext(context: string): string {
     return `    ┃${context.replace(/\n/g, '\n    ┃')}`
   }
 

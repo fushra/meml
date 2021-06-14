@@ -2,4 +2,9 @@
     (div "hello world from the nav")
 )
 
+(component test ()
+    (p "sdkfjskdf")
+)
+
 (export (navBar))
+(export (test))
