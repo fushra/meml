@@ -59,11 +59,15 @@ export class Web
   // ===========================================================================
   // Import and export statements
   async visitExportStmt(stmt: ExportStmt): Promise<string> {
-    if (exports.size !== 0 && typeof exports.size !== 'undefined')
-      MemlC.linterAtToken(
+    if (this.exports.size !== 0 && typeof this.exports.size !== 'undefined') {
+      MemlCore.linterAtToken(
         stmt.exportToken,
         'There should only be one export statement per meml file'
       )
+
+      console.log('It is recommended to combine multiple exports into one')
+      console.log(MemlCore.formatContext(`(export (foo, bar, baz))`))
+    }
 
     stmt.exports.items.forEach((exportedItem) => {
       this.exports.set(exportedItem.literal, this.environment.get(exportedItem))
