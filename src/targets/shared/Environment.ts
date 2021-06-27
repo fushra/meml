@@ -1,19 +1,24 @@
 import { MemlCore } from '../../core'
 import { Token } from '../../scanner/Token'
+import { ComponentDefinition } from './ComponentDefinition'
 
 export class Environment {
   enclosing: Environment
-  private values: Map<string, any> = new Map()
+  private values: Map<string, string | number | boolean | ComponentDefinition> =
+    new Map()
 
   constructor(enclosing: Environment = null) {
     this.enclosing = enclosing
   }
 
-  define(name: string, value: any) {
+  define(name: string, value: string | number | boolean | ComponentDefinition) {
     this.values.set(name, value)
   }
 
-  assign(name: Token, value: any): void {
+  assign(
+    name: Token,
+    value: string | number | boolean | ComponentDefinition
+  ): void {
     if (this.values.has(name.literal)) {
       this.values.set(name.literal, value)
       return
@@ -27,7 +32,7 @@ export class Environment {
     MemlCore.errorAtToken(name, `Undefined variable`)
   }
 
-  get(name: Token): unknown | void {
+  get(name: Token): string | number | boolean | ComponentDefinition | void {
     if (this.values.has(name.literal)) {
       return this.values.get(name.literal)
     }

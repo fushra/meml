@@ -36,7 +36,10 @@ export class MemlLoader implements ILoader {
     const context = new Web(path)
     await context.convert(fileContents)
 
-    return context.exports
+    return context.exports as unknown as Map<
+      string,
+      string | ComponentDefinition
+    >
   }
 
   localContentImport(pathContents: string, path: string): Promise<string> {

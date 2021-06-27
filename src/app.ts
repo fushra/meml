@@ -1,5 +1,6 @@
 import { program } from 'commander'
 import { writeFileSync } from 'fs'
+import kleur from 'kleur'
 import { join, resolve } from 'path'
 import { MemlCore } from './core'
 
@@ -68,4 +69,7 @@ program.parse(process.argv)
   }
 
   console.timeEnd('Compile time')
-})()
+})().catch((reason) => {
+  console.log(kleur.red(`${kleur.bold(`[APPLICATION ERROR]:`)} ${reason}`))
+  process.exit(-1)
+})

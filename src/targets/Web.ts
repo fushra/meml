@@ -37,7 +37,7 @@ export class Web
 {
   // Memory storage for SS execution
   environment = new Environment()
-  exports = new Map<string, any>()
+  exports = new Map<string, string | number | boolean | ComponentDefinition>()
 
   // The path to the file we are currently executing
   path: string
@@ -70,7 +70,10 @@ export class Web
     }
 
     stmt.exports.items.forEach((exportedItem) => {
-      this.exports.set(exportedItem.literal, this.environment.get(exportedItem))
+      const environmentItem = this.environment.get(exportedItem)
+
+      if (environmentItem)
+        this.exports.set(exportedItem.literal, environmentItem)
     })
 
     return ''
@@ -440,14 +443,17 @@ export class Web
     return await expr.accept(this)
   }
 
-  private isTruthy(obj: any): boolean {
+  private isTruthy(obj: boolean | string | number | null): boolean {
     if (obj == null) return false
     if (typeof obj == 'boolean') return obj as boolean
 
     return true
   }
 
-  private isEqual(left: any, right: any): boolean {
+  private isEqual(
+    left: boolean | string | number | null,
+    right: boolean | string | number | null
+  ): boolean {
     if (left == null && right == null) return false
     if (left == null) return false
 

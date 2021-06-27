@@ -51,7 +51,7 @@ export class MemlCore {
     return parser.parse()
   }
 
-  targetWeb(page: PageStmt, path: string = 'memory.meml'): Promise<string> {
+  targetWeb(page: PageStmt, path = 'memory.meml'): Promise<string> {
     const target = new Web(path)
     return target.convert(page)
   }
@@ -63,7 +63,7 @@ export class MemlCore {
   // ------------------------------------------------------------
   // Interpreter full functions
 
-  sourceToWeb(source: string, path: string = 'memory.meml'): Promise<string> {
+  sourceToWeb(source: string, path = 'memory.meml'): Promise<string> {
     const tokens = this.tokenize(source, path)
     const parsed = this.parse(tokens, path)
     return this.targetWeb(parsed, path)

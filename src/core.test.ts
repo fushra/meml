@@ -55,9 +55,9 @@ export class MemlCTests {
   }
 
   @Test('Run from file')
-  runFile() {
+  async runFile() {
     const memlC = new MemlCore()
-    memlC.fileToWeb('./examples/helloWorld.meml')
+    await memlC.fileToWeb('./examples/helloWorld.meml')
   }
 
   @Test('Parser')
@@ -134,8 +134,16 @@ export class MemlCTests {
     '(component test () (p "Hello world"))(test)',
     '<!DOCTYPE html><html><!-- Start of meml component: test --><p>Hello world</p><!-- End of meml component: test --></html>'
   )
-  @TestCase('Groupings', '(p (1 + 6) * 5)', '<!DOCTYPE html><html><p>35</p></html>')
-  @TestCase('Logical inversion', '(p !false)', '<!DOCTYPE html><html><p>true</p></html>')
+  @TestCase(
+    'Groupings',
+    '(p (1 + 6) * 5)',
+    '<!DOCTYPE html><html><p>35</p></html>'
+  )
+  @TestCase(
+    'Logical inversion',
+    '(p !false)',
+    '<!DOCTYPE html><html><p>true</p></html>'
+  )
   async full(source: string, out: string) {
     const c = new MemlCore()
     const html = await c.sourceToWeb(source)

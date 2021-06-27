@@ -18,7 +18,8 @@ export class ComponentDefinition {
   }
 
   async construct(
-    visitor: ExprVisitor<any> & StmtVisitor<any>
+    visitor: ExprVisitor<Promise<string | number | boolean | null>> &
+      StmtVisitor<Promise<string>>
   ): Promise<string> {
     return `<!-- Start of meml component: ${
       this.name
