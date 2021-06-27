@@ -76,7 +76,14 @@ export class JSLoaderTest {
   async localContent() {
     const c = new JSLoader()
     expect.toBeEqual(
-      await c.localContentImport('console.log("js")', 'no', false),
+      await c.localContentImport(
+        'console.log("js")',
+        'no',
+        false,
+        false,
+        '',
+        ''
+      ),
       '<script>console.log("js")</script>'
     )
   }
