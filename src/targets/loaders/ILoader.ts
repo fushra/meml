@@ -31,7 +31,10 @@ export interface ILoader {
   localContentImport(
     pathContents: string,
     path: string,
-    production: boolean
+    production: boolean,
+    shouldLink: boolean,
+    linkDirectory: string,
+    root: string
   ): Promise<string>
 }
 

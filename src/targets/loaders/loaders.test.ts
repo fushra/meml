@@ -32,8 +32,15 @@ export class CSSLoaderTest {
   async localContent() {
     const c = new CSSLoader()
     expect.toBeEqual(
-      await c.localContentImport('probablyCss', 'no', false),
-      '<style>probablyCss</style>'
+      await c.localContentImport(
+        '.probablyCss{display:none;}',
+        'no',
+        false,
+        false,
+        '',
+        ''
+      ),
+      '<style>.probablyCss{display:none;}</style>'
     )
   }
 }
@@ -69,8 +76,8 @@ export class JSLoaderTest {
   async localContent() {
     const c = new JSLoader()
     expect.toBeEqual(
-      await c.localContentImport('probablyCss', 'no', false),
-      '<script>probablyCss</script>'
+      await c.localContentImport('console.log("js")', 'no', false),
+      '<script>console.log("js")</script>'
     )
   }
 }
@@ -101,8 +108,8 @@ export class HTMLLoaderTest {
   async localContent() {
     const c = new HTMLLoader()
     expect.toBeEqual(
-      await c.localContentImport('probablyCss', 'no', false),
-      'probablyCss'
+      await c.localContentImport('probablyHTML', 'no', false),
+      'probablyHTML'
     )
   }
 }

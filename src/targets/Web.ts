@@ -212,7 +212,10 @@ export class Web
               return await loader.localContentImport(
                 contents,
                 filePath,
-                MemlCore.isProduction
+                MemlCore.isProduction,
+                MemlCore.shouldLink,
+                MemlCore.distPath,
+                MemlCore.rootPath
               )
             }
           }

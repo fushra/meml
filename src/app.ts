@@ -27,6 +27,11 @@ program
     'The location for the compiled output. It is recommended to use this with --src',
     './'
   )
+  .option(
+    '--dont-link',
+    'Do not link included files and insted embed them in the output files'
+  )
+  .option('-r, --root-path <path>', 'The root of linked files', '/')
 
 program.parse(process.argv)
 
@@ -38,8 +43,16 @@ program.parse(process.argv)
   const src = resolve(currentDir, args.src)
   const out = resolve(currentDir, args.out)
 
+  MemlCore.distPath = out
+  MemlCore.shouldLink = true
+  MemlCore.rootPath = args.rootPath
+
   if (args.production) {
     MemlCore.isProduction = true
+  }
+
+  if (args.dontLink) {
+    MemlCore.shouldLink = false
   }
 
   for (const file of args.file) {

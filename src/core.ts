@@ -34,6 +34,10 @@ export class MemlCore {
   ]
   static isProduction = false
 
+  static shouldLink = false
+  static rootPath = '/'
+  static distPath = './'
+
   // ------------------------------------------------------------
   // Interpreter stepping function
 

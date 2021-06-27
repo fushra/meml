@@ -1,0 +1,14 @@
+.github/
+.nyc_output/
+coverage/
+examples/
+node_modules
+scripts/
+src/
+.deepsource.toml
+.gitignore
+.prettierrc
+CODING.md
+testy.json
+tsconfig.json
+yarn-error.log

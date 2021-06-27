@@ -1,3 +1,4 @@
+import { fs, path } from '../../fs'
 import { minify } from 'terser'
 
 import { Token } from '../../scanner/Token'
@@ -15,6 +16,9 @@ export class JSLoader implements ILoader {
   // Although that might be better left to an external loader
   fileMatch = RegExp('.+\\.js')
   name = 'meml-loader-javascript'
+
+  compiled = new Map<string, string>()
+  lastID = 0
 
   webDestructureImport(
     pathContents: string,
@@ -44,11 +48,31 @@ export class JSLoader implements ILoader {
 
   async localContentImport(
     pathContents: string,
-    path: string,
-    production: boolean
+    srcPath: string,
+    production: boolean,
+    shouldLink: boolean,
+    linkDirectory: string,
+    root: string
   ): Promise<string> {
-    return `<script>${
-      production ? minify(pathContents) : pathContents
-    }</script>`
+    if (shouldLink) {
+      if (this.compiled.has(srcPath)) {
+        return `<script src="${this.compiled.get(srcPath)}"></script>`
+      } else {
+        const storagePath = path.join(
+          linkDirectory,
+          'js',
+          `${this.lastID++}.js`
+        )
+        this.compiled.set(srcPath, storagePath)
+        fs.writeFileSync(
+          storagePath,
+          production ? minify(pathContents) : pathContents
+        )
+      }
+    } else {
+      return `<script>${
+        production ? minify(pathContents) : pathContents
+      }</script>`
+    }
   }
 }
