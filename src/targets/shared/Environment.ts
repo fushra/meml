@@ -24,7 +24,7 @@ export class Environment {
       return
     }
 
-    if (this.enclosing != null) {
+    if (this.enclosing !== null) {
       this.enclosing.assign(name, value)
       return
     }
@@ -37,7 +37,7 @@ export class Environment {
       return this.values.get(name.literal)
     }
 
-    if (this.enclosing != null) {
+    if (this.enclosing !== null) {
       return this.enclosing.get(name)
     }
 
