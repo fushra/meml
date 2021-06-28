@@ -375,7 +375,7 @@ export class Web
   async visitLiteralExpr(
     expr: LiteralExpr
   ): Promise<string | number | boolean | null> {
-    if (expr.value == null) return 'null'
+    if (expr.value === null) return 'null'
     return expr.value
   }
 
@@ -453,8 +453,8 @@ export class Web
     left: boolean | string | number | null,
     right: boolean | string | number | null
   ): boolean {
-    if (left == null && right == null) return false
-    if (left == null) return false
+    if (left === null && right === null) return false
+    if (left === null) return false
 
     return left == right
   }
