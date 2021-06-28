@@ -1,3 +1,4 @@
+import { readFileSync } from 'fs'
 import { expect, Test, TestSuite } from 'testyts/build/testyCore'
 import { JSLoader, CSSLoader, HTMLLoader } from '.'
 
@@ -28,19 +29,68 @@ export class CSSLoaderTest {
     expect.toThrowAsync(() => c.localDestructureImport('', '', [], false))
   }
 
-  @Test('Local Content')
-  async localContent() {
+  @Test('Inline local dev')
+  async inlineLocalDev() {
     const c = new CSSLoader()
     expect.toBeEqual(
       await c.localContentImport(
-        '.probablyCss{display:none;}',
+        '.probablyCss { display:none; }',
         'no',
         false,
         false,
         '',
         ''
       ),
-      '<style>.probablyCss{display:none;}</style>'
+      '<style>.probablyCss { display:none; }</style>'
+    )
+  }
+
+  @Test('Inline local production')
+  async inlineLocalProd() {
+    const c = new CSSLoader()
+    expect.toBeEqual(
+      await c.localContentImport(
+        '.probablyCss { display:none; }',
+        'no',
+        true,
+        false,
+        '',
+        ''
+      ),
+      '<style>.probablyCss{display:none}</style>'
+    )
+  }
+
+  @Test('Linked local dev')
+  async linkedLocalDev() {
+    const c = new CSSLoader()
+    expect.toBeEqual(
+      await c.localContentImport(
+        '.probablyCss { display:none; }',
+        'no',
+        false,
+        true,
+        '/tmp/',
+        '/'
+      ),
+      '<link rel="stylesheet" type="text/css" rel="/css/0.css">'
+    )
+
+    expect.toBeEqual(
+      readFileSync('/tmp/css/0.css').toString(),
+      '.probablyCss { display:none; }'
+    )
+
+    expect.toBeEqual(
+      await c.localContentImport(
+        '.probablyCss { display:none; }',
+        'no',
+        false,
+        true,
+        '/tmp/',
+        '/'
+      ),
+      '<link rel="stylesheet" type="text/css" rel="/css/0.css">'
     )
   }
 }
