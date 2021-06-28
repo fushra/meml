@@ -15,7 +15,6 @@ import { Token } from './scanner/Token'
 import { TokenType } from './scanner/TokenTypes'
 import { PageStmt } from './parser/Stmt'
 import {
-  CLoader,
   CSSLoader,
   HTMLLoader,
   ILoader,

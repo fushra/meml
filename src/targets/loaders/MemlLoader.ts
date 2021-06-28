@@ -5,7 +5,7 @@ import { Web } from '../Web'
 import { ILoader } from './ILoader'
 
 export class MemlLoader implements ILoader {
-  supportsWebImport = false
+  supportsWebImport = true
   supportsLocalImport = true
 
   supportsDestructureImport = true
@@ -14,12 +14,21 @@ export class MemlLoader implements ILoader {
   fileMatch = new RegExp('.+\\.meml')
   name = 'meml-loader-meml'
 
-  webDestructureImport(
+  async webDestructureImport(
     pathContents: string,
     path: string,
     toImport: Token[]
   ): Promise<Map<string, string | ComponentDefinition>> {
-    throw new Error('Method not implemented.')
+    const coreInstance = new MemlCore()
+
+    const fileContents = coreInstance.tokenizeAndParse(pathContents, path)
+    const context = new Web(path)
+    await context.convert(fileContents)
+
+    return context.exports as unknown as Map<
+      string,
+      string | ComponentDefinition
+    >
   }
   webContentImport(pathContents: string, path: string): Promise<string> {
     throw new Error('Method not implemented.')

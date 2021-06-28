@@ -144,6 +144,21 @@ export class MemlCTests {
     '(p !false)',
     '<!DOCTYPE html><html><p>true</p></html>'
   )
+  @TestCase(
+    'Local Import Everything',
+    '(import everything from "./examples/nav.meml") (navBar)',
+    '<!DOCTYPE html><html><!-- Start of meml component: navBar --><div>hello world from the nav</div><!-- End of meml component: navBar --></html>'
+  )
+  @TestCase(
+    'Remote Import Everything',
+    '(import everything from "https://raw.githubusercontent.com/fushra/meml/main/examples/nav.meml") (navBar)',
+    '<!DOCTYPE html><html><!-- Start of meml component: navBar --><div>hello world from the nav</div><!-- End of meml component: navBar --></html>'
+  )
+  @TestCase(
+    'Remote Import Specific',
+    '(import (navBar) from "https://raw.githubusercontent.com/fushra/meml/main/examples/nav.meml") (navBar)',
+    '<!DOCTYPE html><html><!-- Start of meml component: navBar --><div>hello world from the nav</div><!-- End of meml component: navBar --></html>'
+  )
   async full(source: string, out: string) {
     const c = new MemlCore()
     const html = await c.sourceToWeb(source)
