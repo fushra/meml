@@ -126,8 +126,8 @@ export class MemlCTests {
   )
   @TestCase(
     'Logic',
-    '(p 1 == 1)(p 1 == 2)(p 1 != 2)(p 1 < 2)(p 2 > 1)',
-    '<!DOCTYPE html><html><p>true</p><p>false</p><p>true</p><p>true</p><p>true</p></html>'
+    '(p 1 == 1)(p 1 == 2)(p 1 != 2)(p 1 < 2)(p 2 > 1)(p null == null)(p null == 5)(p 1 <= 1)(p 0 <= 1)(p 1 >= 1)(p 2 >= 1)',
+    '<!DOCTYPE html><html><p>true</p><p>false</p><p>true</p><p>true</p><p>true</p><p>true</p><p>false</p><p>true</p><p>true</p><p>true</p><p>true</p></html>'
   )
   @TestCase(
     'Component',
@@ -159,6 +159,22 @@ export class MemlCTests {
     '(import (navBar) from "https://raw.githubusercontent.com/fushra/meml/main/examples/nav.meml") (navBar)',
     '<!DOCTYPE html><html><!-- Start of meml component: navBar --><div>hello world from the nav</div><!-- End of meml component: navBar --></html>'
   )
+  @TestCase(
+    'Truthy',
+    '(p !!(null))(p !!false)(p !!true)(p !!"test")(p !!5)',
+    '<!DOCTYPE html><html><p>false</p><p>false</p><p>true</p><p>true</p><p>true</p></html>'
+  )
+  @TestCase(
+    'Falsy null',
+    '(p !null)',
+    '<!DOCTYPE html><html><p>true</p></html>'
+  )
+  @TestCase(
+    'String concat',
+    '(p "a " "b")(p "c " + "d")',
+    '<!DOCTYPE html><html><p>a b</p><p>c d</p></html>'
+  )
+  @TestCase('Negate', '(p -(1))', '<!DOCTYPE html><html><p>-1</p></html>')
   async full(source: string, out: string) {
     const c = new MemlCore()
     const html = await c.sourceToWeb(source)
