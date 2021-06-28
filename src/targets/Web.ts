@@ -427,8 +427,7 @@ export class Web
       case TokenType.LESS:
         return (left as number) < (right as number)
       case TokenType.LESS_EQUAL:
-        ;(left as number) <= (right as number)
-
+        return (left as number) <= (right as number)
       case TokenType.BANG_EQUAL:
         return !this.isEqual(left, right)
       case TokenType.EQUAL_EQUAL:
@@ -444,7 +443,7 @@ export class Web
   }
 
   private isTruthy(obj: boolean | string | number | null): boolean {
-    if (obj == null) return false
+    if (obj === null || obj === 'null') return false
     if (typeof obj == 'boolean') return obj as boolean
 
     return true
