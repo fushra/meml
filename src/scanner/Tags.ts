@@ -72,6 +72,7 @@ export const Tags = mapFromArray([
   'meter',
   'nav',
   'style',
+  'script',
   'table',
   'tbody',
   'td',
