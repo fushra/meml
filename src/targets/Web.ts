@@ -83,7 +83,10 @@ export class Web
     const rawPath = stmt.file
     const filePath = join(dirname(this.path), stmt.file)
     const isUrl =
-      rawPath.replace('http://', '').replace('https://', '') != rawPath
+      rawPath
+        .replace('http://', '')
+        .replace('https://', '')
+        .replace('://', '') != rawPath
 
     if (stmt.imports !== null) {
       // This implements a custom loader for destructure loaders
