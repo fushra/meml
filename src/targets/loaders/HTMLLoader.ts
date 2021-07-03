@@ -2,18 +2,33 @@ import { minify } from 'html-minifier-terser'
 
 import { Token } from '../../scanner/Token'
 import { ComponentDefinition } from '../shared/ComponentDefinition'
-import { ILoader } from './ILoader'
+import { ILoader, LoaderConfig } from './ILoader'
 
 export class HTMLLoader implements ILoader {
-  supportsWebImport = false
-  supportsLocalImport = true
-  supportsDestructureImport = false
-  supportContentImport = true
+  config: LoaderConfig = {
+    web: {
+      destructure: false,
+      content: false,
+    },
 
-  fileMatch = new RegExp('.+\\.html?')
-  name = 'meml-loader-html'
+    local: {
+      destructure: false,
+      content: true,
+    },
 
-  webDestructureImport(
+    file: new RegExp('.+\\.html?'),
+    name: 'meml-loader-html',
+  }
+
+  linkPath(path: string, content: string): string {
+    throw new Error('Method not implemented.')
+  }
+
+  linkInline(content: string): string {
+    return content
+  }
+
+  destructureImport(
     pathContents: string,
     path: string,
     toImport: Token[],
@@ -21,23 +36,8 @@ export class HTMLLoader implements ILoader {
   ): Promise<Map<string, string | ComponentDefinition>> {
     throw new Error('Method not implemented.')
   }
-  webContentImport(
-    pathContents: string,
-    path: string,
-    production: boolean
-  ): Promise<string> {
-    throw new Error('Method not implemented.')
-  }
 
-  localDestructureImport(
-    pathContents: string,
-    path: string,
-    toImport: Token[],
-    production: boolean
-  ): Promise<Map<string, string | ComponentDefinition>> {
-    throw new Error('Method not implemented.')
-  }
-  async localContentImport(
+  async contentImport(
     pathContents: string,
     path: string,
     production: boolean

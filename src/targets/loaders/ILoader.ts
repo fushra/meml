@@ -1,39 +1,35 @@
 import { Token } from '../../scanner/Token'
 import { ComponentDefinition } from '../shared/ComponentDefinition'
 
-export interface ILoader {
-  supportsWebImport: boolean
-  supportsLocalImport: boolean
-  supportsDestructureImport: boolean
-  supportContentImport: boolean
+export interface LoaderConfig {
+  web: {
+    destructure: boolean
+    content: boolean
+  }
+  local: {
+    destructure: boolean
+    content: boolean
+  }
 
-  fileMatch: RegExp
+  file: RegExp
   name: string
+}
 
-  webDestructureImport(
+export interface ILoader {
+  config: LoaderConfig
+
+  linkPath(path: string, content: string): string
+  linkInline(content: string): string
+
+  destructureImport(
     pathContents: string,
     path: string,
     toImport: Token[],
     production: boolean
   ): Promise<Map<string, string | ComponentDefinition>>
-  webContentImport(
+  contentImport(
     pathContents: string,
     path: string,
     production: boolean
-  ): Promise<string>
-
-  localDestructureImport(
-    pathContents: string,
-    path: string,
-    toImport: Token[],
-    production: boolean
-  ): Promise<Map<string, string | ComponentDefinition>>
-  localContentImport(
-    pathContents: string,
-    path: string,
-    production: boolean,
-    shouldLink: boolean,
-    linkDirectory: string,
-    root: string
   ): Promise<string>
 }

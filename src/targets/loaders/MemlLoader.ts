@@ -2,22 +2,37 @@ import { MemlCore } from '../../core'
 import { Token } from '../../scanner/Token'
 import { ComponentDefinition } from '../shared/ComponentDefinition'
 import { Web } from '../Web'
-import { ILoader } from './ILoader'
+import { ILoader, LoaderConfig } from './ILoader'
 
 export class MemlLoader implements ILoader {
-  supportsWebImport = true
-  supportsLocalImport = true
+  config: LoaderConfig = {
+    web: {
+      destructure: true,
+      content: true,
+    },
 
-  supportsDestructureImport = true
-  supportContentImport = false
+    local: {
+      destructure: true,
+      content: true,
+    },
 
-  fileMatch = new RegExp('.+\\.meml')
-  name = 'meml-loader-meml'
+    file: new RegExp('.+\\.meml'),
+    name: 'meml-loader-meml',
+  }
 
-  async webDestructureImport(
+  linkPath(path: string, content: string): string {
+    return content
+  }
+
+  linkInline(content: string): string {
+    return content
+  }
+
+  async destructureImport(
     pathContents: string,
     path: string,
-    toImport: Token[]
+    toImport: Token[],
+    production: boolean
   ): Promise<Map<string, string | ComponentDefinition>> {
     const coreInstance = new MemlCore()
 
@@ -30,28 +45,16 @@ export class MemlLoader implements ILoader {
       string | ComponentDefinition
     >
   }
-  webContentImport(pathContents: string, path: string): Promise<string> {
-    throw new Error('Method not implemented.')
-  }
 
-  async localDestructureImport(
+  async contentImport(
     pathContents: string,
     path: string,
-    toImport: Token[]
-  ): Promise<Map<string, string | ComponentDefinition>> {
+    production: boolean
+  ): Promise<string> {
     const coreInstance = new MemlCore()
 
     const fileContents = coreInstance.tokenizeAndParse(pathContents, path)
     const context = new Web(path)
-    await context.convert(fileContents)
-
-    return context.exports as unknown as Map<
-      string,
-      string | ComponentDefinition
-    >
-  }
-
-  localContentImport(pathContents: string, path: string): Promise<string> {
-    throw new Error('Method not implemented.')
+    return await context.convert(fileContents)
   }
 }
