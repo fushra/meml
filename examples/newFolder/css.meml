@@ -1,0 +1,11 @@
+(head
+  (title "CSS example")
+)
+(body
+  (h1 "Roses are red")
+  (h2 "Violets are blue")
+  (span "Poems are hard")
+  (p "I am sorry")
+
+  (import "../style.css")
+)

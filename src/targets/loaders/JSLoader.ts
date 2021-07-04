@@ -35,7 +35,7 @@ export class JSLoader implements ILoader {
     toImport: Token[],
     production: boolean
   ): Promise<Map<string, string | ComponentDefinition>> {
-    throw new Error('Method not implemented.')
+    throw new Error('[JS] Method not implemented.')
   }
 
   async contentImport(

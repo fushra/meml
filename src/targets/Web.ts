@@ -29,6 +29,7 @@ import { Environment } from './shared/Environment'
 import { ComponentDefinition } from './shared/ComponentDefinition'
 import { Tags } from '../scanner/Tags'
 import { MemlC, MemlCore } from '../core'
+import { relativeLink } from './loaders'
 
 export class Web
   implements
@@ -96,15 +97,16 @@ export class Web
       // Loop through all of the loaders
       for (const loader of MemlCore.globalLoaders) {
         // Check if this loader fits
-        if (loader.fileMatch.test(filePath)) {
+        if (loader.config.file.test(filePath)) {
           // Check if this is a web resource
           if (isUrl) {
-            // Check if the current loader allows for web imports
-            if (loader.supportsDestructureImport && loader.supportsWebImport) {
+            // Check if the current loader allows for web destructure imports
+            if (loader.config.web.destructure) {
               // Download the resources
               const contents = await (await fetch(rawPath)).text()
+
               // Pass it into the loader
-              const fileExports = await loader.webDestructureImport(
+              const fileExports = await loader.destructureImport(
                 contents,
                 rawPath,
                 stmt.imports == 'everything' ? [] : stmt.imports.items,
@@ -138,15 +140,12 @@ export class Web
               break
             }
           } else {
-            // Check if the current loader allows for web imports
-            if (
-              loader.supportsDestructureImport &&
-              loader.supportsLocalImport
-            ) {
+            // Check if the current loader allows for local destructure imports
+            if (loader.config.local.destructure) {
               // Load all of the contents of the files
               const contents = readFileSync(filePath).toString()
               // Pass it into the loader
-              const fileExports = await loader.localDestructureImport(
+              const fileExports = await loader.destructureImport(
                 contents,
                 filePath,
                 stmt.imports == 'everything' ? [] : stmt.imports.items,
@@ -198,31 +197,37 @@ export class Web
       // [ ] Check if its a url and appropriately handle it
 
       for (const loader of MemlCore.globalLoaders) {
-        if (loader.fileMatch.test(filePath)) {
+        if (loader.config.file.test(filePath)) {
           if (isUrl) {
-            if (loader.supportsWebImport && loader.supportContentImport) {
-              // Download the resources
-              const contents = await (await fetch(rawPath)).text()
+            // Check if the loader allows for web content imports
+            if (loader.config.web.content) {
+              return loader.linkPath(
+                rawPath,
+                await loader.contentImport(
+                  await (await fetch(rawPath)).text(),
+                  rawPath,
+                  MemlCore.isProduction
+                )
+              )
+            }
+          } else {
+            if (loader.config.local.content) {
+              // Read the file from disk
+              const contents = readFileSync(filePath).toString()
 
-              return await loader.webContentImport(
+              const parsed = await loader.contentImport(
                 contents,
                 rawPath,
                 MemlCore.isProduction
               )
-            }
-          } else {
-            if (loader.supportsLocalImport && loader.supportContentImport) {
-              // Read the file from disk
-              const contents = readFileSync(filePath).toString()
 
-              return await loader.localContentImport(
-                contents,
-                filePath,
-                MemlCore.isProduction,
-                MemlCore.shouldLink,
-                MemlCore.distPath,
-                MemlCore.rootPath
-              )
+              if (MemlCore.shouldLink) {
+                const path = relativeLink(parsed, rawPath, this.path)
+
+                return loader.linkPath(path, parsed)
+              } else {
+                return loader.linkInline(parsed)
+              }
             }
           }
         }

@@ -21,7 +21,7 @@ export class HTMLLoader implements ILoader {
   }
 
   linkPath(path: string, content: string): string {
-    throw new Error('Method not implemented.')
+    return content
   }
 
   linkInline(content: string): string {
@@ -34,7 +34,7 @@ export class HTMLLoader implements ILoader {
     toImport: Token[],
     production: boolean
   ): Promise<Map<string, string | ComponentDefinition>> {
-    throw new Error('Method not implemented.')
+    throw new Error('[HTML] Method not implemented.')
   }
 
   async contentImport(

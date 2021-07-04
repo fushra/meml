@@ -34,7 +34,7 @@ export class CSSLoader implements ILoader {
     toImport: Token[],
     production: boolean
   ): Promise<Map<string, string | ComponentDefinition>> {
-    throw new Error('Method not implemented.')
+    throw new Error('[CSS] Method not implemented.')
   }
 
   async contentImport(
