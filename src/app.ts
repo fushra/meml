@@ -1,8 +1,8 @@
 import { program } from 'commander'
-import { readFileSync, writeFileSync } from 'fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'fs'
 import kleur from 'kleur'
 import fetch from 'node-fetch'
-import { join, resolve } from 'path'
+import { dirname, join, resolve } from 'path'
 
 import { MemlCore } from './core'
 
@@ -63,6 +63,7 @@ program.parse(process.argv)
   const out = resolve(currentDir, args.out)
 
   MemlCore.distPath = out
+  MemlCore.sourcePath = src
   MemlCore.shouldLink = true
   MemlCore.rootPath = args.rootPath
 
@@ -79,6 +80,7 @@ program.parse(process.argv)
     const realOut = join(out, file.replace('.meml', '.html'))
 
     const c = new MemlCore()
+    mkdirSync(dirname(realOut), { recursive: true })
     writeFileSync(realOut, await c.fileToWeb(realPath))
   }
 

@@ -35,7 +35,8 @@ export class MemlCore {
 
   static shouldLink = false
   static rootPath = '/'
-  static distPath = './'
+  static sourcePath = process.cwd()
+  static distPath = process.cwd()
 
   // ------------------------------------------------------------
   // Interpreter stepping function

@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from 'fs'
-import { basename, extname, join, relative } from 'path'
+import { basename, dirname, extname, join, relative } from 'path'
 import { MemlCore } from '../../core'
 
 let linkerCache = new Map()
@@ -28,5 +28,5 @@ export function relativeLink(
   mkdirSync(join(MemlCore.distPath, 'assets'), { recursive: true })
   writeFileSync(outFile, contents)
 
-  return relative(hostPath.replace(basename(hostPath), ''), outFile)
+  return relative(dirname(hostPath), outFile)
 }
