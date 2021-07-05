@@ -20,6 +20,7 @@ import {
   ILoader,
   JSLoader,
   MemlLoader,
+  resetLinker,
 } from './targets/loaders'
 
 export class MemlCore {
@@ -71,6 +72,11 @@ export class MemlCore {
 
   fileToWeb(path: string): Promise<string> {
     return this.sourceToWeb(readFileSync(path).toString(), path)
+  }
+
+  static reset() {
+    this.resetErrors()
+    resetLinker()
   }
 
   // ------------------------------------------------------------

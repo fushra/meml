@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from 'fs'
-import { basename, dirname, extname, join, relative } from 'path'
+import { dirname, extname, join, relative } from 'path'
 import { MemlCore } from '../../core'
 
 let linkerCache = new Map()
