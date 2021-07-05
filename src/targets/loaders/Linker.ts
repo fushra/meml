@@ -20,6 +20,7 @@ export function relativeLink(
     id = linkerCache.get(filePath)
   } else {
     id = ++fileIds
+    linkerCache.set(filePath, id)
   }
 
   const outPath = join(MemlCore.distPath, 'assets')

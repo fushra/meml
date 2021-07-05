@@ -226,7 +226,11 @@ export class Web
                   MemlCore.distPath,
                   this.path.replace(MemlCore.sourcePath, '')
                 )
-                const path = relativeLink(parsed, rawPath, memlFileOut)
+                const path = relativeLink(
+                  parsed,
+                  join(dirname(this.path), rawPath),
+                  memlFileOut
+                )
 
                 return loader.linkPath(path, parsed)
               } else {
