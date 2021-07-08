@@ -4,9 +4,9 @@ import { IStmt, MemlStmt, StmtVisitor } from '../../parser/Stmt'
 import { Web } from '../Web'
 
 export class ComponentDefinition {
-  private props: DestructureExpr
-  private meml: IStmt
-  private name: string
+  props: DestructureExpr
+  meml: IStmt
+  name: string
 
   constructor(props: DestructureExpr, meml: IStmt, name: string) {
     this.props = props

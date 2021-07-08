@@ -18,24 +18,24 @@
 
 // The rest of the file
 (head
-    (title "Hello World!")
+   (title "Hello World!")
 )
 // This is a comment
 (body
-    (navBar "test")
-    (p "Basic website made with MEML!")
-    (p "1 + 2 = " 1 + 2)
-    (p "BODMAS: " 5 - 5 * 5 + 5)
-    (p "This string contains \"Excaped characters\"")
-    (helloComponent name="TrickyPR")
-    (a href="https://fushra.com" "Our website!")
-    (import './embed.html')
+   (navBar "test")
+   (p "Basic website made with MEML!")
+   (p "1 + 2 = " 1 + 2)
+   (p "BODMAS: " 5 - 5 * 5 + 5)
+   (p "This string contains \"Excaped characters\"")
+   (helloComponent name="TrickyPR")
+   (a href="https://fushra.com" "Our website!")
+   (import './embed.html')
 
-    (logic name="TrickyPR" username=null)
-    (logic username="_trickypr" name=null)
-    (logic username=null name=null)
+   (logic name="TrickyPR" username=null)
+   (logic username="_trickypr" name=null)
+   (logic username=null name=null)
 
-    (for count in [0, 1, 2, 3, 4, 5]
+   (for count in [0, 1, 2, 3, 4, 5]
       (p "Count: " count)
    )
 )
