@@ -62,7 +62,7 @@ const outDir = './src/parser'
 
 defineAst(outDir, 'Expr', {
   Binary: ['left: IExpr', 'operator: Token', 'right: IExpr'],
-  Grouping: ['expression: IExpr'],
+  Grouping: ['expression: unknown'],
   Literal: ['value: any'],
   Unary: ['operator: Token', 'right: IExpr'],
   MemlProperties: ['name: Token', 'value: IExpr'],
@@ -88,6 +88,12 @@ defineAst(
     ],
     Expression: ['expression: IExpr'],
     Page: ['children: IStmt[]'],
+    If: [
+      'primaryExpression: IExpr',
+      'primaryMeml: IStmt | IExpr',
+      'elif: { expr: IExpr, meml: IStmt | IExpr }[]',
+      'elseMeml: IStmt | IExpr | null',
+    ],
   },
   'import { IExpr, MemlPropertiesExpr, DestructureExpr } from "./Expr"'
 )

@@ -32,6 +32,8 @@ export enum TokenType {
   EXPORT = 'export',
   IMPORT = 'import',
   FROM = 'from',
+  IF = 'if',
+  ELSE = 'else',
 
   EOF = 'eof',
 }

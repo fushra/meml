@@ -19,6 +19,7 @@ import {
   ComponentStmt,
   ExportStmt,
   ExpressionStmt,
+  IfStmt,
   ImportStmt,
   IStmt,
   MemlStmt,
@@ -366,6 +367,28 @@ export class Web
     return ''
   }
 
+  async visitIfStmt(stmt: IfStmt): Promise<string> {
+    // If the first statement matches, return its executed value
+    if (this.isTruthy(await this.evaluate(stmt.primaryExpression))) {
+      return (await this.evaluate(stmt.primaryMeml)).toString()
+    }
+
+    // Loop through all the elseifs
+    for (const elseif of stmt.elif) {
+      if (this.isTruthy(await this.evaluate(elseif.expr))) {
+        return (await this.evaluate(elseif.meml)).toString()
+      }
+    }
+
+    // Otherwise return the default value if it exists
+    if (stmt.elseMeml !== null) {
+      return (await this.evaluate(stmt.elseMeml)).toString()
+    }
+
+    // Otherwise return nothing
+    return ''
+  }
+
   // ===========================================================================
   // Expr visitor pattern implementations
 
@@ -454,7 +477,7 @@ export class Web
   // ===========================================================================
   // Utils
 
-  private async evaluate(expr: any): Promise<string | number | boolean> {
+  async evaluate(expr: any): Promise<string | number | boolean> {
     return await expr.accept(this)
   }
 

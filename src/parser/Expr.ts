@@ -32,9 +32,9 @@ export class BinaryExpr implements IExpr {
 }
 
 export class GroupingExpr implements IExpr {
-  expression: IExpr
+  expression: unknown
 
-  constructor(expression: IExpr) {
+  constructor(expression: unknown) {
     this.expression = expression
   }
 

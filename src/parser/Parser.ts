@@ -15,6 +15,7 @@ import {
   ComponentStmt,
   ExportStmt,
   ExpressionStmt,
+  IfStmt,
   ImportStmt,
   IStmt,
   MemlStmt,
@@ -82,6 +83,7 @@ export class Parser {
       return this.memlStmt()
     }
 
+    if (this.doubleCheck(TokenType.IF)) return this.ifStmt()
     if (this.doubleCheck(TokenType.IMPORT)) return this.importStmt()
 
     // Otherwise it is an expression
@@ -112,7 +114,7 @@ export class Parser {
     this.consume(TokenType.RIGHT_PAREN, 'Expected closing bracket after props')
 
     // Collect the meml statement
-    const memlStmt = this.memlStmt()
+    const memlStmt = this.statement()
 
     // Consume the ending parenthesis
     this.consume(
@@ -199,6 +201,62 @@ export class Parser {
     file = fileToken.literal
 
     return new ImportStmt(file, fileToken, imports)
+  }
+
+  private ifStmt(): IStmt {
+    // Consume the opening parenthesis
+    this.consume(TokenType.LEFT_PAREN, 'Expected opening bracket before if')
+    this.advance()
+
+    // Consume the condition
+    this.consume(
+      TokenType.LEFT_PAREN,
+      'Expected opening bracket before condition'
+    )
+    const primaryCondition = this.expression()
+    this.consume(
+      TokenType.RIGHT_PAREN,
+      'Expected closing bracket after condition'
+    )
+
+    const primaryStmt = this.statement()
+
+    let elif = []
+
+    do {
+      // Consume the else and if
+      this.advance()
+      this.advance()
+
+      // Consume the condition
+      this.consume(
+        TokenType.LEFT_PAREN,
+        'Expected opening bracket before condition'
+      )
+      const condition = this.expression()
+      this.consume(
+        TokenType.RIGHT_PAREN,
+        'Expected closing bracket after condition'
+      )
+
+      const stmt = this.statement()
+
+      elif.push({ expr: condition, meml: stmt })
+    } while (this.check(TokenType.ELSE) && this.doubleCheck(TokenType.IF))
+
+    let elseStmt = null
+
+    if (this.match(TokenType.ELSE)) {
+      this.peek()
+      elseStmt = this.statement()
+    }
+
+    this.consume(
+      TokenType.RIGHT_PAREN,
+      'Expected closing bracket after if block'
+    )
+
+    return new IfStmt(primaryCondition, primaryStmt, elif, elseStmt)
   }
 
   /**
@@ -357,7 +415,7 @@ export class Parser {
     }
 
     if (this.match(TokenType.LEFT_PAREN)) {
-      const expr = this.expression()
+      const expr = this.statement()
       this.consume(TokenType.RIGHT_PAREN, `Expect ')' after expression.`)
       return new GroupingExpr(expr)
     }

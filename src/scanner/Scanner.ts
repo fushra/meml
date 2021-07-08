@@ -141,6 +141,14 @@ export class Scanner {
         type = TokenType.EXPORT
         break
 
+      case 'if':
+        type = TokenType.IF
+        break
+
+      case 'else':
+        type = TokenType.ELSE
+        break
+
       case 'false':
         type = TokenType.FALSE
         break

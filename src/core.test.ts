@@ -1,7 +1,6 @@
 import { TestSuite, Test, TestCase, expect } from 'testyts/build/testyCore'
 import { MemlC, MemlCore } from './core'
 import { Parser } from './parser/Parser'
-import { AstPrinter } from './parser/Printer'
 import { Scanner } from './scanner/Scanner'
 import { Token } from './scanner/Token'
 import { TokenType } from './scanner/TokenTypes'
@@ -58,38 +57,6 @@ export class MemlCTests {
   async runFile() {
     const memlC = new MemlCore()
     await memlC.fileToWeb('./examples/helloWorld.meml')
-  }
-
-  @Test('Parser')
-  @TestCase(
-    'Head only',
-    '(head (title "Hello World!"))',
-    '(page (head (title (expression Hello World!))))'
-  )
-  @TestCase(
-    'Basic full',
-    '(head (title "Hello World!")) (body (h1 "Hello world!"))',
-    '(page (head (title (expression Hello World!))) (body (h1 (expression Hello world!))))'
-  )
-  @TestCase(
-    'Basic multi-tag',
-    '(head (title "Hello World!")) (body (h1 "Hello world!") (p "This page was created using trickypr\'s MEML translator!"))',
-    "(page (head (title (expression Hello World!))) (body (h1 (expression Hello world!)) (p (expression This page was created using trickypr's MEML translator!))))"
-  )
-  @TestCase(
-    'Basic addition',
-    '(head (title "Hello World!")) (body (h1 "1 + 1 = " 1 + 1))',
-    '(page (head (title (expression Hello World!))) (body (h1 (expression 1 + 1 = ) (expression (+ 1 1)))))'
-  )
-  parser(source: string, out: string) {
-    const scanner = new Scanner(source)
-    const tokens = scanner.scanTokens()
-    const parser = new Parser(tokens)
-    const expression = parser.parse()
-
-    const printed = new AstPrinter().print(expression)
-
-    expect.toBeEqual(printed, out)
   }
 
   @Test('End to end')

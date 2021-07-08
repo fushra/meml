@@ -5,6 +5,17 @@
 (component helloComponent (name)
   (p "Hello " name ". This comes from a component!")
 )
+
+(component logic (username, name)
+   (if (name)
+      (p "Hello " name)
+   else if (username)
+      (p "Hello " username)
+   else
+      (p "Who are you?!")
+   )
+)
+
 // The rest of the file
 (head
     (title "Hello World!")
@@ -19,6 +30,10 @@
     (helloComponent name="TrickyPR")
     (a href="https://fushra.com" "Our website!")
     (import './embed.html')
+
+    (logic name="TrickyPR" username=null)
+    (logic username="_trickypr" name=null)
+    (logic username=null name=null)
 )
 
 (export (helloComponent))

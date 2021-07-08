@@ -12,7 +12,7 @@ Write simpler code to target the web
 [![Discord](https://img.shields.io/discord/841238828042944562?style=for-the-badge)](https://discord.gg/UPQW9juP5Z)
 
 > Fushra `MEMLC` is not the only version of MEML! Read more [here](https://meml.fivnex.co)!! \
-Fushra is a subsidiary to [Fivnex](https://fivnex.co), who create the MEML standards
+> Fushra is a subsidiary to [Fivnex](https://fivnex.co), who create the MEML standards
 
 </div>
 

@@ -8,6 +8,7 @@ export interface StmtVisitor<R> {
   visitMemlStmt: (stmt: MemlStmt) => R
   visitExpressionStmt: (stmt: ExpressionStmt) => R
   visitPageStmt: (stmt: PageStmt) => R
+  visitIfStmt: (stmt: IfStmt) => R
 }
 
 export interface IStmt {
@@ -111,5 +112,29 @@ export class PageStmt implements IStmt {
   // Visitor pattern
   accept<R>(visitor: StmtVisitor<R>): R {
     return visitor.visitPageStmt(this)
+  }
+}
+
+export class IfStmt implements IStmt {
+  primaryExpression: IExpr
+  primaryMeml: IStmt | IExpr
+  elif: { expr: IExpr; meml: IStmt | IExpr }[]
+  elseMeml: IStmt | IExpr | null
+
+  constructor(
+    primaryExpression: IExpr,
+    primaryMeml: IStmt | IExpr,
+    elif: { expr: IExpr; meml: IStmt | IExpr }[],
+    elseMeml: IStmt | IExpr | null
+  ) {
+    this.primaryExpression = primaryExpression
+    this.primaryMeml = primaryMeml
+    this.elif = elif
+    this.elseMeml = elseMeml
+  }
+
+  // Visitor pattern
+  accept<R>(visitor: StmtVisitor<R>): R {
+    return visitor.visitIfStmt(this)
   }
 }

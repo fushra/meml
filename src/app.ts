@@ -1,4 +1,4 @@
-import { program } from 'commander'
+import { configureOutput, program } from 'commander'
 import { mkdirSync, readFileSync, writeFileSync } from 'fs'
 import kleur from 'kleur'
 import fetch from 'node-fetch'

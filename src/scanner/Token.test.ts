@@ -6,12 +6,12 @@ import { TokenType } from './TokenTypes'
 export class MemlCTests {
   @Test('Construct')
   construct() {
-      new Token(TokenType.LEFT_PAREN, '', '', 5, '')
+    new Token(TokenType.LEFT_PAREN, '', '', 5, '')
   }
 
   @Test('To string')
   toString() {
-      const token = new Token(TokenType.LEFT_PAREN, '(test)', '(', 5, '')
-      expect.toBeEqual(token.toString(), 'leftParen (test) (')
+    const token = new Token(TokenType.LEFT_PAREN, '(test)', '(', 5, '')
+    expect.toBeEqual(token.toString(), 'leftParen (test) (')
   }
 }
