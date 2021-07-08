@@ -8,6 +8,7 @@ export interface ExprVisitor<R> {
   visitMemlPropertiesExpr: (expr: MemlPropertiesExpr) => R
   visitDestructureExpr: (expr: DestructureExpr) => R
   visitIdentifierExpr: (expr: IdentifierExpr) => R
+  visitArrayExpr: (expr: ArrayExpr) => R
 }
 
 export interface IExpr {
@@ -110,5 +111,18 @@ export class IdentifierExpr implements IExpr {
   // Visitor pattern
   accept<R>(visitor: ExprVisitor<R>): R {
     return visitor.visitIdentifierExpr(this)
+  }
+}
+
+export class ArrayExpr implements IExpr {
+  items: IExpr[]
+
+  constructor(items: IExpr[]) {
+    this.items = items
+  }
+
+  // Visitor pattern
+  accept<R>(visitor: ExprVisitor<R>): R {
+    return visitor.visitArrayExpr(this)
   }
 }

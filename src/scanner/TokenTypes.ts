@@ -2,6 +2,8 @@ export enum TokenType {
   // Single-character tokens.
   LEFT_PAREN = 'leftParen',
   RIGHT_PAREN = 'rightParen',
+  LEFT_SQUARE = 'leftSquare',
+  RIGHT_SQUARE = 'rightSquare',
   MINUS = 'minus',
   PLUS = 'plus',
   SLASH = 'slash',
@@ -34,6 +36,8 @@ export enum TokenType {
   FROM = 'from',
   IF = 'if',
   ELSE = 'else',
+  FOR = 'for',
+  IN = 'in',
 
   EOF = 'eof',
 }

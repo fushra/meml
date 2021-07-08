@@ -68,6 +68,7 @@ defineAst(outDir, 'Expr', {
   MemlProperties: ['name: Token', 'value: IExpr'],
   Destructure: ['items: Token[]'],
   Identifier: ['token: Token'],
+  Array: ['items: IExpr[]'],
 })
 
 defineAst(
@@ -94,6 +95,7 @@ defineAst(
       'elif: { expr: IExpr, meml: IStmt | IExpr }[]',
       'elseMeml: IStmt | IExpr | null',
     ],
+    For: ['input: IExpr', 'output: Token', 'template: IStmt'],
   },
   'import { IExpr, MemlPropertiesExpr, DestructureExpr } from "./Expr"'
 )

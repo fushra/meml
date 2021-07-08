@@ -1,6 +1,7 @@
 import { TokenType } from '../scanner/TokenTypes'
 import { Token } from '../scanner/Token'
 import {
+  ArrayExpr,
   BinaryExpr,
   DestructureExpr,
   GroupingExpr,
@@ -15,6 +16,7 @@ import {
   ComponentStmt,
   ExportStmt,
   ExpressionStmt,
+  ForStmt,
   IfStmt,
   ImportStmt,
   IStmt,
@@ -84,6 +86,7 @@ export class Parser {
     }
 
     if (this.doubleCheck(TokenType.IF)) return this.ifStmt()
+    if (this.doubleCheck(TokenType.FOR)) return this.forStmt()
     if (this.doubleCheck(TokenType.IMPORT)) return this.importStmt()
 
     // Otherwise it is an expression
@@ -259,6 +262,32 @@ export class Parser {
     return new IfStmt(primaryCondition, primaryStmt, elif, elseStmt)
   }
 
+  private forStmt(): IStmt {
+    // Consume the opening parenthesis
+    this.consume(TokenType.LEFT_PAREN, 'Expected opening bracket before for')
+    // Consume for token
+    this.advance()
+
+    // Consume the output variable name
+    const output = this.consume(
+      TokenType.IDENTIFIER,
+      'Expected output variable name'
+    )
+
+    // Consume in token
+    this.consume(TokenType.IN, 'Expected "in"')
+
+    // Consume the input variable name
+    let input = this.expression()
+
+    const template = this.statement()
+
+    // Consume the closing parenthesis
+    this.consume(TokenType.RIGHT_PAREN, 'Expected closing bracket after for')
+
+    return new ForStmt(input, output, template)
+  }
+
   /**
    * memlStmt    = IDENTIFIER memlProp* statement*;
    */
@@ -422,6 +451,31 @@ export class Parser {
 
     if (this.match(TokenType.IDENTIFIER))
       return new IdentifierExpr(this.previous())
+
+    // Handle arrays
+    if (this.match(TokenType.LEFT_SQUARE)) {
+      const elements = []
+
+      // The first expression doesn't have to be prepended with a ','
+      if (!this.check(TokenType.RIGHT_SQUARE)) {
+        elements.push(this.expression())
+      }
+
+      do {
+        // Consume comma
+        this.advance()
+
+        elements.push(this.expression())
+      } while (this.check(TokenType.COMMA))
+
+      // Consume a final (optional) ','
+      if (this.peek().type === TokenType.COMMA) this.advance()
+
+      // End the array
+      this.consume(TokenType.RIGHT_SQUARE, `Expected ']' after array.`)
+
+      return new ArrayExpr(elements)
+    }
 
     this.error(this.peek(), 'Expected expression.')
   }

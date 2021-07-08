@@ -6,6 +6,7 @@ const { dirname, join, extname } = path
 
 import { TokenType } from '../scanner/TokenTypes'
 import {
+  ArrayExpr,
   BinaryExpr,
   DestructureExpr,
   ExprVisitor,
@@ -19,6 +20,7 @@ import {
   ComponentStmt,
   ExportStmt,
   ExpressionStmt,
+  ForStmt,
   IfStmt,
   ImportStmt,
   IStmt,
@@ -26,7 +28,7 @@ import {
   PageStmt,
   StmtVisitor,
 } from '../parser/Stmt'
-import { Environment } from './shared/Environment'
+import { Environment, EnvStore, EnvValidTypes } from './shared/Environment'
 import { ComponentDefinition } from './shared/ComponentDefinition'
 import { Tags } from '../scanner/Tags'
 import { MemlC, MemlCore } from '../core'
@@ -34,12 +36,12 @@ import { relativeLink } from './loaders'
 
 export class Web
   implements
-    ExprVisitor<Promise<string | number | boolean | null>>,
+    ExprVisitor<Promise<EnvValidTypes | null>>,
     StmtVisitor<Promise<string>>
 {
   // Memory storage for SS execution
   environment = new Environment()
-  exports = new Map<string, string | number | boolean | ComponentDefinition>()
+  exports = new Map<string, EnvStore>()
 
   // The path to the file we are currently executing
   path: string
@@ -389,6 +391,45 @@ export class Web
     return ''
   }
 
+  async visitForStmt(stmt: ForStmt): Promise<string> {
+    let result = ''
+
+    let input = await this.evaluate(stmt.input)
+
+    // Ensure it is an array
+    if (typeof input !== 'object' || !(input instanceof Array)) {
+      MemlCore.errorAtToken(
+        stmt.output,
+        'The input to the for statement must be an array',
+        this.path
+      )
+    }
+
+    // Tell typescript that it now must be an array
+    input = input as (string | number | boolean)[]
+
+    // Loop through the array
+    for (const item of input) {
+      // Store the previous environment to retrieve it later
+      const previousEnv = this.environment
+
+      // Create a new containing environment
+      this.environment = new Environment(this.environment)
+
+      // Put the item into the environnement under the correct name
+      this.environment.define(stmt.output.literal, item)
+
+      // Evaluate the statement included
+      result += await this.evaluate(stmt.template)
+
+      // Restore the old environment
+      this.environment = previousEnv
+    }
+
+    // Return the final result
+    return result
+  }
+
   // ===========================================================================
   // Expr visitor pattern implementations
 
@@ -418,9 +459,7 @@ export class Web
     return expr.value
   }
 
-  visitGroupingExpr(
-    expr: GroupingExpr
-  ): Promise<string | number | boolean | null> {
+  visitGroupingExpr(expr: GroupingExpr): Promise<EnvValidTypes> {
     return this.evaluate(expr.expression)
   }
 
@@ -474,24 +513,31 @@ export class Web
     }
   }
 
+  async visitArrayExpr(expr: ArrayExpr): Promise<EnvValidTypes[]> {
+    const values = []
+
+    for (const item of expr.items) {
+      values.push(await this.evaluate(item))
+    }
+
+    return values
+  }
+
   // ===========================================================================
   // Utils
 
-  async evaluate(expr: any): Promise<string | number | boolean> {
+  async evaluate(expr: any): Promise<EnvValidTypes> {
     return await expr.accept(this)
   }
 
-  private isTruthy(obj: boolean | string | number | null): boolean {
+  private isTruthy(obj: EnvValidTypes): boolean {
     if (obj === null || obj === 'null') return false
     if (typeof obj == 'boolean') return obj as boolean
 
     return true
   }
 
-  private isEqual(
-    left: boolean | string | number | null,
-    right: boolean | string | number | null
-  ): boolean {
+  private isEqual(left: EnvValidTypes, right: EnvValidTypes): boolean {
     if (left === null && right === null) return false
     if (left === null) return false
 

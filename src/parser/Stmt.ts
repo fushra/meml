@@ -9,6 +9,7 @@ export interface StmtVisitor<R> {
   visitExpressionStmt: (stmt: ExpressionStmt) => R
   visitPageStmt: (stmt: PageStmt) => R
   visitIfStmt: (stmt: IfStmt) => R
+  visitForStmt: (stmt: ForStmt) => R
 }
 
 export interface IStmt {
@@ -136,5 +137,22 @@ export class IfStmt implements IStmt {
   // Visitor pattern
   accept<R>(visitor: StmtVisitor<R>): R {
     return visitor.visitIfStmt(this)
+  }
+}
+
+export class ForStmt implements IStmt {
+  input: IExpr
+  output: Token
+  template: IStmt
+
+  constructor(input: IExpr, output: Token, template: IStmt) {
+    this.input = input
+    this.output = output
+    this.template = template
+  }
+
+  // Visitor pattern
+  accept<R>(visitor: StmtVisitor<R>): R {
+    return visitor.visitForStmt(this)
   }
 }

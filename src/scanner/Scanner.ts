@@ -39,6 +39,12 @@ export class Scanner {
       case ')':
         this.addToken(TokenType.RIGHT_PAREN)
         break
+      case '[':
+        this.addToken(TokenType.LEFT_SQUARE)
+        break
+      case ']':
+        this.addToken(TokenType.RIGHT_SQUARE)
+        break
       case '-':
         this.addToken(TokenType.MINUS)
         break
@@ -147,6 +153,14 @@ export class Scanner {
 
       case 'else':
         type = TokenType.ELSE
+        break
+
+      case 'for':
+        type = TokenType.FOR
+        break
+
+      case 'in':
+        type = TokenType.IN
         break
 
       case 'false':

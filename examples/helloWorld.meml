@@ -34,6 +34,10 @@
     (logic name="TrickyPR" username=null)
     (logic username="_trickypr" name=null)
     (logic username=null name=null)
+
+    (for count in [0, 1, 2, 3, 4, 5]
+      (p "Count: " count)
+   )
 )
 
 (export (helloComponent))
