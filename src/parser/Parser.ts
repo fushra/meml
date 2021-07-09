@@ -226,7 +226,7 @@ export class Parser {
 
     let elif = []
 
-    do {
+    while (this.check(TokenType.ELSE) && this.doubleCheck(TokenType.IF)) {
       // Consume the else and if
       this.advance()
       this.advance()
@@ -245,7 +245,7 @@ export class Parser {
       const stmt = this.statement()
 
       elif.push({ expr: condition, meml: stmt })
-    } while (this.check(TokenType.ELSE) && this.doubleCheck(TokenType.IF))
+    }
 
     let elseStmt = null
 

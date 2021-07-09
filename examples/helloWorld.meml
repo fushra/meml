@@ -29,6 +29,7 @@
    (p "Basic website made with MEML!")
    (p "1 + 2 = " 1 + 2)
    (p "BODMAS: " 5 - 5 * 5 + 5)
+   (p "Brackets: " (1 + 2) * (3 + 4))
    (p "This string contains \"Excaped characters\"")
    (helloComponent name="TrickyPR")
    (a href="https://fushra.com" "Our website!")
@@ -41,6 +42,8 @@
    (for count in [0, 1, 2, 3, 4, 5]
       (p "Count: " count)
    )
+
+   (if (false) "no" else "fine")
 )
 
 (export (helloComponent))
