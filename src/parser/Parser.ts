@@ -444,9 +444,14 @@ export class Parser {
     }
 
     if (this.match(TokenType.LEFT_PAREN)) {
-      const expr = this.statement()
+      let exprs = []
+
+      do {
+        exprs.push(this.statement())
+      } while (!this.check(TokenType.RIGHT_PAREN))
+
       this.consume(TokenType.RIGHT_PAREN, `Expect ')' after expression.`)
-      return new GroupingExpr(expr)
+      return new GroupingExpr(exprs)
     }
 
     if (this.match(TokenType.IDENTIFIER))

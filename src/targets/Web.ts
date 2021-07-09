@@ -459,8 +459,18 @@ export class Web
     return expr.value
   }
 
-  visitGroupingExpr(expr: GroupingExpr): Promise<EnvValidTypes> {
-    return this.evaluate(expr.expression)
+  async visitGroupingExpr(expr: GroupingExpr): Promise<EnvValidTypes> {
+    if (expr.expressions.length === 1) {
+      return await this.evaluate(expr.expressions[0])
+    }
+
+    let out = ''
+
+    for (const child of expr.expressions) {
+      out += await this.evaluate(child)
+    }
+
+    return out
   }
 
   async visitUnaryExpr(expr: UnaryExpr): Promise<number | boolean | null> {

@@ -62,7 +62,7 @@ const outDir = './src/parser'
 
 defineAst(outDir, 'Expr', {
   Binary: ['left: IExpr', 'operator: Token', 'right: IExpr'],
-  Grouping: ['expression: unknown'],
+  Grouping: ['expressions: unknown[]'],
   Literal: ['value: any'],
   Unary: ['operator: Token', 'right: IExpr'],
   MemlProperties: ['name: Token', 'value: IExpr'],

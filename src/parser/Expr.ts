@@ -33,10 +33,10 @@ export class BinaryExpr implements IExpr {
 }
 
 export class GroupingExpr implements IExpr {
-  expression: unknown
+  expressions: unknown[]
 
-  constructor(expression: unknown) {
-    this.expression = expression
+  constructor(expressions: unknown[]) {
+    this.expressions = expressions
   }
 
   // Visitor pattern

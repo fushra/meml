@@ -3,7 +3,10 @@
 
 // Lets define a sample component
 (component helloComponent (name)
-  (p "Hello " name ". This comes from a component!")
+   (
+      (p "Hello " name ". This comes from a component!")
+      (p "Test")
+   )
 )
 
 (component logic (username, name)
