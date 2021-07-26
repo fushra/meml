@@ -74,7 +74,7 @@ export class MemlCore {
     return this.sourceToWeb(readFileSync(path).toString(), path)
   }
 
-  static reset() {
+  static reset(): void {
     this.resetErrors()
     resetLinker()
   }
@@ -82,7 +82,7 @@ export class MemlCore {
   // ------------------------------------------------------------
   // Error functions
 
-  static resetErrors() {
+  static resetErrors(): void {
     this.hadError = false
     this.errors = ''
   }
@@ -101,7 +101,7 @@ export class MemlCore {
     }
   }
 
-  static error(line: number, message: string, file = '') {
+  static error(line: number, message: string, file = ''): void {
     this.report(line, '', message, file)
   }
 
@@ -115,7 +115,7 @@ export class MemlCore {
     )
   }
 
-  static generalWarning(line: number, message: string) {
+  static generalWarning(line: number, message: string): void {
     this.warn(line, 'General', '', message)
   }
 
@@ -163,7 +163,7 @@ export class MemlCore {
     return `    ┃${context.replace(/\n/g, '\n    ┃')}`
   }
 
-  static registerLoader(Loader: ILoader) {
+  static registerLoader(Loader: ILoader): void {
     this.globalLoaders.push(Loader)
   }
 }

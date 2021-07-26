@@ -14,7 +14,7 @@ export class Environment {
     this.enclosing = enclosing
   }
 
-  define(name: string, value: EnvStore) {
+  define(name: string, value: EnvStore): void {
     this.values.set(name, value)
   }
 

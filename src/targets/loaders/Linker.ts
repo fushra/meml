@@ -5,7 +5,7 @@ import { MemlCore } from '../../core'
 let linkerCache = new Map()
 let fileIds = 0
 
-export function resetLinker() {
+export function resetLinker(): void {
   linkerCache.clear()
   fileIds = 0
 }
