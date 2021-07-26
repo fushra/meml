@@ -1,8 +1,7 @@
 import fetch from 'node-fetch'
 
-import { fs, path } from '../fs'
-const { readFileSync } = fs
-const { dirname, join } = path
+import { readFile } from 'fs/promises'
+import { dirname, join } from 'path'
 
 import { TokenType } from '../scanner/TokenTypes'
 import {
@@ -27,12 +26,15 @@ import {
   PageStmt,
   StmtVisitor,
 } from '../parser/Stmt'
-import { Environment, EnvValidTypes } from './shared/Environment'
-import { ComponentDefinition } from './shared/ComponentDefinition'
+import {
+  Environment,
+  EnvValidTypes,
+  TargetBase,
+  ComponentDefinition,
+} from './shared'
 import { Tags } from '../scanner/Tags'
 import { MemlCore } from '../core'
 import { ILoader } from './loaders'
-import { TargetBase } from './shared/TargetBase'
 
 export class Web
   extends TargetBase
@@ -112,7 +114,7 @@ export class Web
             // Check if the current loader allows for local destructure imports
             if (loader.config.local.destructure) {
               // Load all of the contents of the files
-              const contents = readFileSync(filePath).toString()
+              const contents = (await readFile(filePath)).toString()
 
               // Pass it into the loader
               await this.destructureImport({

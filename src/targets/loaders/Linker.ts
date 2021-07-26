@@ -1,5 +1,6 @@
-import { mkdirSync, writeFileSync } from 'fs'
+import { mkdir, writeFile } from 'fs/promises'
 import { dirname, extname, join, relative } from 'path'
+
 import { MemlCore } from '../../core'
 
 let linkerCache = new Map()
@@ -10,11 +11,11 @@ export function resetLinker(): void {
   fileIds = 0
 }
 
-export function relativeLink(
+export async function relativeLink(
   contents: string,
   filePath: string,
   hostPath: string
-): string {
+): Promise<string> {
   let id
   if (linkerCache.has(filePath)) {
     id = linkerCache.get(filePath)
@@ -26,8 +27,8 @@ export function relativeLink(
   const outPath = join(MemlCore.distPath, 'assets')
   const outFile = join(outPath, `${id}${extname(filePath)}`)
 
-  mkdirSync(join(MemlCore.distPath, 'assets'), { recursive: true })
-  writeFileSync(outFile, contents)
+  await mkdir(join(MemlCore.distPath, 'assets'), { recursive: true })
+  await writeFile(outFile, contents)
 
   return relative(dirname(hostPath), outFile)
 }

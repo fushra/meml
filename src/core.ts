@@ -3,8 +3,7 @@
 // Maybe one day I will rewrite this in rust or maybe even c to make it work natively
 // but at the moment I don't really care
 
-import { fs } from './fs'
-const { readFileSync } = fs
+import { readFile } from 'fs/promises'
 
 import { grey, red, yellow } from 'kleur'
 
@@ -70,8 +69,8 @@ export class MemlCore {
     return this.targetWeb(parsed, path)
   }
 
-  fileToWeb(path: string): Promise<string> {
-    return this.sourceToWeb(readFileSync(path).toString(), path)
+  async fileToWeb(path: string): Promise<string> {
+    return this.sourceToWeb((await readFile(path)).toString(), path)
   }
 
   static reset(): void {

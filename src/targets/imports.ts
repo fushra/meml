@@ -48,7 +48,7 @@ export async function contentImport({
               MemlCore.distPath,
               memlPath.replace(MemlCore.sourcePath, '')
             )
-            const path = relativeLink(
+            const path = await relativeLink(
               parsed,
               join(dirname(memlPath), rawPath),
               memlFileOut
