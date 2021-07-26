@@ -2,7 +2,7 @@ import fetch from 'node-fetch'
 
 import { fs, path } from '../fs'
 const { readFileSync } = fs
-const { dirname, join, extname } = path
+const { dirname, join } = path
 
 import { TokenType } from '../scanner/TokenTypes'
 import {
@@ -28,28 +28,19 @@ import {
   PageStmt,
   StmtVisitor,
 } from '../parser/Stmt'
-import { Environment, EnvStore, EnvValidTypes } from './shared/Environment'
+import { Environment, EnvValidTypes } from './shared/Environment'
 import { ComponentDefinition } from './shared/ComponentDefinition'
 import { Tags } from '../scanner/Tags'
 import { MemlC, MemlCore } from '../core'
-import { relativeLink } from './loaders'
+import { ILoader, relativeLink } from './loaders'
+import { TargetBase } from './shared/TargetBase'
 
 export class Web
+  extends TargetBase
   implements
     ExprVisitor<Promise<EnvValidTypes | null>>,
     StmtVisitor<Promise<string>>
 {
-  // Memory storage for SS execution
-  environment = new Environment()
-  exports = new Map<string, EnvStore>()
-
-  // The path to the file we are currently executing
-  path: string
-
-  constructor(path: string) {
-    this.path = path
-  }
-
   // TODO: Implement these
   visitDestructureExpr: (
     expr: DestructureExpr
@@ -93,8 +84,6 @@ export class Web
         .replace('://', '') != rawPath
 
     if (stmt.imports !== null) {
-      // This implements a custom loader for destructure loaders
-
       let importedSomething = false
 
       // Loop through all of the loaders
@@ -109,35 +98,13 @@ export class Web
               const contents = await (await fetch(rawPath)).text()
 
               // Pass it into the loader
-              const fileExports = await loader.destructureImport(
+              await this.destructureImport({
+                loader,
                 contents,
+                filePath,
+                stmt,
                 rawPath,
-                stmt.imports == 'everything' ? [] : stmt.imports.items,
-                MemlCore.isProduction
-              )
-
-              if (stmt.imports == 'everything') {
-                // Dump everything into the current environment
-                fileExports.forEach((value, key) =>
-                  this.environment.define(key, value)
-                )
-              } else {
-                // Import only what we want
-                stmt.imports.items.forEach((key) => {
-                  if (fileExports.has(key.literal)) {
-                    this.environment.define(
-                      key.literal,
-                      fileExports.get(key.literal)
-                    )
-                  } else {
-                    MemlC.errorAtToken(
-                      key,
-                      `The export from ${rawPath} doesn't contain the export ${key}`,
-                      this.path
-                    )
-                  }
-                })
-              }
+              })
 
               importedSomething = true
               break
@@ -147,36 +114,15 @@ export class Web
             if (loader.config.local.destructure) {
               // Load all of the contents of the files
               const contents = readFileSync(filePath).toString()
+
               // Pass it into the loader
-              const fileExports = await loader.destructureImport(
+              await this.destructureImport({
+                loader,
                 contents,
                 filePath,
-                stmt.imports == 'everything' ? [] : stmt.imports.items,
-                MemlCore.isProduction
-              )
-
-              if (stmt.imports == 'everything') {
-                // Dump everything into the current environment
-                fileExports.forEach((value, key) =>
-                  this.environment.define(key, value)
-                )
-              } else {
-                // Import only what we want
-                stmt.imports.items.forEach((key) => {
-                  if (fileExports.has(key.literal)) {
-                    this.environment.define(
-                      key.literal,
-                      fileExports.get(key.literal)
-                    )
-                  } else {
-                    MemlC.errorAtToken(
-                      key,
-                      `The export from ${rawPath} doesn't contain the export ${key}`,
-                      this.path
-                    )
-                  }
-                })
-              }
+                stmt,
+                rawPath,
+              })
 
               importedSomething = true
               break
@@ -198,59 +144,48 @@ export class Web
       // The following should be handled in this section
       // [ ] Check its file type and appropriately handle it
       // [ ] Check if its a url and appropriately handle it
-
-      for (const loader of MemlCore.globalLoaders) {
-        if (loader.config.file.test(filePath)) {
-          if (isUrl) {
-            // Check if the loader allows for web content imports
-            if (loader.config.web.content) {
-              return loader.linkPath(
-                rawPath,
-                await loader.contentImport(
-                  await (await fetch(rawPath)).text(),
-                  rawPath,
-                  MemlCore.isProduction
-                )
-              )
-            }
-          } else {
-            if (loader.config.local.content) {
-              // Read the file from disk
-              const contents = readFileSync(filePath).toString()
-
-              const parsed = await loader.contentImport(
-                contents,
-                rawPath,
-                MemlCore.isProduction
-              )
-
-              if (MemlCore.shouldLink) {
-                const memlFileOut = join(
-                  MemlCore.distPath,
-                  this.path.replace(MemlCore.sourcePath, '')
-                )
-                const path = relativeLink(
-                  parsed,
-                  join(dirname(this.path), rawPath),
-                  memlFileOut
-                )
-
-                return loader.linkPath(path, parsed)
-              } else {
-                return loader.linkInline(parsed)
-              }
-            }
-          }
-        }
-      }
-
-      MemlCore.errorAtToken(
-        stmt.fileToken,
-        'There is no loader for this file. Try install one'
-      )
     }
 
     return ''
+  }
+
+  private async destructureImport({
+    loader,
+    contents,
+    filePath,
+    stmt,
+    rawPath,
+  }: {
+    loader: ILoader
+    contents: string
+    filePath: string
+    stmt: ImportStmt
+    rawPath: string
+  }) {
+    const fileExports = await loader.destructureImport(
+      contents,
+      filePath,
+      stmt.imports == 'everything' ? [] : stmt.imports.items,
+      MemlCore.isProduction
+    )
+
+    if (stmt.imports == 'everything') {
+      // Dump everything into the current environment
+      fileExports.forEach((value, key) => this.environment.define(key, value))
+    } else {
+      // Import only what we want
+      stmt.imports.items.forEach((key) => {
+        if (fileExports.has(key.literal)) {
+          this.environment.define(key.literal, fileExports.get(key.literal))
+        } else {
+          MemlC.errorAtToken(
+            key,
+            `The export from ${rawPath} doesn't contain the export ${key}`,
+            this.path
+          )
+        }
+      })
+    }
   }
 
   // ===========================================================================
@@ -531,26 +466,5 @@ export class Web
     }
 
     return values
-  }
-
-  // ===========================================================================
-  // Utils
-
-  async evaluate(expr: any): Promise<EnvValidTypes> {
-    return await expr.accept(this)
-  }
-
-  private isTruthy(obj: EnvValidTypes): boolean {
-    if (obj === null || obj === 'null') return false
-    if (typeof obj == 'boolean') return obj as boolean
-
-    return true
-  }
-
-  private isEqual(left: EnvValidTypes, right: EnvValidTypes): boolean {
-    if (left === null && right === null) return false
-    if (left === null) return false
-
-    return left == right
   }
 }
