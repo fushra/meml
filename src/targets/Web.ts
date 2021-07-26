@@ -426,38 +426,7 @@ export class Web
   async visitBinaryExpr(
     expr: BinaryExpr
   ): Promise<number | boolean | string | null> {
-    const left = await this.evaluate(expr.left)
-    const right = await this.evaluate(expr.right)
-
-    switch (expr.operator.type) {
-      case TokenType.MINUS:
-        return (left as number) - (right as number)
-      case TokenType.SLASH:
-        return (left as number) / (right as number)
-      case TokenType.STAR:
-        return (left as number) * (right as number)
-      case TokenType.PLUS:
-        if (typeof left == 'number' && typeof right == 'number') {
-          return (left as number) + (right as number)
-        }
-
-        if (typeof left == 'string' && typeof right == 'string') {
-          return (left as string) + (right as string)
-        }
-
-      case TokenType.GREATER:
-        return (left as number) > (right as number)
-      case TokenType.GREATER_EQUAL:
-        return (left as number) >= (right as number)
-      case TokenType.LESS:
-        return (left as number) < (right as number)
-      case TokenType.LESS_EQUAL:
-        return (left as number) <= (right as number)
-      case TokenType.BANG_EQUAL:
-        return !this.isEqual(left, right)
-      case TokenType.EQUAL_EQUAL:
-        return this.isEqual(left, right)
-    }
+    return this.evaluateBinaryExpr(expr)
   }
 
   async visitArrayExpr(expr: ArrayExpr): Promise<EnvValidTypes[]> {
