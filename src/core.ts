@@ -27,7 +27,7 @@ import {
  * Statics in this file are responsible for compiler configuration and an instance
  * of this class can be created to compile files.
  *
- * **Example usage**
+ * # Example usage
  *
  * ```ts
  * const path = require('path')
@@ -47,8 +47,27 @@ import {
  * app()
  * ```
  *
+ * # Build process
+ * The following steps are taken by the build process, with appropriate functions
+ * available if you wish to break down the steps
+ *
+ * ```
+ * Tokenizing -> Parsing -> Targeting
+ * ```
+ *
+ * Note that whilst tokenizing and parsing generally remain constant, you can
+ * create a custom target for your use case. There is no current documentation
+ * for this, however it follows the structure layed out in
+ * [crafting interpreters](https://craftinginterpreters.com/evaluating-expressions.html)
+ * and you may use the source code in [the web target](https://github.com/fushra/meml/blob/main/src/targets/Web.ts)
+ * as a starting point as long as your project is GPLv3 compatible.
+ *
+ * # Project management
+ *
  * TODO: Should config be moved somewhere else?
+ *
  * TODO: Should builds be moved into separate functions?
+ *
  * TODO: Move error reporting out of this class.
  */
 export class MemlCore {
@@ -126,16 +145,28 @@ export class MemlCore {
   // ------------------------------------------------------------
   // Interpreter stepping function
 
+  /**
+   * Converts the contents of the source string into an array of tokens ready
+   * for parsing
+   */
   tokenize(source: string, file = ''): Token[] {
     const scanner = new Scanner(source, file)
     return scanner.scanTokens()
   }
 
+  /**
+   * Converts the input tokens to an AST tree with a PageStmt as its root
+   */
   parse(tokens: Token[], file = ''): PageStmt {
     const parser = new Parser(tokens, file)
     return parser.parse()
   }
 
+  /**
+   * Converts an AST tree to a html string
+   *
+   * May write files to disk depending on your settings for `shouldLink`
+   */
   targetWeb(page: PageStmt, path = 'memory.meml'): Promise<string> {
     const target = new Web(path)
     return target.convert(page)
@@ -148,12 +179,22 @@ export class MemlCore {
   // ------------------------------------------------------------
   // Interpreter full functions
 
+  /**
+   * Converts a source MEML string to a string of html.
+   *
+   * May write files to disk depending on your settings for `shouldLink`
+   */
   sourceToWeb(source: string, path = 'memory.meml'): Promise<string> {
     const tokens = this.tokenize(source, path)
     const parsed = this.parse(tokens, path)
     return this.targetWeb(parsed, path)
   }
 
+  /**
+   * Converts the contents of a file into a string of html.
+   *
+   * May write files to disk depending on your settings for `shouldLink`
+   */
   async fileToWeb(path: string): Promise<string> {
     return this.sourceToWeb((await readFile(path)).toString(), path)
   }
