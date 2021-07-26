@@ -180,7 +180,7 @@ export class Web
         } else {
           MemlC.errorAtToken(
             key,
-            `The export from ${rawPath} doesn't contain the export ${key}`,
+            `The export from ${rawPath} doesn't contain the export ${key.lexeme}`,
             this.path
           )
         }
@@ -207,9 +207,9 @@ export class Web
         children.push(await this.evaluate(el))
       }
 
-      return `<${stmt.tagName.literal}${
+      return `<${stmt.tagName.literal.toString()}${
         stmt.props.length !== 0 ? ` ${evaluatedProps.join(' ')} ` : ''
-      }>${children.join('')}</${stmt.tagName.literal}>`
+      }>${children.join('')}</${stmt.tagName.literal.toString()}>`
     } else {
       // Otherwise, the tag may be a custom component and thus we should try and
       // retrieve it from the environment
@@ -377,14 +377,16 @@ export class Web
     // If the variable doesn't exist return null and continue, an error has
     // already been logged to the console
     if (typeof variable == 'undefined') {
-      return `[undefined variable ${expr.token.literal}]`
+      return `[undefined variable ${expr.token.literal.toString()}]`
     }
 
     return variable as string | number | boolean
   }
 
   async visitMemlPropertiesExpr(expr: MemlPropertiesExpr): Promise<string> {
-    return `${expr.name.literal}="${await this.evaluate(expr.value)}"`
+    return `${expr.name.literal.toString()}="${(
+      await this.evaluate(expr.value)
+    ).toString()}"`
   }
 
   async visitLiteralExpr(

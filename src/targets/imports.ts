@@ -17,7 +17,7 @@ export async function contentImport({
   rawPath: string
   memlPath: string
   stmt: ImportStmt
-}): string {
+}): Promise<string> {
   for (const loader of MemlCore.globalLoaders) {
     if (loader.config.file.test(filePath)) {
       if (isUrl) {
