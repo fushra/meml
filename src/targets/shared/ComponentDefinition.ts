@@ -1,6 +1,6 @@
 import { Token } from '../../scanner/Token'
-import { DestructureExpr, ExprVisitor } from '../../parser/Expr'
-import { IStmt, MemlStmt, StmtVisitor } from '../../parser/Stmt'
+import { DestructureExpr } from '../../parser/Expr'
+import { IStmt, MemlStmt } from '../../parser/Stmt'
 import { Web } from '../Web'
 
 export class ComponentDefinition {

@@ -1,5 +1,5 @@
-import { BinaryExpr } from 'src/parser/Expr'
-import { TokenType } from 'src/scanner/TokenTypes'
+import { BinaryExpr } from '../../parser/Expr'
+import { TokenType } from '../../scanner/TokenTypes'
 import { Environment, EnvStore, EnvValidTypes } from './Environment'
 
 export class TargetBase {

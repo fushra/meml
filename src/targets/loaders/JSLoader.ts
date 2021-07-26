@@ -1,4 +1,3 @@
-import { fs, path } from '../../fs'
 import { minify } from 'terser'
 
 import { Token } from '../../scanner/Token'

@@ -23,7 +23,6 @@ import {
   ForStmt,
   IfStmt,
   ImportStmt,
-  IStmt,
   MemlStmt,
   PageStmt,
   StmtVisitor,
@@ -31,8 +30,8 @@ import {
 import { Environment, EnvValidTypes } from './shared/Environment'
 import { ComponentDefinition } from './shared/ComponentDefinition'
 import { Tags } from '../scanner/Tags'
-import { MemlC, MemlCore } from '../core'
-import { ILoader, relativeLink } from './loaders'
+import { MemlCore } from '../core'
+import { ILoader } from './loaders'
 import { TargetBase } from './shared/TargetBase'
 
 export class Web
@@ -178,7 +177,7 @@ export class Web
         if (fileExports.has(key.literal)) {
           this.environment.define(key.literal, fileExports.get(key.literal))
         } else {
-          MemlC.errorAtToken(
+          MemlCore.errorAtToken(
             key,
             `The export from ${rawPath} doesn't contain the export ${key.lexeme}`,
             this.path
@@ -287,7 +286,7 @@ export class Web
 
   async visitComponentStmt(stmt: ComponentStmt): Promise<string> {
     if (Tags.has(stmt.tagName.literal)) {
-      MemlC.linterAtToken(
+      MemlCore.linterAtToken(
         stmt.tagName,
         `The component '${stmt.tagName.literal}' shares a name with a html tag. Defaulting to html tag.`
       )
@@ -310,7 +309,7 @@ export class Web
       return (await this.evaluate(stmt.primaryMeml)).toString()
     }
 
-    // Loop through all the elseifs
+    // Loop through all the else-ifs
     for (const elseif of stmt.elif) {
       if (this.isTruthy(await this.evaluate(elseif.expr))) {
         return (await this.evaluate(elseif.meml)).toString()

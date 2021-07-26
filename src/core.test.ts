@@ -1,7 +1,5 @@
 import { TestSuite, Test, TestCase, expect } from 'testyts/build/testyCore'
-import { MemlC, MemlCore } from './core'
-import { Parser } from './parser/Parser'
-import { Scanner } from './scanner/Scanner'
+import { MemlCore } from './core'
 import { Token } from './scanner/Token'
 import { TokenType } from './scanner/TokenTypes'
 
@@ -10,11 +8,6 @@ export class MemlCTests {
   @Test('Construct')
   construct() {
     new MemlCore()
-  }
-
-  @Test('Old constructor')
-  oldConstruct() {
-    new MemlC()
   }
 
   // -----------------------------------------------------------------------------

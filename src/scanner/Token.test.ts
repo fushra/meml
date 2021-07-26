@@ -1,4 +1,4 @@
-import { TestSuite, Test, TestCase, expect } from 'testyts/build/testyCore'
+import { TestSuite, Test, expect } from 'testyts/build/testyCore'
 import { Token } from './Token'
 import { TokenType } from './TokenTypes'
 
