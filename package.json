@@ -28,13 +28,15 @@
     "app": "ts-node ./src/app.ts",
     "build": "tsc && echo '#!/usr/bin/env node\n' >  tmpfile && cat ./dist/app.js >> tmpfile && mv tmpfile ./dist/app.js",
     "examples": "yarn app --file ./css.meml --file ./helloWorld.meml --file newFolder/css.meml --src ./examples --out ./examples",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn build",
+    "quality": "jscpd src/"
   },
   "devDependencies": {
     "@types/clean-css": "^4.2.4",
     "@types/html-minifier-terser": "^5.1.1",
     "@types/node": "^14.14.44",
     "@types/node-fetch": "^2.5.10",
+    "jscpd": "^3.3.26",
     "nyc": "^15.1.0",
     "prettier": "^2.3.0",
     "testyts": "^1.1.2",
