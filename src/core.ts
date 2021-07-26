@@ -167,10 +167,3 @@ export class MemlCore {
     this.globalLoaders.push(Loader)
   }
 }
-
-export class MemlC extends MemlCore {
-  constructor() {
-    super()
-    console.error('Using MemlC is depreciated. Use the MemlCore class')
-  }
-}
