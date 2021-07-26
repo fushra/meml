@@ -48,11 +48,8 @@
     "clean-css": "^5.1.2",
     "commander": "^7.2.0",
     "html-minifier-terser": "^5.1.1",
-    "is-browser": "^2.1.0",
     "kleur": "^4.1.4",
-    "memfs": "^3.2.2",
     "node-fetch": "^2.6.1",
-    "path.js": "^1.0.7",
     "terser": "^5.7.0"
   }
 }
