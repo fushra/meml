@@ -27,6 +27,7 @@
     "ast": "ts-node ./scripts/GenerateAst.ts && prettier . --write",
     "app": "ts-node ./src/app.ts",
     "build": "tsc && echo '#!/usr/bin/env node\n' >  tmpfile && cat ./dist/app.js >> tmpfile && mv tmpfile ./dist/app.js",
+    "build:docs": "typedoc --tsconfig tsconfig.json",
     "examples": "yarn app --file ./css.meml --file ./helloWorld.meml --file newFolder/css.meml --src ./examples --out ./examples",
     "prepublishOnly": "yarn build",
     "quality": "jscpd src/"
@@ -41,6 +42,7 @@
     "prettier": "^2.3.0",
     "testyts": "^1.1.2",
     "ts-node": "^9.1.1",
+    "typedoc": "^0.21.4",
     "typescript": "^4.2.3",
     "yarn": "^1.22.10"
   },

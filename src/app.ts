@@ -50,7 +50,6 @@ program
     '--dont-link',
     'Do not link included files and insted embed them in the output files'
   )
-  .option('-r, --root-path <path>', 'The root of linked files', '/')
 
 program.parse(process.argv)
 
@@ -65,7 +64,6 @@ program.parse(process.argv)
   MemlCore.distPath = out
   MemlCore.sourcePath = src
   MemlCore.shouldLink = true
-  MemlCore.rootPath = args.rootPath
 
   if (args.production) {
     MemlCore.isProduction = true

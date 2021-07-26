@@ -16,5 +16,9 @@
     },
     "declaration": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "typedocOptions": {
+    "entryPoints": ["src/core.ts"],
+    "out": "docs-dist"
+  }
 }
