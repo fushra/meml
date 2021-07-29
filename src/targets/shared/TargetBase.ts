@@ -2,6 +2,10 @@ import { BinaryExpr } from '../../parser/Expr'
 import { TokenType } from '../../scanner/TokenTypes'
 import { Environment, EnvStore, EnvValidTypes } from './Environment'
 
+/**
+ * This is an internal class for creating a new target. You can extend it to create
+ * a new target. Expected to implement ExprVisitor and StmtVisitor. See `Web`
+ */
 export class TargetBase {
   environment = new Environment()
   exports = new Map<string, EnvStore>()

@@ -2,8 +2,9 @@ import { readFile } from 'fs/promises'
 import { dirname, join } from 'path'
 import fetch from 'node-fetch'
 
-import { MemlCore, relativeLink } from '../index'
+import { MemlCore } from '../index'
 import { ImportStmt } from '../parser/Stmt'
+import { relativeLink } from './loaders'
 
 export async function contentImport({
   isUrl,
