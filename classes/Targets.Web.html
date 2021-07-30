@@ -1,0 +1,917 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Web | meml</title>
+	<meta name="description" content="Documentation for meml">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">meml</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">meml</a>
+				</li>
+				<li>
+					<a href="../modules/Targets.html">Targets</a>
+				</li>
+				<li>
+					<a href="Targets.Web.html">Web</a>
+				</li>
+			</ul>
+			<h1>Class Web</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<a href="Targets.TargetBase.html" class="tsd-signature-type" data-tsd-kind="Class">TargetBase</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">Web</span>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../interfaces/AstNodes.ExprVisitor.html" class="tsd-signature-type" data-tsd-kind="Interface">ExprVisitor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/Targets.html#EnvValidTypes" class="tsd-signature-type" data-tsd-kind="Type alias">EnvValidTypes</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li><a href="../interfaces/AstNodes.StmtVisitor.html" class="tsd-signature-type" data-tsd-kind="Interface">StmtVisitor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section tsd-is-inherited">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="Targets.Web.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Targets.Web.html#environment" class="tsd-kind-icon">environment</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Targets.Web.html#exports" class="tsd-kind-icon">exports</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Targets.Web.html#path" class="tsd-kind-icon">path</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Targets.Web.html#visitDestructureExpr" class="tsd-kind-icon">visit<wbr>Destructure<wbr>Expr</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Targets.Web.html#convert" class="tsd-kind-icon">convert</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="Targets.Web.html#destructureImport" class="tsd-kind-icon">destructure<wbr>Import</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Targets.Web.html#evaluate" class="tsd-kind-icon">evaluate</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="Targets.Web.html#evaluateBinaryExpr" class="tsd-kind-icon">evaluate<wbr>Binary<wbr>Expr</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="Targets.Web.html#isEqual" class="tsd-kind-icon">is<wbr>Equal</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="Targets.Web.html#isTruthy" class="tsd-kind-icon">is<wbr>Truthy</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Targets.Web.html#visitArrayExpr" class="tsd-kind-icon">visit<wbr>Array<wbr>Expr</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Targets.Web.html#visitBinaryExpr" class="tsd-kind-icon">visit<wbr>Binary<wbr>Expr</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Targets.Web.html#visitComponentStmt" class="tsd-kind-icon">visit<wbr>Component<wbr>Stmt</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Targets.Web.html#visitExportStmt" class="tsd-kind-icon">visit<wbr>Export<wbr>Stmt</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Targets.Web.html#visitExpressionStmt" class="tsd-kind-icon">visit<wbr>Expression<wbr>Stmt</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Targets.Web.html#visitForStmt" class="tsd-kind-icon">visit<wbr>For<wbr>Stmt</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Targets.Web.html#visitGroupingExpr" class="tsd-kind-icon">visit<wbr>Grouping<wbr>Expr</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Targets.Web.html#visitIdentifierExpr" class="tsd-kind-icon">visit<wbr>Identifier<wbr>Expr</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Targets.Web.html#visitIfStmt" class="tsd-kind-icon">visit<wbr>IfStmt</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Targets.Web.html#visitImportStmt" class="tsd-kind-icon">visit<wbr>Import<wbr>Stmt</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Targets.Web.html#visitLiteralExpr" class="tsd-kind-icon">visit<wbr>Literal<wbr>Expr</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Targets.Web.html#visitMemlPropertiesExpr" class="tsd-kind-icon">visit<wbr>Meml<wbr>Properties<wbr>Expr</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Targets.Web.html#visitMemlStmt" class="tsd-kind-icon">visit<wbr>Meml<wbr>Stmt</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Targets.Web.html#visitPageStmt" class="tsd-kind-icon">visit<wbr>Page<wbr>Stmt</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Targets.Web.html#visitUnaryExpr" class="tsd-kind-icon">visit<wbr>Unary<wbr>Expr</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Web<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Targets.Web.html" class="tsd-signature-type" data-tsd-kind="Class">Web</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="Targets.TargetBase.html">TargetBase</a>.<a href="Targets.TargetBase.html#constructor">constructor</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/shared/TargetBase.ts#L15">targets/shared/TargetBase.ts:15</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>path: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="Targets.Web.html" class="tsd-signature-type" data-tsd-kind="Class">Web</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="environment" class="tsd-anchor"></a>
+					<h3>environment</h3>
+					<div class="tsd-signature tsd-kind-icon">environment<span class="tsd-signature-symbol">:</span> <a href="Targets.Environment.html" class="tsd-signature-type" data-tsd-kind="Class">Environment</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Targets.TargetBase.html">TargetBase</a>.<a href="Targets.TargetBase.html#environment">environment</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/shared/TargetBase.ts#L10">targets/shared/TargetBase.ts:10</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="exports" class="tsd-anchor"></a>
+					<h3>exports</h3>
+					<div class="tsd-signature tsd-kind-icon">exports<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../modules/Targets.html#EnvStore" class="tsd-signature-type" data-tsd-kind="Type alias">EnvStore</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Targets.TargetBase.html">TargetBase</a>.<a href="Targets.TargetBase.html#exports">exports</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/shared/TargetBase.ts#L11">targets/shared/TargetBase.ts:11</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="path" class="tsd-anchor"></a>
+					<h3>path</h3>
+					<div class="tsd-signature tsd-kind-icon">path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Targets.TargetBase.html">TargetBase</a>.<a href="Targets.TargetBase.html#path">path</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/shared/TargetBase.ts#L13">targets/shared/TargetBase.ts:13</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="visitDestructureExpr" class="tsd-anchor"></a>
+					<h3>visit<wbr>Destructure<wbr>Expr</h3>
+					<div class="tsd-signature tsd-kind-icon">visit<wbr>Destructure<wbr>Expr<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>expr<span class="tsd-signature-symbol">: </span><a href="AstNodes.DestructureExpr.html" class="tsd-signature-type" data-tsd-kind="Class">DestructureExpr</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/AstNodes.ExprVisitor.html">ExprVisitor</a>.<a href="../interfaces/AstNodes.ExprVisitor.html#visitDestructureExpr">visitDestructureExpr</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L46">targets/Web.ts:46</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-signature">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-class">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>expr<span class="tsd-signature-symbol">: </span><a href="AstNodes.DestructureExpr.html" class="tsd-signature-type" data-tsd-kind="Class">DestructureExpr</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>expr: <a href="AstNodes.DestructureExpr.html" class="tsd-signature-type" data-tsd-kind="Class">DestructureExpr</a></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="convert" class="tsd-anchor"></a>
+					<h3>convert</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">convert<span class="tsd-signature-symbol">(</span>token<span class="tsd-signature-symbol">: </span><a href="AstNodes.PageStmt.html" class="tsd-signature-type" data-tsd-kind="Class">PageStmt</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L51">targets/Web.ts:51</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>token: <a href="AstNodes.PageStmt.html" class="tsd-signature-type" data-tsd-kind="Class">PageStmt</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="destructureImport" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> destructure<wbr>Import</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">destructure<wbr>Import<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>contents<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>filePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>loader<span class="tsd-signature-symbol">: </span><a href="../interfaces/Loaders.ILoader.html" class="tsd-signature-type" data-tsd-kind="Interface">ILoader</a><span class="tsd-signature-symbol">; </span>rawPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>stmt<span class="tsd-signature-symbol">: </span><a href="AstNodes.ImportStmt.html" class="tsd-signature-type" data-tsd-kind="Class">ImportStmt</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L153">targets/Web.ts:153</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>contents<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>filePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>loader<span class="tsd-signature-symbol">: </span><a href="../interfaces/Loaders.ILoader.html" class="tsd-signature-type" data-tsd-kind="Interface">ILoader</a><span class="tsd-signature-symbol">; </span>rawPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>stmt<span class="tsd-signature-symbol">: </span><a href="AstNodes.ImportStmt.html" class="tsd-signature-type" data-tsd-kind="Class">ImportStmt</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>contents<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>file<wbr>Path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>loader<span class="tsd-signature-symbol">: </span><a href="../interfaces/Loaders.ILoader.html" class="tsd-signature-type" data-tsd-kind="Interface">ILoader</a></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>raw<wbr>Path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>stmt<span class="tsd-signature-symbol">: </span><a href="AstNodes.ImportStmt.html" class="tsd-signature-type" data-tsd-kind="Class">ImportStmt</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="evaluate" class="tsd-anchor"></a>
+					<h3>evaluate</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">evaluate<span class="tsd-signature-symbol">(</span>expr<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/Targets.html#EnvValidTypes" class="tsd-signature-type" data-tsd-kind="Type alias">EnvValidTypes</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="Targets.TargetBase.html">TargetBase</a>.<a href="Targets.TargetBase.html#evaluate">evaluate</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/shared/TargetBase.ts#L23">targets/shared/TargetBase.ts:23</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>expr: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/Targets.html#EnvValidTypes" class="tsd-signature-type" data-tsd-kind="Type alias">EnvValidTypes</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="evaluateBinaryExpr" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> evaluate<wbr>Binary<wbr>Expr</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">evaluate<wbr>Binary<wbr>Expr<span class="tsd-signature-symbol">(</span>expr<span class="tsd-signature-symbol">: </span><a href="AstNodes.BinaryExpr.html" class="tsd-signature-type" data-tsd-kind="Class">BinaryExpr</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="Targets.TargetBase.html">TargetBase</a>.<a href="Targets.TargetBase.html#evaluateBinaryExpr">evaluateBinaryExpr</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/shared/TargetBase.ts#L41">targets/shared/TargetBase.ts:41</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>expr: <a href="AstNodes.BinaryExpr.html" class="tsd-signature-type" data-tsd-kind="Class">BinaryExpr</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="isEqual" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> is<wbr>Equal</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Equal<span class="tsd-signature-symbol">(</span>left<span class="tsd-signature-symbol">: </span><a href="../modules/Targets.html#EnvValidTypes" class="tsd-signature-type" data-tsd-kind="Type alias">EnvValidTypes</a>, right<span class="tsd-signature-symbol">: </span><a href="../modules/Targets.html#EnvValidTypes" class="tsd-signature-type" data-tsd-kind="Type alias">EnvValidTypes</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="Targets.TargetBase.html">TargetBase</a>.<a href="Targets.TargetBase.html#isEqual">isEqual</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/shared/TargetBase.ts#L34">targets/shared/TargetBase.ts:34</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>left: <a href="../modules/Targets.html#EnvValidTypes" class="tsd-signature-type" data-tsd-kind="Type alias">EnvValidTypes</a></h5>
+								</li>
+								<li>
+									<h5>right: <a href="../modules/Targets.html#EnvValidTypes" class="tsd-signature-type" data-tsd-kind="Type alias">EnvValidTypes</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="isTruthy" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> is<wbr>Truthy</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Truthy<span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><a href="../modules/Targets.html#EnvValidTypes" class="tsd-signature-type" data-tsd-kind="Type alias">EnvValidTypes</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="Targets.TargetBase.html">TargetBase</a>.<a href="Targets.TargetBase.html#isTruthy">isTruthy</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/shared/TargetBase.ts#L27">targets/shared/TargetBase.ts:27</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>obj: <a href="../modules/Targets.html#EnvValidTypes" class="tsd-signature-type" data-tsd-kind="Type alias">EnvValidTypes</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="visitArrayExpr" class="tsd-anchor"></a>
+					<h3>visit<wbr>Array<wbr>Expr</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">visit<wbr>Array<wbr>Expr<span class="tsd-signature-symbol">(</span>expr<span class="tsd-signature-symbol">: </span><a href="AstNodes.ArrayExpr.html" class="tsd-signature-type" data-tsd-kind="Class">ArrayExpr</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/Targets.html#EnvValidTypes" class="tsd-signature-type" data-tsd-kind="Type alias">EnvValidTypes</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/AstNodes.ExprVisitor.html">ExprVisitor</a>.<a href="../interfaces/AstNodes.ExprVisitor.html#visitArrayExpr">visitArrayExpr</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L433">targets/Web.ts:433</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>expr: <a href="AstNodes.ArrayExpr.html" class="tsd-signature-type" data-tsd-kind="Class">ArrayExpr</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/Targets.html#EnvValidTypes" class="tsd-signature-type" data-tsd-kind="Type alias">EnvValidTypes</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="visitBinaryExpr" class="tsd-anchor"></a>
+					<h3>visit<wbr>Binary<wbr>Expr</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">visit<wbr>Binary<wbr>Expr<span class="tsd-signature-symbol">(</span>expr<span class="tsd-signature-symbol">: </span><a href="AstNodes.BinaryExpr.html" class="tsd-signature-type" data-tsd-kind="Class">BinaryExpr</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/AstNodes.ExprVisitor.html">ExprVisitor</a>.<a href="../interfaces/AstNodes.ExprVisitor.html#visitBinaryExpr">visitBinaryExpr</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L427">targets/Web.ts:427</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>expr: <a href="AstNodes.BinaryExpr.html" class="tsd-signature-type" data-tsd-kind="Class">BinaryExpr</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="visitComponentStmt" class="tsd-anchor"></a>
+					<h3>visit<wbr>Component<wbr>Stmt</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">visit<wbr>Component<wbr>Stmt<span class="tsd-signature-symbol">(</span>stmt<span class="tsd-signature-symbol">: </span><a href="AstNodes.ComponentStmt.html" class="tsd-signature-type" data-tsd-kind="Class">ComponentStmt</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/AstNodes.StmtVisitor.html">StmtVisitor</a>.<a href="../interfaces/AstNodes.StmtVisitor.html#visitComponentStmt">visitComponentStmt</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L289">targets/Web.ts:289</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>stmt: <a href="AstNodes.ComponentStmt.html" class="tsd-signature-type" data-tsd-kind="Class">ComponentStmt</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="visitExportStmt" class="tsd-anchor"></a>
+					<h3>visit<wbr>Export<wbr>Stmt</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">visit<wbr>Export<wbr>Stmt<span class="tsd-signature-symbol">(</span>stmt<span class="tsd-signature-symbol">: </span><a href="AstNodes.ExportStmt.html" class="tsd-signature-type" data-tsd-kind="Class">ExportStmt</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/AstNodes.StmtVisitor.html">StmtVisitor</a>.<a href="../interfaces/AstNodes.StmtVisitor.html#visitExportStmt">visitExportStmt</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L57">targets/Web.ts:57</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>stmt: <a href="AstNodes.ExportStmt.html" class="tsd-signature-type" data-tsd-kind="Class">ExportStmt</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="visitExpressionStmt" class="tsd-anchor"></a>
+					<h3>visit<wbr>Expression<wbr>Stmt</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">visit<wbr>Expression<wbr>Stmt<span class="tsd-signature-symbol">(</span>stmt<span class="tsd-signature-symbol">: </span><a href="AstNodes.ExpressionStmt.html" class="tsd-signature-type" data-tsd-kind="Class">ExpressionStmt</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/AstNodes.StmtVisitor.html">StmtVisitor</a>.<a href="../interfaces/AstNodes.StmtVisitor.html#visitExpressionStmt">visitExpressionStmt</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L275">targets/Web.ts:275</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>stmt: <a href="AstNodes.ExpressionStmt.html" class="tsd-signature-type" data-tsd-kind="Class">ExpressionStmt</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="visitForStmt" class="tsd-anchor"></a>
+					<h3>visit<wbr>For<wbr>Stmt</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">visit<wbr>For<wbr>Stmt<span class="tsd-signature-symbol">(</span>stmt<span class="tsd-signature-symbol">: </span><a href="AstNodes.ForStmt.html" class="tsd-signature-type" data-tsd-kind="Class">ForStmt</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/AstNodes.StmtVisitor.html">StmtVisitor</a>.<a href="../interfaces/AstNodes.StmtVisitor.html#visitForStmt">visitForStmt</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L330">targets/Web.ts:330</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>stmt: <a href="AstNodes.ForStmt.html" class="tsd-signature-type" data-tsd-kind="Class">ForStmt</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="visitGroupingExpr" class="tsd-anchor"></a>
+					<h3>visit<wbr>Grouping<wbr>Expr</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">visit<wbr>Grouping<wbr>Expr<span class="tsd-signature-symbol">(</span>expr<span class="tsd-signature-symbol">: </span><a href="AstNodes.GroupingExpr.html" class="tsd-signature-type" data-tsd-kind="Class">GroupingExpr</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/Targets.html#EnvValidTypes" class="tsd-signature-type" data-tsd-kind="Type alias">EnvValidTypes</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/AstNodes.ExprVisitor.html">ExprVisitor</a>.<a href="../interfaces/AstNodes.ExprVisitor.html#visitGroupingExpr">visitGroupingExpr</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L400">targets/Web.ts:400</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>expr: <a href="AstNodes.GroupingExpr.html" class="tsd-signature-type" data-tsd-kind="Class">GroupingExpr</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/Targets.html#EnvValidTypes" class="tsd-signature-type" data-tsd-kind="Type alias">EnvValidTypes</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="visitIdentifierExpr" class="tsd-anchor"></a>
+					<h3>visit<wbr>Identifier<wbr>Expr</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">visit<wbr>Identifier<wbr>Expr<span class="tsd-signature-symbol">(</span>expr<span class="tsd-signature-symbol">: </span><a href="AstNodes.IdentifierExpr.html" class="tsd-signature-type" data-tsd-kind="Class">IdentifierExpr</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/AstNodes.ExprVisitor.html">ExprVisitor</a>.<a href="../interfaces/AstNodes.ExprVisitor.html#visitIdentifierExpr">visitIdentifierExpr</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L373">targets/Web.ts:373</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>expr: <a href="AstNodes.IdentifierExpr.html" class="tsd-signature-type" data-tsd-kind="Class">IdentifierExpr</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="visitIfStmt" class="tsd-anchor"></a>
+					<h3>visit<wbr>IfStmt</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">visit<wbr>IfStmt<span class="tsd-signature-symbol">(</span>stmt<span class="tsd-signature-symbol">: </span><a href="AstNodes.IfStmt.html" class="tsd-signature-type" data-tsd-kind="Class">IfStmt</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/AstNodes.StmtVisitor.html">StmtVisitor</a>.<a href="../interfaces/AstNodes.StmtVisitor.html#visitIfStmt">visitIfStmt</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L308">targets/Web.ts:308</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>stmt: <a href="AstNodes.IfStmt.html" class="tsd-signature-type" data-tsd-kind="Class">IfStmt</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="visitImportStmt" class="tsd-anchor"></a>
+					<h3>visit<wbr>Import<wbr>Stmt</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">visit<wbr>Import<wbr>Stmt<span class="tsd-signature-symbol">(</span>stmt<span class="tsd-signature-symbol">: </span><a href="AstNodes.ImportStmt.html" class="tsd-signature-type" data-tsd-kind="Class">ImportStmt</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/AstNodes.StmtVisitor.html">StmtVisitor</a>.<a href="../interfaces/AstNodes.StmtVisitor.html#visitImportStmt">visitImportStmt</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L78">targets/Web.ts:78</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>stmt: <a href="AstNodes.ImportStmt.html" class="tsd-signature-type" data-tsd-kind="Class">ImportStmt</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="visitLiteralExpr" class="tsd-anchor"></a>
+					<h3>visit<wbr>Literal<wbr>Expr</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">visit<wbr>Literal<wbr>Expr<span class="tsd-signature-symbol">(</span>expr<span class="tsd-signature-symbol">: </span><a href="AstNodes.LiteralExpr.html" class="tsd-signature-type" data-tsd-kind="Class">LiteralExpr</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/AstNodes.ExprVisitor.html">ExprVisitor</a>.<a href="../interfaces/AstNodes.ExprVisitor.html#visitLiteralExpr">visitLiteralExpr</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L393">targets/Web.ts:393</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>expr: <a href="AstNodes.LiteralExpr.html" class="tsd-signature-type" data-tsd-kind="Class">LiteralExpr</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="visitMemlPropertiesExpr" class="tsd-anchor"></a>
+					<h3>visit<wbr>Meml<wbr>Properties<wbr>Expr</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">visit<wbr>Meml<wbr>Properties<wbr>Expr<span class="tsd-signature-symbol">(</span>expr<span class="tsd-signature-symbol">: </span><a href="AstNodes.MemlPropertiesExpr.html" class="tsd-signature-type" data-tsd-kind="Class">MemlPropertiesExpr</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/AstNodes.ExprVisitor.html">ExprVisitor</a>.<a href="../interfaces/AstNodes.ExprVisitor.html#visitMemlPropertiesExpr">visitMemlPropertiesExpr</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L387">targets/Web.ts:387</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>expr: <a href="AstNodes.MemlPropertiesExpr.html" class="tsd-signature-type" data-tsd-kind="Class">MemlPropertiesExpr</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="visitMemlStmt" class="tsd-anchor"></a>
+					<h3>visit<wbr>Meml<wbr>Stmt</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">visit<wbr>Meml<wbr>Stmt<span class="tsd-signature-symbol">(</span>stmt<span class="tsd-signature-symbol">: </span><a href="AstNodes.MemlStmt.html" class="tsd-signature-type" data-tsd-kind="Class">MemlStmt</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/AstNodes.StmtVisitor.html">StmtVisitor</a>.<a href="../interfaces/AstNodes.StmtVisitor.html#visitMemlStmt">visitMemlStmt</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L195">targets/Web.ts:195</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>stmt: <a href="AstNodes.MemlStmt.html" class="tsd-signature-type" data-tsd-kind="Class">MemlStmt</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="visitPageStmt" class="tsd-anchor"></a>
+					<h3>visit<wbr>Page<wbr>Stmt</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">visit<wbr>Page<wbr>Stmt<span class="tsd-signature-symbol">(</span>stmt<span class="tsd-signature-symbol">: </span><a href="AstNodes.PageStmt.html" class="tsd-signature-type" data-tsd-kind="Class">PageStmt</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/AstNodes.StmtVisitor.html">StmtVisitor</a>.<a href="../interfaces/AstNodes.StmtVisitor.html#visitPageStmt">visitPageStmt</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L279">targets/Web.ts:279</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>stmt: <a href="AstNodes.PageStmt.html" class="tsd-signature-type" data-tsd-kind="Class">PageStmt</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="visitUnaryExpr" class="tsd-anchor"></a>
+					<h3>visit<wbr>Unary<wbr>Expr</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">visit<wbr>Unary<wbr>Expr<span class="tsd-signature-symbol">(</span>expr<span class="tsd-signature-symbol">: </span><a href="AstNodes.UnaryExpr.html" class="tsd-signature-type" data-tsd-kind="Class">UnaryExpr</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/AstNodes.ExprVisitor.html">ExprVisitor</a>.<a href="../interfaces/AstNodes.ExprVisitor.html#visitUnaryExpr">visitUnaryExpr</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/fushra/meml/blob/4bf49c2/src/targets/Web.ts#L414">targets/Web.ts:414</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>expr: <a href="AstNodes.UnaryExpr.html" class="tsd-signature-type" data-tsd-kind="Class">UnaryExpr</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Exports</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/AstNodes.html">Ast<wbr>Nodes</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/Loaders.html">Loaders</a>
+					</li>
+					<li class="current tsd-kind-namespace">
+						<a href="../modules/Targets.html">Targets</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Targets.ComponentDefinition.html" class="tsd-kind-icon">Component<wbr>Definition</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Targets.Environment.html" class="tsd-kind-icon">Environment</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Targets.TargetBase.html" class="tsd-kind-icon">Target<wbr>Base</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Targets.Web.html" class="tsd-kind-icon">Web</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+								<a href="Targets.Web.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Targets.Web.html#environment" class="tsd-kind-icon">environment</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Targets.Web.html#exports" class="tsd-kind-icon">exports</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Targets.Web.html#path" class="tsd-kind-icon">path</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Targets.Web.html#visitDestructureExpr" class="tsd-kind-icon">visit<wbr>Destructure<wbr>Expr</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Targets.Web.html#convert" class="tsd-kind-icon">convert</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="Targets.Web.html#destructureImport" class="tsd-kind-icon">destructure<wbr>Import</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="Targets.Web.html#evaluate" class="tsd-kind-icon">evaluate</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="Targets.Web.html#evaluateBinaryExpr" class="tsd-kind-icon">evaluate<wbr>Binary<wbr>Expr</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="Targets.Web.html#isEqual" class="tsd-kind-icon">is<wbr>Equal</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="Targets.Web.html#isTruthy" class="tsd-kind-icon">is<wbr>Truthy</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Targets.Web.html#visitArrayExpr" class="tsd-kind-icon">visit<wbr>Array<wbr>Expr</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Targets.Web.html#visitBinaryExpr" class="tsd-kind-icon">visit<wbr>Binary<wbr>Expr</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Targets.Web.html#visitComponentStmt" class="tsd-kind-icon">visit<wbr>Component<wbr>Stmt</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Targets.Web.html#visitExportStmt" class="tsd-kind-icon">visit<wbr>Export<wbr>Stmt</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Targets.Web.html#visitExpressionStmt" class="tsd-kind-icon">visit<wbr>Expression<wbr>Stmt</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Targets.Web.html#visitForStmt" class="tsd-kind-icon">visit<wbr>For<wbr>Stmt</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Targets.Web.html#visitGroupingExpr" class="tsd-kind-icon">visit<wbr>Grouping<wbr>Expr</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Targets.Web.html#visitIdentifierExpr" class="tsd-kind-icon">visit<wbr>Identifier<wbr>Expr</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Targets.Web.html#visitIfStmt" class="tsd-kind-icon">visit<wbr>IfStmt</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Targets.Web.html#visitImportStmt" class="tsd-kind-icon">visit<wbr>Import<wbr>Stmt</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Targets.Web.html#visitLiteralExpr" class="tsd-kind-icon">visit<wbr>Literal<wbr>Expr</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Targets.Web.html#visitMemlPropertiesExpr" class="tsd-kind-icon">visit<wbr>Meml<wbr>Properties<wbr>Expr</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Targets.Web.html#visitMemlStmt" class="tsd-kind-icon">visit<wbr>Meml<wbr>Stmt</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Targets.Web.html#visitPageStmt" class="tsd-kind-icon">visit<wbr>Page<wbr>Stmt</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Targets.Web.html#visitUnaryExpr" class="tsd-kind-icon">visit<wbr>Unary<wbr>Expr</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
+						<a href="../modules/Targets.html#EnvStore" class="tsd-kind-icon">Env<wbr>Store</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
+						<a href="../modules/Targets.html#EnvValidTypes" class="tsd-kind-icon">Env<wbr>Valid<wbr>Types</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
