@@ -3,6 +3,7 @@ import { TestSuite, Test, expect } from 'testyts/build/testyCore'
 import { Environment } from './Environment'
 import { Token } from '../../scanner/Token'
 import { TokenType } from '../../scanner/TokenTypes'
+import { MemlCore, resetErrors } from '../..'
 
 @TestSuite('Shared: Environment')
 export class EnvironmentTests {
@@ -45,6 +46,13 @@ export class EnvironmentTests {
       env.get(new Token(TokenType.IDENTIFIER, '', 'test', 3, '')),
       'New value'
     )
+
+    expect.toBeFalse(MemlCore.hadError)
+    env.assign(
+      new Token(TokenType.IDENTIFIER, '', 'does_notExist', 3, ''),
+      'value'
+    )
+    expect.toBeTrue(MemlCore.hadError)
   }
 
   @Test('Shadowing')
@@ -67,5 +75,13 @@ export class EnvironmentTests {
       subEnv.get(new Token(TokenType.IDENTIFIER, '', 'test', 3, '')),
       'New value'
     )
+
+    resetErrors()
+
+    expect.toBeFalse(MemlCore.hadError)
+    expect.toBeFalsy(
+      env.get(new Token(TokenType.IDENTIFIER, '', 'does_notExist', 3, ''))
+    )
+    expect.toBeTrue(MemlCore.hadError)
   }
 }

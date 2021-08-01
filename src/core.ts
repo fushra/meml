@@ -65,8 +65,6 @@ import { resetErrors } from './utils/Logging'
  * @TODO Should config be moved somewhere else?
  *
  * @TODO Should builds be moved into separate functions?
- *
- * @TODO Move error reporting out of this class.
  */
 export class MemlCore {
   /**

@@ -37,5 +37,15 @@ export class Logging {
       MemlCore.errors,
       "[line 3] Error at 'a': Test error\n    ┃Example context\n"
     )
+
+    resetErrors()
+
+    errorAtToken(new Token(TokenType.EOF, 'a', 'b', 4, 'c'), 'Test error')
+
+    expect.toBeTrue(MemlCore.hadError)
+    expect.toBeEqual(
+      MemlCore.errors,
+      '[line 4] Error at end: Test error\n    ┃\n'
+    )
   }
 }
