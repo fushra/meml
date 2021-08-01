@@ -1,3 +1,4 @@
+import { error } from '../utils/Logging'
 import { MemlCore } from '../core'
 import { Token } from './Token'
 import { TokenType } from './TokenTypes'
@@ -106,7 +107,7 @@ export class Scanner {
           this.identifier()
         } else {
           console.log(this.file)
-          MemlCore.error(this.line, `Unexpected character ${c}`, this.file)
+          error(this.line, `Unexpected character ${c}`, this.file)
         }
 
         break
@@ -216,7 +217,7 @@ export class Scanner {
     }
 
     if (this.isAtEnd()) {
-      MemlCore.error(this.line, 'Unterminated string.', this.file)
+      error(this.line, 'Unterminated string.', this.file)
       return
     }
 

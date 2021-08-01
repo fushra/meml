@@ -35,6 +35,7 @@ import {
 import { Tags } from '../scanner/Tags'
 import { MemlCore } from '../core'
 import { ILoader } from './loaders'
+import { errorAtToken, formatContext, linterAtToken } from '../utils/Logging'
 
 export class Web
   extends TargetBase
@@ -56,13 +57,13 @@ export class Web
   // Import and export statements
   async visitExportStmt(stmt: ExportStmt): Promise<string> {
     if (this.exports.size !== 0 && typeof this.exports.size !== 'undefined') {
-      MemlCore.linterAtToken(
+      linterAtToken(
         stmt.exportToken,
         'There should only be one export statement per meml file'
       )
 
       console.log('It is recommended to combine multiple exports into one')
-      console.log(MemlCore.formatContext(`(export (foo, bar, baz))`))
+      console.log(formatContext(`(export (foo, bar, baz))`))
     }
 
     stmt.exports.items.forEach((exportedItem) => {
@@ -133,7 +134,7 @@ export class Web
       }
 
       if (!importedSomething) {
-        MemlCore.errorAtToken(
+        errorAtToken(
           stmt.fileToken,
           'There is no loader that can import this file',
           this.path
@@ -179,7 +180,7 @@ export class Web
         if (fileExports.has(key.literal)) {
           this.environment.define(key.literal, fileExports.get(key.literal))
         } else {
-          MemlCore.errorAtToken(
+          errorAtToken(
             key,
             `The export from ${rawPath} doesn't contain the export ${key.lexeme}`,
             this.path
@@ -246,7 +247,7 @@ export class Web
 
         if (!value) {
           // If we can't find the value error
-          MemlCore.errorAtToken(
+          errorAtToken(
             stmt.tagName,
             `Missing tag prop '${identifier}'`,
             this.path
@@ -288,7 +289,7 @@ export class Web
 
   async visitComponentStmt(stmt: ComponentStmt): Promise<string> {
     if (Tags.has(stmt.tagName.literal)) {
-      MemlCore.linterAtToken(
+      linterAtToken(
         stmt.tagName,
         `The component '${stmt.tagName.literal}' shares a name with a html tag. Defaulting to html tag.`
       )
@@ -334,7 +335,7 @@ export class Web
 
     // Ensure it is an array
     if (typeof input !== 'object' || !(input instanceof Array)) {
-      MemlCore.errorAtToken(
+      errorAtToken(
         stmt.output,
         'The input to the for statement must be an array',
         this.path

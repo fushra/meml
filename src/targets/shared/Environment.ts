@@ -1,3 +1,4 @@
+import { errorAtToken } from '../../utils/Logging'
 import { MemlCore } from '../../core'
 import { Token } from '../../scanner/Token'
 import { ComponentDefinition } from './ComponentDefinition'
@@ -29,7 +30,7 @@ export class Environment {
       return
     }
 
-    MemlCore.errorAtToken(name, `Undefined variable`)
+    errorAtToken(name, `Undefined variable`)
   }
 
   get(name: Token): EnvStore | void {
@@ -41,6 +42,6 @@ export class Environment {
       return this.enclosing.get(name)
     }
 
-    MemlCore.errorAtToken(name, `Undefined variable '${name.literal}'.`)
+    errorAtToken(name, `Undefined variable '${name.literal}'.`)
   }
 }

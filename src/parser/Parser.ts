@@ -23,6 +23,7 @@ import {
   MemlStmt,
   PageStmt,
 } from './Stmt'
+import { errorAtToken } from '../utils/Logging'
 
 export class Parser {
   private tokens: Token[]
@@ -180,7 +181,7 @@ export class Parser {
           this.advance()
         } else {
           const token = this.advance()
-          MemlCore.errorAtToken(
+          errorAtToken(
             token,
             `Unexpected token '${token.literal}'. Try importing using a destructure ( '(import1, import2)' ) or adding the key 'everything'`,
             this.file
@@ -546,7 +547,7 @@ export class Parser {
   }
 
   private error(token: Token, message: string) {
-    MemlCore.errorAtToken(token, message, this.file)
+    errorAtToken(token, message, this.file)
     throw new Error(message)
   }
 

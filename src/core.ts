@@ -5,13 +5,10 @@
 
 import { readFile } from 'fs/promises'
 
-import { grey, red, yellow } from 'kleur'
-
 import { Web } from './targets/Web'
 import { Parser } from './parser/Parser'
 import { Scanner } from './scanner/Scanner'
 import { Token } from './scanner/Token'
-import { TokenType } from './scanner/TokenTypes'
 import { PageStmt } from './parser/Stmt'
 import {
   CSSLoader,
@@ -21,6 +18,7 @@ import {
   MemlLoader,
   resetLinker,
 } from './targets/loaders'
+import { resetErrors } from './utils/Logging'
 
 /**
  * The main class for handling compiling MEML files and general configuration.
@@ -217,118 +215,8 @@ export class MemlCore {
    * between files.
    */
   static reset(): void {
-    this.resetErrors()
+    resetErrors()
     resetLinker()
-  }
-
-  // ------------------------------------------------------------
-  // Error functions
-
-  /**
-   * Resets `MemlCore.hadError` and `MemlCore.errors`
-   */
-  static resetErrors(): void {
-    this.hadError = false
-    this.errors = ''
-  }
-
-  /**
-   * Internal error reporting function for reporting an error at a specific
-   * token
-   */
-  static errorAtToken(token: Token, message: string, file = ''): void {
-    if (token.type === TokenType.EOF) {
-      this.report(token.line, ' at end', message, '', file)
-    } else {
-      this.report(
-        token.line,
-        ` at '${token.lexeme}'`,
-        message,
-        token.context,
-        file
-      )
-    }
-  }
-
-  /**
-   * Internal error reporting function
-   */
-  static error(line: number, message: string, file = ''): void {
-    this.report(line, '', message, file)
-  }
-
-  /**
-   * Internal error reporting function for reporting an linter warning at a specific
-   * token
-   */
-  static linterAtToken(token: Token, message: string): void {
-    this.warn(
-      token.line,
-      'Linter',
-      ` at '${token.lexeme}'`,
-      message,
-      token.context
-    )
-  }
-
-  /**
-   * Internal warning function
-   */
-  static generalWarning(line: number, message: string): void {
-    this.warn(line, 'General', '', message)
-  }
-
-  /**
-   * Private error reporting function
-   */
-  private static report(
-    line: number,
-    where: string,
-    message: string,
-    context = '',
-    file = ''
-  ): void {
-    console.error(
-      red(
-        `[line ${line}${
-          file != '' ? ` in file ${file}` : ''
-        }] Error${where}: ${message}\n${grey(this.formatContext(context))}`
-      )
-    )
-    this.hadError = true
-    this.errors += `[line ${line}${
-      file != '' ? ` in file ${file}` : ''
-    }] Error${where}: ${message}\n${this.formatContext(context)}\n`
-  }
-
-  /**
-   * Private warning function
-   */
-  private static warn(
-    line: number,
-    type: 'Linter' | 'General',
-    where: string,
-    message: string,
-    context = ''
-  ): void {
-    console.warn(
-      yellow(
-        `[line ${line}] ${type} warning${where}: ${message} \n${grey(
-          this.formatContext(context)
-        )}`
-      )
-    )
-
-    this.errors += `[line ${line}] ${type} warning${where}: ${message} \n${this.formatContext(
-      context
-    )}\n`
-  }
-
-  /**
-   * Internal error formatting function
-   */
-  static formatContext(context: string): string {
-    return `    ┃${context.replace(/\n/g, '\n    ┃')}`
   }
 
   /**
