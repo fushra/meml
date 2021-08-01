@@ -2,7 +2,7 @@ import { readFile } from 'fs/promises'
 import { dirname, join } from 'path'
 import fetch from 'node-fetch'
 
-import { MemlCore } from '../index'
+import { errorAtToken, MemlCore } from '..'
 import { ImportStmt } from '../parser/Stmt'
 import { relativeLink } from './loaders'
 
@@ -64,7 +64,7 @@ export async function contentImport({
     }
   }
 
-  MemlCore.errorAtToken(
+  errorAtToken(
     stmt.fileToken,
     'There is no loader for this file. Try install one'
   )
