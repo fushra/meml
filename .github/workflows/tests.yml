@@ -22,14 +22,21 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6.0.2
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile, --strict-peer-dependencies]
 
       # Runs a single command using the runners shell
       - name: Install
-        run: sudo npm install codecov -g && yarn
+        run: sudo npm install codecov -g && pnpm i
 
       - name: Run tests
-        run: yarn test && codecov
+        run: pnpm test && codecov
 
   docs:
     runs-on: ubuntu-latest
@@ -39,14 +46,17 @@ jobs:
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      # Runs a single command using the runners shell
-      - name: Install
-        run: yarn
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6.0.2
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile, --strict-peer-dependencies]
 
       - name: Build
-        run: yarn docs
+        run: pnpm docs
 
       - name: Release
         uses: JamesIves/github-pages-deploy-action@4.1.4
