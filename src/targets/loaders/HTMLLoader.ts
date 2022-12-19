@@ -1,5 +1,3 @@
-import { minify } from 'html-minifier-terser'
-
 import { Token } from '../../scanner/Token'
 import { ComponentDefinition } from '../shared/ComponentDefinition'
 import { ILoader, LoaderConfig } from './ILoader'
@@ -42,6 +40,8 @@ export class HTMLLoader implements ILoader {
     path: string,
     production: boolean
   ): Promise<string> {
-    return production ? minify(pathContents) : pathContents
+    return production
+      ? pathContents.replace(/\s+/g, ' ').replace(/\n/, '')
+      : pathContents
   }
 }

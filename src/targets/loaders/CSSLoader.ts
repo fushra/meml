@@ -1,5 +1,3 @@
-import CleanCSS from 'clean-css'
-
 import { Token } from '../../scanner/Token'
 import { ComponentDefinition } from '../shared/ComponentDefinition'
 import { ILoader, LoaderConfig } from './ILoader'
@@ -43,7 +41,7 @@ export class CSSLoader implements ILoader {
     production: boolean
   ): Promise<string> {
     return production
-      ? new CleanCSS().minify(pathContents).styles
+      ? pathContents.replace(/\s+/g, ' ').replace(/\n/g, '')
       : pathContents
   }
 }

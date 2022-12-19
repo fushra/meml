@@ -1,5 +1,3 @@
-import { minify } from 'terser'
-
 import { Token } from '../../scanner/Token'
 import { ComponentDefinition } from '../shared/ComponentDefinition'
 import { ILoader, LoaderConfig } from './ILoader'
@@ -42,6 +40,6 @@ export class JSLoader implements ILoader {
     path: string,
     production: boolean
   ): Promise<string> {
-    return production ? (await minify(pathContents)).code : pathContents
+    return pathContents
   }
 }
