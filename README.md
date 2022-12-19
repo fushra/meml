@@ -4,12 +4,7 @@
 
 Write simpler code to target the web
 
-[![forthebadge](https://forthebadge.com/images/badges/built-by-developers.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/made-with-typescript.svg)](https://forthebadge.com)
-
 [![Codecov](https://img.shields.io/codecov/c/github/fushra/meml?style=for-the-badge)](https://app.codecov.io/gh/fushra/meml/)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/fushra/meml/CodeCov?label=Tests&style=for-the-badge)](https://github.com/fushra/meml/actions/workflows/tests.yml)
-[![Discord](https://img.shields.io/discord/841238828042944562?style=for-the-badge)](https://discord.gg/UPQW9juP5Z)
 
 </div>
 
@@ -105,6 +100,6 @@ npx memlc --src ./src/ --file index.meml --out ./public/ # Will output in ./publ
 
 ## Boring legal stuff
 
-MemlC Copyright (C) 2021 Fushra & Fivnex
+MemlC Copyright (C) 2021 Fushra
 
-This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under certain conditions. For more information see the [license](./LIVENSE) file.
+This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under certain conditions. For more information see the [license](./LICENSE) file.
