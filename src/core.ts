@@ -3,8 +3,6 @@
 // Maybe one day I will rewrite this in rust or maybe even c to make it work natively
 // but at the moment I don't really care
 
-import { readFile } from 'fs/promises'
-
 import { Web } from './targets/Web'
 import { Parser } from './parser/Parser'
 import { Scanner } from './scanner/Scanner'
@@ -204,6 +202,8 @@ export class MemlCore {
    * May write files to disk depending on your settings for `shouldLink`
    */
   async fileToWeb(path: string): Promise<string> {
+    const { readFile } = await import('fs/promises')
+
     return this.sourceToWeb((await readFile(path)).toString(), path)
   }
 
